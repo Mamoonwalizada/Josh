@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ویرایش پروفایل - Josh</title>
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font/dist/font-face.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.2.96/css/materialdesignicons.min.css" />
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    :root {
+      --primary: #7b1fa2;
+      --primary-dark: #4a148c;
+      --primary-light: #9c27b0;
+      --secondary: #d81b60;
+      --secondary-dark: #b71c1c;
+      --text-primary: #2d3748;
+      --text-secondary: #4a5568;
+      --bg-light: #f8f9fa;
+      --bg-white: #ffffff;
+      --border-light: #e2e8f0;
+      --error: #e53e3e;
+      --success: #38a169;
+      --warning: #dd6b20;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+      --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+      --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Vazir, Tahoma, sans-serif;
+      background: var(--bg-light);
+      color: var(--text-primary);
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .profile-container {
+      width: 100%;
+      max-width: 500px;
+      background: var(--bg-white);
+      border-radius: var(--radius-lg);
+      padding: 32px 24px;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      border: 1px solid var(--border-light);
+    }
+
+    h2 {
+      margin-bottom: 24px;
+      font-weight: 800;
+      font-size: 1.5rem;
+      color: var(--primary-dark);
+      text-align: center;
+      position: relative;
+      padding-bottom: 12px;
+    }
+
+    h2::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      right: 50%;
+      transform: translateX(50%);
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      border-radius: 3px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    label {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .required::after {
+      content: '*';
+      color: var(--error);
+      font-size: 0.8rem;
+      margin-right: 4px;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="tel"] {
+      width: 100%;
+      padding: 12px 16px 12px 40px;
+      font-size: 0.95rem;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      outline: none;
+      transition: var(--transition);
+      background-color: var(--bg-white);
+      color: var(--text-primary);
+    }
+
+    input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(123, 31, 162, 0.2);
+    }
+
+    .input-icon {
+      position: absolute;
+      right: 1px;
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+    }
+
+    .btn-group {
+      margin-top: 24px;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      font-family: Vazir, Tahoma, sans-serif;
+      font-weight: 600;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: var(--transition);
+      min-width: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, var(--primary-dark), var(--secondary-dark));
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: var(--bg-white);
+      color: var(--primary);
+      border: 1px solid var(--primary);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(123, 31, 162, 0.05);
+      border-color: var(--primary-dark);
+    }
+
+    .message {
+      margin-top: 16px;
+      font-size: 0.9rem;
+      min-height: 20px;
+      text-align: center;
+    }
+
+    /* Profile photo styles */
+    .profile-photo-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .profile-photo-wrapper {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      padding: 4px;
+      box-shadow: var(--shadow-md);
+    }
+
+    #profilePhoto {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid white;
+      background-color: #f9f0f0;
+    }
+
+    .photo-upload-btn {
+      margin-top: 12px;
+      background: var(--bg-white);
+      color: var(--primary);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: var(--transition);
+      border: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .photo-upload-btn:hover {
+      background: rgba(123, 31, 162, 0.05);
+      border-color: var(--primary);
+    }
+
+    #photoInput {
+      display: none;
+    }
+
+    .optional-field {
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      opacity: 0.8;
+    }
+
+    .password-toggle {
+      position: absolute;
+      left: 12px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 480px) {
+      .profile-container {
+        padding: 24px 16px;
+      }
+      
+      .btn-group {
+        flex-direction: column;
+      }
+      
+      button {
+        width: 100%;
+      }
+    }
+
+    /* Password strength indicator */
+    .password-strength {
+      margin-top: 4px;
+      height: 4px;
+      border-radius: 2px;
+      background: #e2e8f0;
+      overflow: hidden;
+    }
+
+    .strength-bar {
+      height: 100%;
+      width: 0%;
+      transition: var(--transition);
+    }
+
+    .strength-weak {
+      background: var(--error);
+      width: 33%;
+    }
+
+    .strength-medium {
+      background: var(--warning);
+      width: 66%;
+    }
+
+    .strength-strong {
+      background: var(--success);
+      width: 100%;
+    }
+
+    .password-hints {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-top: 4px;
+      display: none;
+    }
+
+    .password-hints.show {
+      display: block;
+    }
+
+    .hint-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 2px;
+    }
+
+    .hint-valid {
+      color: var(--success);
+    }
+
+    .hint-invalid {
+      color: var(--text-secondary);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="profile-container">
+    <h2>ویرایش نمایه</h2>
+
+    <div class="profile-photo-container">
+      <div class="profile-photo-wrapper">
+        <img id="profilePhoto" src="https://via.placeholder.com/120?text=JP" alt="عکس نمایه" />
+      </div>
+      <label for="photoInput" class="photo-upload-btn">
+        <span class="mdi mdi-camera"></span>
+        تغییر عکس نمایه
+      </label>
+      <input type="file" id="photoInput" accept="image/*" capture="user" />
+    </div>
+
+    <form id="profileForm" autocomplete="off">
+      <div class="form-group">
+        <label for="fullname">نام کامل</label>
+        <div class="input-wrapper">
+          <span class="input-icon mdi mdi-account"></span>
+          <input type="text" id="fullname" name="fullname" placeholder="نام و نام خانوادگی" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="phone">شماره تلفن</label>
+        <div class="input-wrapper">
+          <span class="input-icon mdi mdi-phone"></span>
+          <input type="tel" id="phone" name="phone" placeholder="+93XXXXXXXXX" dir="ltr" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="currentPassword">رمز عبور فعلی <span class="optional-field">(برای تغییر رمز)</span></label>
+        <div class="input-wrapper">
+          <span class="password-toggle mdi mdi-eye-off" id="toggleCurrentPassword"></span>
+          <input type="password" id="currentPassword" name="currentPassword" placeholder="رمز عبور فعلی" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="newPassword">رمز عبور جدید <span class="optional-field">(اختیاری)</span></label>
+        <div class="input-wrapper">
+          <span class="password-toggle mdi mdi-eye-off" id="toggleNewPassword"></span>
+          <input type="password" id="newPassword" name="newPassword" placeholder="رمز عبور جدید (حداقل ۶ کاراکتر)" />
+        </div>
+        <div class="password-strength">
+          <div class="strength-bar" id="strengthBar"></div>
+        </div>
+        <div class="password-hints" id="passwordHints">
+          <div class="hint-item" id="lengthHint">
+            <span class="mdi mdi-checkbox-blank-circle-outline"></span>
+            حداقل ۶ کاراکتر
+          </div>
+          <div class="hint-item" id="complexityHint">
+            <span class="mdi mdi-checkbox-blank-circle-outline"></span>
+            شامل اعداد یا نمادها
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button type="submit" class="btn-primary">
+          <span class="mdi mdi-content-save"></span>
+          ذخیره تغییرات
+        </button>
+        <button type="button" id="cancelBtn" class="btn-secondary">
+          <span class="mdi mdi-close"></span>
+          انصراف
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getDatabase, ref, set, get, update } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+    import { getAuth, onAuthStateChanged, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDLfUbSG30O474XPAPY8QpMzo19EMfLWFc",
+      authDomain: "josh-7b6a0.firebaseapp.com",
+      databaseURL: "https://josh-7b6a0-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "josh-7b6a0",
+      storageBucket: "josh-7b6a0.appspot.com",
+      messagingSenderId: "639816255525",
+      appId: "1:639816255525:web:71a3e87374c3e7c68e17cc",
+      measurementId: "G-P2ZSBTN8FP"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+    const auth = getAuth(app);
+
+    // DOM elements
+    const fullnameInput = document.getElementById('fullname');
+    const phoneInput = document.getElementById('phone');
+    const currentPasswordInput = document.getElementById('currentPassword');
+    const newPasswordInput = document.getElementById('newPassword');
+    const profilePhoto = document.getElementById('profilePhoto');
+    const photoInput = document.getElementById('photoInput');
+    const form = document.getElementById('profileForm');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const toggleCurrentPassword = document.getElementById('toggleCurrentPassword');
+    const toggleNewPassword = document.getElementById('toggleNewPassword');
+    const strengthBar = document.getElementById('strengthBar');
+    const passwordHints = document.getElementById('passwordHints');
+    const lengthHint = document.getElementById('lengthHint');
+    const complexityHint = document.getElementById('complexityHint');
+
+    // Toggle password visibility
+    function setupPasswordToggle(toggleElement, inputElement) {
+      toggleElement.addEventListener('click', () => {
+        const isPassword = inputElement.type === 'password';
+        inputElement.type = isPassword ? 'text' : 'password';
+        toggleElement.classList.toggle('mdi-eye-off', isPassword);
+        toggleElement.classList.toggle('mdi-eye', !isPassword);
+      });
+    }
+
+    setupPasswordToggle(toggleCurrentPassword, currentPasswordInput);
+    setupPasswordToggle(toggleNewPassword, newPasswordInput);
+
+    // Password strength indicator
+    newPasswordInput.addEventListener('input', function() {
+      const password = this.value;
+      if (password.length === 0) {
+        strengthBar.className = 'strength-bar';
+        passwordHints.classList.remove('show');
+        return;
+      }
+      
+      passwordHints.classList.add('show');
+      
+      // Check password length
+      const hasMinLength = password.length >= 6;
+      lengthHint.className = `hint-item ${hasMinLength ? 'hint-valid' : 'hint-invalid'}`;
+      lengthHint.querySelector('.mdi').className = `mdi ${hasMinLength ? 'mdi-check-circle' : 'mdi-checkbox-blank-circle-outline'}`;
+      
+      // Check password complexity
+      const hasComplexity = /[0-9!@#$%^&*]/.test(password);
+      complexityHint.className = `hint-item ${hasComplexity ? 'hint-valid' : 'hint-invalid'}`;
+      complexityHint.querySelector('.mdi').className = `mdi ${hasComplexity ? 'mdi-check-circle' : 'mdi-checkbox-blank-circle-outline'}`;
+      
+      // Update strength bar
+      if (password.length < 6) {
+        strengthBar.className = 'strength-bar';
+      } else if (password.length < 8 || !hasComplexity) {
+        strengthBar.className = 'strength-bar strength-weak';
+      } else if (password.length < 10) {
+        strengthBar.className = 'strength-bar strength-medium';
+      } else {
+        strengthBar.className = 'strength-bar strength-strong';
+      }
+    });
+
+    // Check auth state
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        showAuthWarning();
+      } else {
+        loadUserData(user.uid);
+      }
+    });
+
+    // Show auth warning
+    function showAuthWarning() {
+      Swal.fire({
+        title: 'ورود لازم است',
+        text: 'لطفاً ابتدا وارد حساب کاربری خود شوید',
+        icon: 'warning',
+        confirmButtonText: 'ورود',
+        confirmButtonColor: 'var(--primary)',
+        background: 'var(--bg-white)',
+        allowOutsideClick: false
+      }).then(() => {
+        window.location.href = 'login.html';
+      });
+    }
+
+    // Load user data
+    async function loadUserData(userId) {
+      try {
+        const userRef = ref(database, 'users/' + userId);
+        const snapshot = await get(userRef);
+        
+        if (snapshot.exists()) {
+          const userData = snapshot.val();
+          
+          // Fill form with user data
+          if (userData.fullname) fullnameInput.value = userData.fullname;
+          if (userData.phone) phoneInput.value = userData.phone;
+          
+          // Set profile photo
+          if (userData.profilePhoto) {
+            profilePhoto.src = userData.profilePhoto;
+          } else {
+            // Generate initials avatar if no photo exists
+            const initials = userData.fullname ? 
+              userData.fullname.split(' ').map(n => n[0]).join('').toUpperCase() : 'JP';
+            profilePhoto.src = `https://via.placeholder.com/120/7b1fa2/ffffff?text=${initials}`;
+          }
+        } else {
+          // Create initial user record if doesn't exist
+          await set(userRef, {
+            fullname: '',
+            phone: '',
+            profilePhoto: '',
+            lastUpdated: new Date().toISOString()
+          });
+        }
+      } catch (error) {
+        console.error('Error loading user data:', error);
+        showError('خطا در دریافت اطلاعات نمایه');
+      }
+    }
+
+    // Convert image to Base64 with compression
+    function compressAndConvertToBase64(file, maxWidth = 400, quality = 0.8) {
+      return new Promise((resolve, reject) => {
+        if (!file.type.match('image.*')) {
+          reject(new Error('File is not an image'));
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (readerEvent) => {
+          const image = new Image();
+          image.onload = () => {
+            const canvas = document.createElement('canvas');
+            let width = image.width;
+            let height = image.height;
+
+            if (width > maxWidth) {
+              height *= maxWidth / width;
+              width = maxWidth;
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(image, 0, 0, width, height);
+            
+            resolve(canvas.toDataURL('image/jpeg', quality));
+          };
+          image.src = readerEvent.target.result;
+        };
+        reader.onerror = error => reject(error);
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // Handle profile photo upload
+    photoInput.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      // Validate file
+      if (file.size > 5 * 1024 * 1024) {
+        showError('حجم عکس باید کمتر از 5 مگابایت باشد');
+        return;
+      }
+
+      try {
+        // Compress and convert image
+        const base64Image = await compressAndConvertToBase64(file);
+        
+        // Save to database
+        const userId = auth.currentUser.uid;
+        await update(ref(database, 'users/' + userId), {
+          profilePhoto: base64Image,
+          lastUpdated: new Date().toISOString()
+        });
+        
+        // Update profile photo
+        profilePhoto.src = base64Image;
+        
+        showSuccess('عکس نمایه با موفقیت ذخیره شد');
+      } catch (error) {
+        console.error('Error saving photo:', error);
+        showError('خطا در ذخیره عکس نمایه');
+      }
+    });
+
+    // Form validation
+    function validateForm() {
+      // Validate password if changed
+      if (newPasswordInput.value) {
+        if (newPasswordInput.value.length < 6) {
+          showError('رمز عبور جدید باید حداقل ۶ کاراکتر باشد');
+          return false;
+        }
+        
+        if (!currentPasswordInput.value) {
+          showError('برای تغییر رمز، رمز عبور فعلی را وارد کنید');
+          return false;
+        }
+      }
+
+      // Validate phone number format
+      if (phoneInput.value && !/^\+93[0-9]{9}$/.test(phoneInput.value)) {
+        showError('شماره تلفن معتبر نیست (باید با +93 شروع شود و 12 رقم داشته باشد)');
+        return false;
+      }
+
+      return true;
+    }
+
+    // Form submission
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!validateForm()) return;
+
+      const user = auth.currentUser;
+      if (!user) return;
+
+      try {
+        // Prepare updates
+        const updates = {
+          fullname: fullnameInput.value.trim(),
+          phone: phoneInput.value.trim(),
+          lastUpdated: new Date().toISOString()
+        };
+
+        // Update database
+        await update(ref(database, `users/${user.uid}`), updates);
+
+        // Update password if changed
+        if (newPasswordInput.value) {
+          const credential = EmailAuthProvider.credential(
+            user.email,
+            currentPasswordInput.value
+          );
+          
+          await reauthenticateWithCredential(user, credential);
+          await updatePassword(user, newPasswordInput.value);
+        }
+
+        showSuccess('تغییرات با موفقیت ذخیره شد');
+        currentPasswordInput.value = '';
+        newPasswordInput.value = '';
+      } catch (error) {
+        console.error('Error saving changes:', error);
+        
+        // Handle specific errors
+        let errorMessage = 'خطا در ذخیره تغییرات';
+        switch (error.code) {
+          case 'auth/wrong-password':
+            errorMessage = 'رمز عبور فعلی نادرست است';
+            break;
+          case 'auth/weak-password':
+            errorMessage = 'رمز عبور جدید بسیار ضعیف است';
+            break;
+          case 'auth/requires-recent-login':
+            errorMessage = 'برای تغییر رمز عبور، لطفاً دوباره وارد شوید';
+            break;
+        }
+        
+        showError(errorMessage);
+      }
+    });
+
+    // Cancel button
+    cancelBtn.addEventListener('click', () => {
+      Swal.fire({
+        title: 'انصراف از تغییرات',
+        text: 'آیا مطمئن هستید میخواهید از ذخیره تغییرات انصراف دهید؟',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'بله، انصراف',
+        cancelButtonText: 'خیر، ادامه ویرایش',
+        confirmButtonColor: 'var(--primary)',
+        background: 'var(--bg-white)'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = 'profile.html';
+        }
+      });
+    });
+
+    // Helper functions for notifications
+    function showError(message) {
+      Swal.fire({
+        title: 'خطا',
+        text: message,
+        icon: 'error',
+        confirmButtonText: 'متوجه شدم',
+        confirmButtonColor: 'var(--primary)',
+        background: 'var(--bg-white)'
+      });
+    }
+
+    function showSuccess(message) {
+      Swal.fire({
+        title: 'موفقیت',
+        text: message,
+        icon: 'success',
+        confirmButtonText: 'درست است',
+        confirmButtonColor: 'var(--primary)',
+        background: 'var(--bg-white)'
+      });
+    }
+  </script>
+
+</body>
+</html>

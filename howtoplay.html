@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>راهنمای بازی - Josh</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #800000;
+      --primary-light: #b22222;
+      --secondary-color: #fff0f0;
+      --text-color: #333;
+      --white: #fff;
+      --gray-light: #f5f5f5;
+      --transition: all 0.3s ease;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--white);
+      color: var(--text-color);
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.8;
+    }
+    
+    h1 {
+      text-align: center;
+      color: var(--primary-light);
+      margin: 30px 0;
+      font-size: 2.2rem;
+      position: relative;
+      padding-bottom: 15px;
+    }
+    
+    h1::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      right: 50%;
+      transform: translateX(50%);
+      width: 100px;
+      height: 4px;
+      background: linear-gradient(to right, var(--primary-color), var(--primary-light));
+      border-radius: 2px;
+    }
+    
+    .tabs {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    
+    .tab-btn {
+      background: var(--gray-light);
+      border: 2px solid var(--primary-color);
+      color: var(--primary-color);
+      padding: 12px 25px;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 30px;
+      margin: 0 5px;
+      transition: var(--transition);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .tab-btn:hover {
+      background: rgba(128, 0, 0, 0.1);
+    }
+    
+    .tab-btn.active {
+      background: var(--primary-color);
+      color: var(--white);
+    }
+    
+    .tab-content {
+      border: 2px solid var(--primary-color);
+      padding: 30px;
+      border-radius: 15px;
+      background: var(--secondary-color);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      min-height: 300px;
+      animation: fadeIn 0.5s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    ul {
+      padding-right: 20px;
+      font-size: 1.1rem;
+      list-style-type: none;
+    }
+    
+    ul li {
+      margin-bottom: 15px;
+      position: relative;
+      padding-right: 30px;
+    }
+    
+    ul li::before {
+      content: '\f058';
+      font-family: 'Font Awesome 6 Free';
+      font-weight: 900;
+      color: var(--primary-light);
+      position: absolute;
+      right: 0;
+      top: 2px;
+    }
+    
+    .sport-icon {
+      margin-left: 8px;
+      font-size: 1.1rem;
+    }
+    
+    .highlight {
+      background-color: rgba(178, 34, 34, 0.2);
+      padding: 2px 5px;
+      border-radius: 3px;
+      font-weight: 600;
+    }
+    
+    @media (max-width: 768px) {
+      body {
+        padding: 15px;
+      }
+      
+      h1 {
+        font-size: 1.8rem;
+        margin: 20px 0;
+      }
+      
+      .tab-btn {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+        margin: 0 3px;
+      }
+      
+      .tab-content {
+        padding: 20px;
+      }
+      
+      ul {
+        font-size: 1rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .tabs {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .tab-btn {
+        width: 100%;
+        max-width: 250px;
+        justify-content: center;
+        margin: 3px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>راهنمای جامع بازی</h1>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('cricket')">
+      <i class="fas fa-baseball-ball sport-icon"></i>
+      کرکت
+    </button>
+    <button class="tab-btn" onclick="showTab('football')">
+      <i class="fas fa-futbol sport-icon"></i>
+      فوتبال
+    </button>
+  </div>
+
+  <div id="cricket" class="tab-content">
+    <ul>
+      <li><span class="highlight">۱۱ بازیکن</span> از بین بازیکنان واقعی مسابقات انتخاب کنید.</li>
+      <li>حداکثر <span class="highlight">۷ بازیکن</span> میتوانند از یک تیم باشند.</li>
+      <li>از بین بازیکنان تیم خود <span class="highlight">کپتان و معاون کاپیتان</span> انتخاب کنید.</li>
+      <li>کپتان <span class="highlight">امتیازاتش دو برابر</span> میشود و معاون کپتان <span class="highlight">۱.۵ برابر</span>.</li>
+      <li>بازیکنان بر اساس <span class="highlight">عملکرد واقعی</span> در مسابقه امتیاز می‌گیرند.</li>
+      <li>بعد از شروع بازی <span class="highlight">امکان تغییر تیم</span> وجود ندارد.</li>
+      <li>امتیازدهی بر اساس رنکینگ رسمی مسابقات محاسبه میشود.</li>
+    </ul>
+  </div>
+
+  <div id="football" class="tab-content" style="display:none;">
+    <ul>
+      <li><span class="highlight">۱۱ بازیکن</span> از بین بازیکنان مسابقات فوتبال انتخاب کنید.</li>
+      <li>حداکثر <span class="highlight">۷ بازیکن</span> میتوانند از یک تیم باشند.</li>
+      <li><span class="highlight">کپتان و معاون کپتان</span> انتخاب کنید.</li>
+      <li>کپتان <span class="highlight">امتیازاتش دو برابر</span>معاون کپتان <span class="highlight">۱.۵ برابر</span> میشود.</li>
+      <li>امتیاز بازیکنان بر اساس <span class="highlight">گل، پاس گل، کلین شیت و کارت ها</span> محاسبه میشود.</li>
+      <li><span class="highlight">تغییر تیم</span> پس از شروع بازی امکان پذیر نیست.</li>
+      <li>امتیازات بر اساس قوانین لیگوهای معتبر جهانی محاسبه میگردد.</li>
+    </ul>
+  </div>
+
+  <script>
+    function showTab(tab) {
+      // Hide all tab contents
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.style.display = 'none';
+      });
+      
+      // Show selected tab content
+      document.getElementById(tab).style.display = 'block';
+      
+      // Update active tab button
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.currentTarget.classList.add('active');
+      
+      // Add animation
+      document.getElementById(tab).style.animation = 'none';
+      setTimeout(() => {
+        document.getElementById(tab).style.animation = 'fadeIn 0.5s ease';
+      }, 10);
+    }
+    
+    // Add keyboard accessibility
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          btn.click();
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>فوتبال - Josh</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700&display=swap');
+
+    html, body {
+      font-family: 'Vazirmatn', Tahoma, sans-serif;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      background: url('https://i.pinimg.com/736x/ba/65/be/ba65be040cc711486e12cd55d4af5c90.jpg') center/cover no-repeat;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      filter: blur(1px) brightness(0.9);
+      z-index: -1;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #fff;
+    }
+
+    header {
+      background: linear-gradient(to right, rgba(128, 0, 0, 0.9), rgba(178, 34, 34, 0.9));
+      color: white;
+      width: 100%;
+      padding: 20px 0;
+      font-size: 28px;
+      text-align: center;
+      position: relative;
+      font-weight: 700;
+      letter-spacing: 1px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .players-section {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 18px;
+      margin-top: 20px;
+      flex-shrink: 0;
+    }
+
+    .player-box {
+      background-color: rgba(255, 255, 255, 0.95);
+      border: 2px solid #800000;
+      border-radius: 14px;
+      padding: 10px 6px;
+      width: 100px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      transition: transform 0.3s ease;
+    }
+
+    .player-box:hover {
+      transform: translateY(-5px);
+    }
+
+    .player-box img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 5px;
+      border: 2px solid #b22222;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .player-box h4 {
+      font-size: 13px;
+      margin: 4px 0;
+      color: #800000;
+      font-weight: 600;
+    }
+
+    .player-box span {
+      font-size: 12px;
+      font-weight: 500;
+      color: #333;
+    }
+
+    .container {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 18px;
+      width: 100%;
+      max-width: 300px;
+      padding: 10px 15px;
+    }
+
+    .link-btn {
+      background: linear-gradient(to right, rgba(216, 27, 96, 0.97), rgba(123, 31, 162, 0.97));
+      color: white;
+      border: none;
+      padding: 18px 0;
+      border-radius: 50px;
+      font-size: 26px;
+      cursor: pointer;
+      font-weight: 600;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+      user-select: none;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+
+    .link-btn:hover {
+      background: linear-gradient(to left, rgba(194, 24, 91, 0.97), rgba(106, 27, 154, 0.97));
+      transform: scale(1.04);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .back-btn {
+      font-size: 17px;
+      color: #fff;
+      text-decoration: none;
+      cursor: pointer;
+      font-weight: 500;
+      text-align: center;
+      padding: 8px;
+      border-radius: 20px;
+      background-color: rgba(0, 0, 0, 0.25);
+      transition: all 0.3s ease;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    }
+
+    .back-btn:hover {
+      color: #ffcccb;
+      background-color: rgba(0, 0, 0, 0.35);
+    }
+
+    @media (max-width: 480px) {
+      body::before {
+        filter: blur(0.5px) brightness(0.92);
+      }
+      
+      .players-section {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 20px;
+      }
+
+      .player-box {
+        width: 90px;
+        padding: 8px;
+      }
+
+      .player-box img {
+        width: 45px;
+        height: 45px;
+      }
+
+      .player-box h4 {
+        font-size: 12px;
+      }
+
+      .player-box span {
+        font-size: 11px;
+      }
+
+      .link-btn {
+        font-size: 22px;
+        padding: 16px 0;
+      }
+
+      header {
+        font-size: 24px;
+        padding: 16px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>⚽ فوتبال - Josh</header>
+
+  <div class="players-section">
+    <div class="player-box">
+      <h4>اشتراک کننده هفته</h4>
+      <img src="https://i.ibb.co/vxqXXZLQ/20250808-225516.jpg" alt="20250808-225516" border="0"></a> alt="">
+      <span>موجود نیست!</span>
+    </div>
+    <div class="player-box">
+      <h4>اشتراک کننده ماه</h4>
+      <img src="https://i.ibb.co/vxqXXZLQ/20250808-225516.jpg" alt="20250808-225516" border="0"></a>alt="">
+      <span> موجود نیست!</span>
+    </div>
+    <div class="player-box">
+      <h4>اشتراک کننده سال</h4>
+      <img src="https://i.ibb.co/vxqXXZLQ/20250808-225516.jpg" alt="20250808-225516" border="0"></a>" alt="">
+      <span>موجود نیست!</span>
+    </div>
+  </div>
+
+  <div class="container">
+    <button class="link-btn" onclick="location.href='sure.html'"> بازی های آینده</button>
+    <button class="link-btn" onclick="location.href='sure.html'"> بازی های گذشته</button>
+    <div class="back-btn" onclick="location.href='index.html'">← برگشت به صفحه اصلی</div>
+  </div>
+
+</body>
+</html>

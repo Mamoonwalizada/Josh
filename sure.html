@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اطلاعات در دسترس نیست</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #ff2d75; /* گلابی پررنگ‌تر */
+            --secondary-color: #fff;
+            --accent-color: #ff8cb4; /* گلابی روشن */
+            --text-color: #333;
+            --light-bg: rgba(255, 255, 255, 0.9);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--accent-color) 100%);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .card {
+            background: var(--light-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transform-style: preserve-3d;
+            transition: all 0.5s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+            position: relative;
+            display: inline-block;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--primary-color);
+            border-radius: 2px;
+        }
+        
+        p {
+            font-size: 1.1rem;
+            margin: 25px 0;
+            color: var(--text-color);
+        }
+        
+        .icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+        
+        .social-links {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .social-links a {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            transform: translateY(-3px);
+            color: var(--accent-color);
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .card {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="icon">
+            <i class="fas fa-exclamation-circle"></i>
+        </div>
+        <h1>اطلاعات در دسترس نیست</h1>
+        <p>در حال حاضر اطلاعات مورد نظر شما قابل نمایش نمیباشد. لطفاً در زمان دیگری مراجعه فرمایید.</p>
+  
+        <div class="social-links">
+            <a href="#"><i class="fab fa-whatsapp"></i></a>
+            <a href="#"><i class="fab fa-facebook"></i></a>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // انیمیشن‌ها و تعاملات جاوااسکریپت می‌تواند اینجا اضافه شود
+        });
+    </script>
+</body>
+</html>

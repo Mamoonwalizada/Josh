@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Contact Josh - Get in touch with us through various channels">
+    <title>Contact Us - Josh</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <style>
+        :root {
+            --primary-color: #800000;
+            --primary-light: #b22222;
+            --primary-lighter: #e74c3c;
+            --text-color: #2d3748;
+            --text-light: #4a5568;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        /* Dark mode variables */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary-color: #ff6b6b;
+                --primary-light: #ff8787;
+                --primary-lighter: #ffa8a8;
+                --text-color: #f8f9fa;
+                --text-light: #e9ecef;
+                --bg-color: #121212;
+                --card-bg: #1e1e1e;
+                --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            }
+        }
+
+        /* Base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1.5rem 2rem;
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            width: 100%;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            user-select: none;
+        }
+
+        /* Main content */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Contact section */
+        .contact-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            width: 100%;
+            margin-top: 2rem;
+        }
+
+        /* Contact info card */
+        .contact-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid rgba(128, 0, 0, 0.1);
+        }
+
+        .contact-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(128, 0, 0, 0.2);
+        }
+
+        .contact-card h2 {
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+            user-select: text;
+        }
+
+        /* Contact items */
+        .contact-item {
+            margin: 1.25rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            user-select: text;
+        }
+
+        .contact-item i {
+            font-size: 1.25rem;
+            color: var(--primary-color);
+            width: 1.5rem;
+            text-align: center;
+        }
+
+        .contact-label {
+            font-weight: 500;
+            color: var(--text-light);
+            min-width: 80px;
+        }
+
+        /* Links */
+        .contact-link {
+            color: var(--primary-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .contact-link:hover,
+        .contact-link:focus {
+            color: var(--primary-lighter);
+            text-decoration: underline;
+        }
+
+        /* Social media section */
+        .social-media {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            justify-content: center;
+        }
+
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            transition: var(--transition);
+        }
+
+        .social-link:hover {
+            background-color: var(--primary-light);
+            transform: scale(1.1);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            width: 100%;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            header {
+                font-size: 1.5rem;
+                padding: 1rem;
+            }
+
+            .contact-container {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .contact-card {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .contact-card:nth-child(1) { animation-delay: 0.1s; }
+        .contact-card:nth-child(2) { animation-delay: 0.2s; }
+    </style>
+</head>
+<body>
+
+<header>Contact Us - Josh</header>
+
+<main>
+    <h1 style="text-align: center; color: var(--primary-color); margin-bottom: 1rem;">Get In Touch</h1>
+    <p style="text-align: center; color: var(--text-light); max-width: 600px; margin: 0 auto 2rem;">
+        در صورتی مواجه شدن با هر نوع مشکل تخنیکی، و داشتن پیشنهاد و انتقاد میتوانید از طریق راه های ارتباطی ذیل با ما به تماس شوید.
+    </p>
+
+    <div class="contact-container">
+        <div class="contact-card" role="region" aria-labelledby="contact-title">
+            <h2 id="contact-title">Contact Information</h2>
+
+            <div class="contact-item">
+                <i class="fas fa-envelope"></i>
+                <span class="contact-label">Email:</span>
+                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=walizadamamoon@gmail.com" class="contact-link" aria-label="Send us an email">
+                    walizadamamoon@gmail.com
+                </a>
+            </div>
+
+            <div class="contact-item">
+                <i class="fas fa-phone-alt"></i>
+                <span class="contact-label">Phone:</span>
+                <span class="contact-text">0789286346</span>
+            </div>
+
+            <div class="contact-item">
+                <i class="fab fa-whatsapp"></i>
+                <span class="contact-label">WhatsApp:</span>
+                <a href="https://wa.me/93789286346" target="_blank" rel="noopener noreferrer" class="contact-link" aria-label="Message us on WhatsApp">
+                    0789286346
+                </a>
+            </div>
+
+            <div class="contact-item">
+                <i class="fab fa-whatsapp"></i>
+                <span class="contact-label">WhatsApp:</span>
+                <a href="https://wa.me/93747116967" target="_blank" rel="noopener noreferrer" class="contact-link" aria-label="Message us on WhatsApp">
+                    0747116967
+                </a>
+            </div>
+
+            <div class="social-media">
+                <a href="https://www.facebook.com/share/15X3KxogVH" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Facebook">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="https://www.instagram.com/josh_appofficial?igsh=eXRxeDBvOXYwMXU0" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <p>&copy; 2025 Josh. All rights reserved.</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</body>
+</html>

@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>سیستم امتیازدهی فانتزی - Josh</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #9c1d24;
+      --secondary-color: #f8f1e5;
+      --accent-color: #e67e22;
+      --text-color: #333;
+      --light-text: #777;
+      --border-radius: 12px;
+      --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Vazirmatn', Tahoma, sans-serif;
+      background-color: #f9f9f9;
+      color: var(--text-color);
+      line-height: 1.6;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    header {
+      background: linear-gradient(135deg, var(--primary-color), #7a1519);
+      color: white;
+      padding: 2rem 0;
+      text-align: center;
+      margin-bottom: 2rem;
+      border-radius: 0 0 var(--border-radius) var(--border-radius);
+      box-shadow: var(--box-shadow);
+    }
+    
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .subtitle {
+      font-size: 1rem;
+      opacity: 0.9;
+      font-weight: 300;
+    }
+    
+    .tabs-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    
+    .tab-btn {
+      background-color: white;
+      border: none;
+      color: var(--primary-color);
+      padding: 12px 28px;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 50px;
+      transition: var(--transition);
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .tab-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    }
+    
+    .tab-btn.active {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    
+    .tab-content {
+      background-color: white;
+      border-radius: var(--border-radius);
+      padding: 2rem;
+      box-shadow: var(--box-shadow);
+      margin-bottom: 2rem;
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    h2 {
+      color: var(--primary-color);
+      margin-bottom: 1.5rem;
+      font-size: 1.8rem;
+      border-bottom: 2px solid var(--secondary-color);
+      padding-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    h3 {
+      color: var(--accent-color);
+      margin: 1.5rem 0 1rem;
+      font-size: 1.4rem;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    
+    th, td {
+      padding: 14px 16px;
+      text-align: center;
+      border: 1px solid #eee;
+    }
+    
+    th {
+      background-color: var(--primary-color);
+      color: white;
+      font-weight: 600;
+    }
+    
+    tr:nth-child(even) {
+      background-color: var(--secondary-color);
+    }
+    
+    tr:hover {
+      background-color: rgba(156, 29, 36, 0.05);
+    }
+    
+    .positive {
+      color: #27ae60;
+      font-weight: 600;
+    }
+    
+    .negative {
+      color: #e74c3c;
+      font-weight: 600;
+    }
+    
+    .info-box {
+      background-color: #f0f7ff;
+      border-left: 4px solid #3498db;
+      padding: 1rem;
+      border-radius: 0 var(--border-radius) var(--border-radius) 0;
+      margin: 1.5rem 0;
+    }
+    
+    .source-link {
+      display: inline-block;
+      margin-top: 1rem;
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+    
+    .source-link:hover {
+      color: var(--accent-color);
+      text-decoration: underline;
+    }
+    
+    .icon {
+      font-size: 1.2em;
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        padding: 15px;
+      }
+      
+      h1 {
+        font-size: 1.8rem;
+      }
+      
+      .tab-btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+      }
+      
+      .tab-content {
+        padding: 1.5rem;
+      }
+      
+      table {
+        font-size: 0.9rem;
+      }
+      
+      th, td {
+        padding: 10px 12px;
+      }
+    }
+    
+    /* Dark mode */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --primary-color: #e74c3c;
+        --secondary-color: #2c3e50;
+        --text-color: #ecf0f1;
+        --light-text: #bdc3c7;
+      }
+      
+      body {
+        background-color: #1a1a1a;
+        color: var(--text-color);
+      }
+      
+      .tab-content, .tab-btn {
+        background-color: #2d2d2d;
+        color: var(--text-color);
+      }
+      
+      .tab-btn.active {
+        background-color: var(--primary-color);
+      }
+      
+      tr:nth-child(even) {
+        background-color: #252525;
+      }
+      
+      tr:hover {
+        background-color: rgba(231, 76, 60, 0.1);
+      }
+      
+      .info-box {
+        background-color: #2c3e50;
+        border-left-color: #3498db;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container">
+      <h1><i class="fas fa-trophy icon"></i> سیستم امتیازدهی فانتزی Josh</h1>
+      <p class="subtitle">قوانین جامع امتیازدهی برای لیگ های فانتزی ورزشی</p>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="tabs-container">
+      <button class="tab-btn active" onclick="showTab('cricket', event)">
+        <i class="fas fa-baseball-ball"></i> کرکت
+      </button>
+      <button class="tab-btn" onclick="showTab('football', event)">
+        <i class="fas fa-futbol"></i> فوتبال
+      </button>
+    </div>
+
+    <div id="cricket" class="tab-content active">
+      <h2><i class="fas fa-baseball-ball"></i> امتیازدهی فانتزی کرکت</h2>
+      
+      <div class="info-box">
+        <p><strong>نکته:</strong> امتیازها بر اساس عملکرد بازیکنان در مسابقات واقعی محاسبه میشوند و برای لیگ های فانتزی استفاده میشوند.</p>
+      </div>
+
+      <h3><i class="fas fa-bat"></i> بیتنگ</h3>
+      <table>
+        <thead><tr><th>عملکرد</th><th>امتیاز</th></tr></thead>
+        <tbody>
+          <tr><td>هر دوش</td><td class="positive">+1</td></tr>
+          <tr><td>هر چهار</td><td class="positive">+1</td></tr>
+          <tr><td>هر شش</td><td class="positive">+2</td></tr>
+          <tr><td>حذف با صفر</td><td class="negative">-2</td></tr>
+          <tr><td>رسیدن به 30 دوش</td><td class="positive">+4</td></tr>
+          <tr><td>رسیدن به 50 دوش</td><td class="positive">+4</td></tr>
+          <tr><td>صد کامل (100 دوش)</td><td class="positive">+8</td></tr>
+        </tbody>
+      </table>
+
+      <h3><i class="fas fa-tachometer-alt"></i> استرایک ریت </h3>
+      <table>
+        <thead><tr><th>محدوده</th><th>امتیاز</th></tr></thead>
+        <tbody>
+          <tr><td>کمتر از 50</td><td class="negative">-6</td></tr>
+          <tr><td>50 – 50.99</td><td class="negative">-4</td></tr>
+          <tr><td>60 – 70</td><td class="negative">-2</td></tr>
+          <tr><td>70 – 130</td><td>0</td></tr>
+          <tr><td>130 – 150</td><td class="positive">+2</td></tr>
+          <tr><td>150.01 – 170</td><td class="positive">+4</td></tr>
+          <tr><td>بیشتر از 170</td><td class="positive">+6</td></tr>
+        </tbody>
+      </table>
+
+      <h3><i class="fas fa-baseball-ball"></i> بالینگ</h3>
+      <table>
+        <thead><tr><th>عملکرد</th><th>امتیاز</th></tr></thead>
+        <tbody>
+          <tr><td>هر ویکت</td><td class="positive">+20</td></tr>
+          <tr><td>هر اور بدون دوش</td><td class="positive">+12</td></tr>
+          <tr><td>هر Wide</td><td class="negative">-2</td></tr>
+          <tr><td>هر No Ball</td><td class="negative">-2</td></tr>
+          <tr><td>گرفتن 3 ویکت</td><td class="positive">+4</td></tr>
+          <tr><td>گرفتن 4 ویکت</td><td class="positive">+4 (جمعاً 8)</td></tr>
+          <tr><td>گرفتن 5 یا بیشتر ویکت</td><td class="positive">+8 (جمعاً 16)</td></tr>
+        </tbody>
+      </table>
+
+      <h3><i class="fas fa-calculator"></i>  ایکانمی </h3>
+      <table>
+        <thead><tr><th>محدوده</th><th>امتیاز</th></tr></thead>
+        <tbody>
+          <tr><td>کمتر از 5</td><td class="positive">+6</td></tr>
+          <tr><td>5 – 5.99</td><td class="positive">+4</td></tr>
+          <tr><td>6 – 7</td><td class="positive">+2</td></tr>
+          <tr><td>7 – 10</td><td>0</td></tr>
+          <tr><td>10 – 11</td><td class="negative">-2</td></tr>
+          <tr><td>11.01 – 12</td><td class="negative">-4</td></tr>
+          <tr><td>بیشتر از 12</td><td class="negative">-6</td></tr>
+        </tbody>
+      </table>
+
+      <h3><i class="fas fa-mitt"></i> فیلدینگ</h3>
+      <table>
+        <thead><tr><th>عملکرد</th><th>امتیاز</th></tr></thead>
+        <tbody>
+          <tr><td> کیچ</td><td class="positive">+8</td></tr>
+          <tr><td>کیچ 3 یا بیشتر توپ</td><td class="positive">+4 امتیاز اضافی</td></tr>
+          <tr><td>هر رن اوت</td><td class="positive">+6</td></tr>
+          <tr><td>هر استمپ</td><td class="positive">+6</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div id="football" class="tab-content">
+      <h2><i class="fas fa-futbol"></i> سیستم امتیازدهی فانتزی فوتبال</h2>
+      
+      <div class="info-box">
+        <p><strong>نکته:</strong> این سیستم بر اساس عملکرد بازیکنان در مسابقات واقعی طراحی شده و برای لیگ های فانتزی استفاده میشود.</p>
+      </div>
+
+      <table>
+        <thead><tr><th>عامل</th><th>تأثیر بر امتیاز</th><th>میزان تأثیر</th></tr></thead>
+        <tbody>
+          <tr><td>گل زده</td><td>افزایش</td><td class="positive">بسیار زیاد</td></tr>
+          <tr><td>پاس گل</td><td>افزایش</td><td class="positive">متوسط</td></tr>
+          <tr><td>شوت به سمت دروازه</td><td>افزایش</td><td class="positive">کم</td></tr>
+          <tr><td>خلق موقعیت بزرگ گلزنی</td><td>افزایش</td><td class="positive">متوسط</td></tr>
+          <tr><td>گرفتن پنالتی برای تیم</td><td>افزایش</td><td class="positive">متوسط</td></tr>
+          <tr><td>مهار پنالتی (دروازه بان)</td><td>افزایش</td><td class="positive">بسیار زیاد</td></tr>
+          <tr><td>دفع توپ از خط دروازه</td><td>افزایش</td><td class="positive">زیاد</td></tr>
+          <tr><td>تکل موفق</td><td>افزایش</td><td class="positive">کم</td></tr>
+          <tr><td>تکل آخر موفق</td><td>افزایش</td><td class="positive">متوسط</td></tr>
+          <tr><td>کارت زرد</td><td>کاهش</td><td class="negative">کم</td></tr>
+          <tr><td>کارت قرمز</td><td>کاهش</td><td class="negative">بسیار زیاد</td></tr>
+          <tr><td>گل به خودی</td><td>کاهش</td><td class="negative">بسیار زیاد</td></tr>
+          <tr><td>خطا منجر به پنالتی</td><td>کاهش</td><td class="negative">زیاد</td></tr>
+          <tr><td>اشتباه منجر به گل حریف</td><td>کاهش</td><td class="negative">بسیار زیاد</td></tr>
+        </tbody>
+      </table>
+      
+      <h3><i class="fas fa-info-circle"></i> جزئیات فنی</h3>
+      <table>
+        <thead><tr><th>پارامتر</th><th>مقدار</th></tr></thead>
+        <tbody>
+          <tr><td>نمره پایه</td><td>6.5</td></tr>
+          <tr><td>حداقل زمان بازی برای دریافت امتیاز</td><td>10 دقیقه</td></tr>
+          <tr><td>محدوده نهایی امتیاز</td><td>0 تا 10</td></tr>
+          <tr><td>تعداد به‌روزرسانی امتیاز در طول بازی</td><td>حدود 60 بار</td></tr>
+          <tr><td>زمان نهایی به‌روزرسانی پس از بازی</td><td>تا 30–40 دقیقه</td></tr>
+          <tr><td>تعداد بررسی داده‌ها در هر بازی</td><td>حدود 2000 بار</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    function showTab(tabName, event) {
+      // Hide all tab contents
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // Deactivate all tab buttons
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      // Show selected tab content
+      document.getElementById(tabName).classList.add('active');
+      
+      // Activate clicked button
+      event.target.classList.add('active');
+    }
+    
+    // Add animation to tables when they come into view
+    document.addEventListener('DOMContentLoaded', function() {
+      const tables = document.querySelectorAll('table');
+      
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = 1;
+            entry.target.style.transform = 'translateY(0)';
+          }
+        });
+      }, { threshold: 0.1 });
+      
+      tables.forEach(table => {
+        table.style.opacity = 0;
+        table.style.transform = 'translateY(20px)';
+        table.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        observer.observe(table);
+      });
+    });
+  </script>
+
+</body>
+</html>
