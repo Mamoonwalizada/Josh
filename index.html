@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Josh - صفحه اصلی</title>
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    :root {
+      --primary-color: #9c27b0;
+      --primary-dark: #7b1fa2;
+      --primary-light: #e1bee7;
+      --secondary-color: #ff5722;
+      --text-dark: #3e2723;
+      --text-light: #f5f5f5;
+      --bg-light: #fafafa;
+      --bg-dark: #121212;
+      --card-bg: rgba(255, 255, 255, 0.9);
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    [data-theme="dark"] {
+      --primary-color: #ba68c8;
+      --primary-dark: #9c27b0;
+      --primary-light: #4a148c;
+      --text-dark: #f5f5f5;
+      --text-light: #3e2723;
+      --bg-light: #121212;
+      --bg-dark: #fafafa;
+      --card-bg: rgba(30, 30, 30, 0.9);
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Vazirmatn', Tahoma, sans-serif;
+      color: var(--text-dark);
+      background: var(--bg-light);
+      transition: var(--transition);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 700;
+      box-shadow: var(--shadow);
+      position: relative;
+      z-index: 100;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-container img {
+      height: 40px;
+      width: 40px;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+      transition: transform 0.3s ease;
+    }
+
+    .logo-container:hover img {
+      transform: rotate(15deg);
+    }
+
+    .site-name {
+      font-size: 1.5rem;
+      font-weight: 800;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .theme-toggle:hover {
+      transform: rotate(30deg);
+    }
+
+    .menu-icon {
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .menu-icon:hover {
+      transform: scale(1.1);
+    }
+
+    .sidebar {
+      height: 100%;
+      width: 0;
+      position: fixed;
+      top: 0;
+      right: 0;
+      background-color: var(--card-bg);
+      overflow-x: hidden;
+      transition: 0.4s;
+      padding-top: 20px;
+      box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .sidebar.open {
+      width: 280px;
+    }
+
+    .sidebar a {
+      padding: 15px 25px;
+      text-decoration: none;
+      font-size: 1rem;
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: var(--transition);
+      border-right: 3px solid transparent;
+    }
+
+    .sidebar a i {
+      width: 24px;
+      text-align: center;
+    }
+
+    .sidebar a:hover {
+      background-color: var(--primary-light);
+      color: var(--primary-dark);
+      border-right: 3px solid var(--primary-color);
+      padding-right: 30px;
+    }
+
+    .sidebar a.active {
+      background-color: var(--primary-light);
+      color: var(--primary-dark);
+      border-right: 3px solid var(--primary-color);
+      font-weight: 700;
+    }
+
+    .profile-box {
+      text-align: center;
+      padding: 20px 15px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .profile-box:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    .profile-box img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--primary-color);
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+    }
+
+    .profile-box:hover img {
+      transform: scale(1.05);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .profile-box small {
+      display: block;
+      margin-top: 8px;
+      color: var(--text-dark);
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .overlay {
+      position: fixed;
+      height: 100%;
+      width: 100%;
+      top: 0;
+      right: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      visibility: hidden;
+      transition: 0.3s;
+      z-index: 999;
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
+    }
+
+    .overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .games-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 25px;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .game-card {
+      background: var(--card-bg);
+      border-radius: 15px;
+      overflow: hidden;
+      width: 280px;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .game-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .game-image {
+      height: 160px;
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .game-content {
+      padding: 20px;
+    }
+
+    .game-title {
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+      color: var(--primary-dark);
+    }
+
+    .game-desc {
+      font-size: 0.9rem;
+      color: var(--text-dark);
+      opacity: 0.8;
+      margin-bottom: 15px;
+    }
+
+    .game-btn {
+      display: inline-block;
+      background: linear-gradient(to right, var(--primary-color), var(--primary-dark));
+      color: white;
+      padding: 12px 30px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: var(--transition);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .game-btn:hover {
+      background: linear-gradient(to left, var(--primary-color), var(--primary-dark));
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .game-btn:active {
+      transform: translateY(0);
+    }
+
+    .game-btn i {
+      margin-left: 8px;
+    }
+
+    .welcome-message {
+      max-width: 800px;
+      margin: 0 auto 40px;
+      text-align: center;
+    }
+
+    .welcome-message h1 {
+      font-size: 2.2rem;
+      margin-bottom: 15px;
+      color: var(--primary-dark);
+      background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .welcome-message p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      color: var(--text-dark);
+      opacity: 0.9;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px 10px;
+      color: var(--text-dark);
+      font-size: 0.9rem;
+      font-weight: 500;
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+      background: var(--card-bg);
+      margin-top: auto;
+    }
+
+    .footer-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 15px;
+    }
+
+    .social-links a {
+      color: var(--text-dark);
+      font-size: 1.2rem;
+      transition: var(--transition);
+    }
+
+    .social-links a:hover {
+      color: var(--primary-color);
+      transform: translateY(-3px);
+    }
+
+    @media (max-width: 768px) {
+      .games-container {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .game-card {
+        width: 100%;
+        max-width: 350px;
+      }
+      
+      .welcome-message h1 {
+        font-size: 1.8rem;
+      }
+      
+      .welcome-message p {
+        font-size: 1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .site-name {
+        font-size: 1.2rem;
+      }
+      
+      .logo-container img {
+        height: 32px;
+        width: 32px;
+      }
+      
+      .welcome-message h1 {
+        font-size: 1.5rem;
+      }
+      
+      .game-btn {
+        padding: 10px 25px;
+        font-size: 0.9rem;
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-fadeIn {
+      animation: fadeIn 0.6s ease-out forwards;
+    }
+
+    .delay-1 { animation-delay: 0.2s; }
+    .delay-2 { animation-delay: 0.4s; }
+    .delay-3 { animation-delay: 0.6s; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="https://i.ibb.co/2Y0TgqYr/file-00000000a56462468cec427eb252720e.png" alt="Josh Logo" />
+    <span class="site-name">Josh</span>
+  </div>
+  <div class="header-actions">
+    <button class="theme-toggle" id="themeToggle">
+      <i class="fas fa-moon"></i>
+    </button>
+    <span class="menu-icon" onclick="openSidebar()">
+      <i class="fas fa-bars"></i>
+    </span>
+  </div>
+</header>
+
+<div id="sidebar" class="sidebar">
+  <div class="profile-box" onclick="goToProfile()">
+    <img id="profileImage" src="https://via.placeholder.com/80" alt="نمایه" />
+    <small id="profileName">کاربر مهمان</small>
+  </div>
+  <a href="profile.html" class="active"><i class="fas fa-user"></i> نمایه</a>
+  <a href="register.html"><i class="fas fa-user-plus"></i> ثبت نام</a>
+  <a href="login.html"><i class="fas fa-sign-in-alt"></i> ورود</a>
+  <a href="prizes.html"><i class="fas fa-trophy"></i> جوایز</a>
+  <a href="howtoplay.html"><i class="fas fa-gamepad"></i> رهنمای بازی </a>
+  <a href="points.html"><i class="fas fa-star"></i> سیستم امتیاز</a>
+  <a href="contact.html"><i class="fas fa-headset"></i> تماس با ما</a>
+</div>
+<div id="overlay" class="overlay" onclick="closeSidebar()"></div>
+
+<div class="main">
+  <div class="welcome-message animate-fadeIn">
+    <h1>به Josh خوش آمدید!</h1>
+    <p>جامعه بازی های هیجان انگیز ما را کشف کنید و با دوستانتان به رقابت بپردازید. امتیاز کسب کنید، و از بازی لذت ببرید!</p>
+  </div>
+
+  <div class="games-container">
+    <div class="game-card animate-fadeIn delay-1">
+      <img src="https://i.ibb.co/BKtCXxbR/Screenshot-20250809-083454-Chat-GPT.jpg" alt="فوتبال" class="game-image" />
+      <div class="game-content">
+        <h3 class="game-title">فوتبال</h3>
+        <p class="game-desc">به دنیای فوتبال بپیوندید و بهترین بازبکنان را برای تیم خود انتخاب کنید</p>
+        <button class="game-btn" onclick="startGame('football')">
+          شروع بازی <i class="fas fa-play"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="game-card animate-fadeIn delay-2">
+      <img src="https://tolonews.com/sites/default/files/2024-06/crik.png" alt="کرکت" class="game-image" />
+      <div class="game-content">
+        <h3 class="game-title">کرکت</h3>
+        <p class="game-desc">مهارت های خود را در این بازی پرطرفدار محک بزنید و به رکوردهای جدید دست پیدا کنید</p>
+        <button class="game-btn" onclick="startGame('cricket')">
+          شروع بازی <i class="fas fa-play"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-content">
+    <div class="social-links">
+      <a href="https://www.facebook.com/mamoon.walizada.2025" target="_blank"><i class="fab fa-facebook"></i></a>
+      <a href="https://www.instagram.com/mamoon_walizada?igsh=cXdwZnhqNTlqOW80" target="_blank"><i class="fab fa-instagram"></i></a>
+    </div>
+    <div>🌟 Founded by Mamoon Walizada | © 2025 Josh</div>
+  </div>
+</footer>
+
+<script>
+  // Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyDLfUbSG30O474XPAPY8QpMzo19EMfLWFc",
+    authDomain: "josh-7b6a0.firebaseapp.com",
+    databaseURL: "https://josh-7b6a0-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "josh-7b6a0",
+    storageBucket: "josh-7b6a0.appspot.com",
+    messagingSenderId: "639816255525",
+    appId: "1:639816255525:web:71a3e87374c3e7c68e17cc",
+    measurementId: "G-P2ZSBTN8FP"
+  };
+
+  // Initialize Firebase
+  const app = firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+  const auth = firebase.auth();
+
+  // DOM elements
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("overlay");
+  const themeToggle = document.getElementById("themeToggle");
+  const body = document.body;
+
+  // Theme management
+  function initTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    body.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme);
+  }
+
+  function toggleTheme() {
+    const currentTheme = body.getAttribute('data-theme');
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    
+    body.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    updateThemeIcon(newTheme);
+    
+    // Animate theme transition
+    body.style.transition = 'background 0.5s ease, color 0.3s ease';
+    setTimeout(() => {
+      body.style.transition = '';
+    }, 500);
+  }
+
+  function updateThemeIcon(theme) {
+    const icon = themeToggle.querySelector('i');
+    icon.className = theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+  }
+
+  // Sidebar functions
+  function openSidebar() {
+    sidebar.classList.add('open');
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeSidebar() {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  function goToProfile() {
+    const user = auth.currentUser;
+    if (user) {
+      const providerData = user.providerData;
+      const isEmailProvider = providerData.some(
+        (provider) => provider.providerId === 'password'
+      );
+      if (isEmailProvider && !user.emailVerified) {
+        showVerifyAlert();
+      } else {
+        window.location.href = 'profile.html';
+      }
+    } else {
+      showLoginAlert();
+    }
+  }
+
+  function startGame(gameType) {
+    const user = auth.currentUser;
+    
+    if (user) {
+      const providerData = user.providerData;
+      const isEmailProvider = providerData.some(
+        (provider) => provider.providerId === 'password'
+      );
+      if (isEmailProvider && !user.emailVerified) {
+        showVerifyAlert();
+      } else {
+        Swal.fire({
+          title: `آماده بازی ${gameType === 'cricket' ? 'کرکت' : 'فوتبال'} هستید؟`,
+          text: 'بهترین عملکرد خود را نشان دهید!',
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonText: 'شروع بازی',
+          cancelButtonText: 'بعداً',
+          confirmButtonColor: '#9c27b0',
+          background: 'var(--card-bg)',
+          color: 'var(--text-dark)'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = `${gameType}.html`;
+          }
+        });
+      }
+    } else {
+      showLoginAlert();
+    }
+  }
+
+  function showLoginAlert() {
+    Swal.fire({
+      title: 'ورود لازم است',
+      html: 'برای بازی کردن باید وارد حساب کاربری خود شوید یا ثبت نام کنید',
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonText: 'ورود / ثبت نام',
+      cancelButtonText: 'بعداً',
+      confirmButtonColor: '#9c27b0',
+      background: 'var(--card-bg)',
+      color: 'var(--text-dark)'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.href = 'register.html';
+      }
+    });
+  }
+
+  function showVerifyAlert() {
+    Swal.fire({
+      title: 'تأیید ایمیل لازم است',
+      html: 'برای دسترسی به این بخش، ابتدا ایمیل خود را تأیید کنید',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'رفتن به ورود',
+      cancelButtonText: 'بعداً',
+      confirmButtonColor: '#9c27b0',
+      background: 'var(--card-bg)',
+      color: 'var(--text-dark)'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.href = 'login.html';
+      }
+    });
+  }
+
+  // Initialize the app when DOM is loaded
+  document.addEventListener('DOMContentLoaded', function() {
+    initTheme();
+    
+    // Check if welcome message should be shown
+    if (!localStorage.getItem('welcomeShown')) {
+      setTimeout(() => {
+        Swal.fire({
+          title: 'به Josh خوش آمدید!',
+          text: 'جامعه بازی های هیجان انگیز ما را کشف کنید',
+          icon: 'success',
+          confirmButtonText: 'متشکرم',
+          confirmButtonColor: '#9c27b0',
+          background: 'var(--card-bg)',
+          color: 'var(--text-dark)'
+        });
+        localStorage.setItem('welcomeShown', 'true');
+      }, 1000);
+    }
+
+    // Check auth state
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        // User is signed in
+        const userRef = db.ref('users/' + user.uid);
+        userRef.once('value').then(snapshot => {
+          if (snapshot.exists()) {
+            const userData = snapshot.val();
+            
+            // Update profile info
+            if (userData.fullname) {
+              document.getElementById('profileName').innerText = userData.fullname;
+            }
+            
+            // Update profile image
+            if (userData.profilePhoto) {
+              document.getElementById('profileImage').src = userData.profilePhoto;
+              localStorage.setItem('profilePhoto', userData.profilePhoto);
+            } else {
+              const cachedPhoto = localStorage.getItem('profilePhoto');
+              if (cachedPhoto) {
+                document.getElementById('profileImage').src = cachedPhoto;
+              }
+            }
+          }
+        }).catch(error => {
+          console.error('Error loading user data:', error);
+          Swal.fire({
+            title: 'خطا',
+            text: 'خطا در دریافت اطلاعات کاربر: ' + error.message,
+            icon: 'error',
+            confirmButtonText: 'متوجه شدم',
+            confirmButtonColor: '#9c27b0',
+            background: 'var(--card-bg)',
+            color: 'var(--text-dark)'
+          });
+        });
+      } else {
+        // User is signed out
+        document.getElementById('profileName').innerText = 'کاربر مهمان';
+        document.getElementById('profileImage').src = 'https://via.placeholder.com/80';
+      }
+    });
+  });
+
+  // Event listeners
+  themeToggle.addEventListener('click', toggleTheme);
+</script>
+</body>
+</html>
