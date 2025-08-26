@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>انتخاب بازیکن - رئال مادرید در مقابل رئال مایورکا</title>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <style>
+    :root {
+      --primary-color: #800000;
+      --secondary-color: #f8f1f1;
+      --text-color: #333;
+      --light-gray: #f5f5f5;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Tahoma', 'Segoe UI', sans-serif;
+      background-color: #f9f9f9;
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+    
+    header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 1rem;
+      text-align: center;
+      box-shadow: var(--box-shadow);
+      position: relative;
+    }
+    
+    header h1 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    #countdown {
+      background-color: rgba(0, 0, 0, 0.2);
+      padding: 0.3rem 0.5rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      display: inline-block;
+    }
+    
+    .tabs {
+      display: flex;
+      justify-content: center;
+      background-color: var(--light-gray);
+      padding: 0.5rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    
+    .tab-btn {
+      background: none;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+      color: var(--primary-color);
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    
+    .tab-btn.active {
+      font-weight: bold;
+    }
+    
+    .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60%;
+      height: 3px;
+      background-color: var(--primary-color);
+      border-radius: 3px;
+    }
+    
+    .content {
+      padding: 1.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .team-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+    }
+    
+    .team-box {
+      background-color: white;
+      border-radius: var(--border-radius);
+      padding: 1.2rem;
+      box-shadow: var(--box-shadow);
+      transition: transform 0.3s ease;
+    }
+    
+    .team-box:hover {
+      transform: translateY(-5px);
+    }
+    
+    .team-box h3 {
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .team-box h3 i {
+      font-size: 1.2rem;
+    }
+    
+    .player-list {
+      list-style: none;
+      max-height: 400px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--primary-color) #f1f1f1;
+    }
+    
+    .player-list::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .player-list::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    
+    .player-list::-webkit-scrollbar-thumb {
+      background-color: var(--primary-color);
+      border-radius: 6px;
+    }
+    
+    .player-item {
+      padding: 0.8rem;
+      margin: 0.5rem 0;
+      background-color: var(--light-gray);
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    
+    .player-item:hover {
+      background-color: #e9e9e9;
+    }
+    
+    .player-item.selected {
+      background-color: var(--primary-color);
+      color: white;
+      font-weight: bold;
+    }
+    
+    .player-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid white;
+    }
+    
+    .player-item.selected .player-avatar {
+      border-color: var(--primary-color);
+    }
+    
+    .selection-controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    
+    .select-wrapper {
+      position: relative;
+      min-width: 250px;
+    }
+    
+    .select-wrapper i {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--primary-color);
+    }
+    
+    select {
+      width: 100%;
+      padding: 0.8rem 1rem 0.8rem 2.5rem;
+      font-size: 1rem;
+      border: 1px solid #ddd;
+      border-radius: var(--border-radius);
+      background-color: white;
+      appearance: none;
+      cursor: pointer;
+      transition: border-color 0.3s;
+    }
+    
+    select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(128, 0, 0, 0.1);
+    }
+    
+    #note {
+      color: #d32f2f;
+      margin: 1rem 0;
+      text-align: center;
+      font-weight: 500;
+      min-height: 1.5rem;
+    }
+    
+    .submit-btn {
+      display: block;
+      margin: 1.5rem auto;
+      padding: 0.8rem 2rem;
+      font-size: 1rem;
+      font-weight: bold;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 10px rgba(128, 0, 0, 0.2);
+    }
+    
+    .submit-btn:hover {
+      background-color: #6a0000;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(128, 0, 0, 0.3);
+    }
+    
+    .submit-btn:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    /* Team View Styles */
+    .team-view {
+      background-color: white;
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      box-shadow: var(--box-shadow);
+    }
+    
+    .team-view h2 {
+      color: var(--primary-color);
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    
+    #myTeamList {
+      list-style: none;
+    }
+    
+    .team-player {
+      padding: 0.8rem 0;
+      border-bottom: 1px dashed #ddd;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    
+    .team-player:last-child {
+      border-bottom: none;
+    }
+    
+    .player-role {
+      font-size: 0.8rem;
+      background-color: var(--primary-color);
+      color: white;
+      padding: 0.2rem 0.5rem;
+      border-radius: 10px;
+      margin-right: 0.5rem;
+    }
+    
+    .user-info {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #eee;
+    }
+    
+    .user-info-item {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 0.8rem;
+    }
+    
+    .user-info-item i {
+      color: var(--primary-color);
+      width: 1.5rem;
+      text-align: center;
+    }
+    
+    .user-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--primary-color);
+      display: block;
+      margin: 1rem auto;
+    }
+    
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      .team-section {
+        grid-template-columns: 1fr;
+      }
+      
+      .selection-controls {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .select-wrapper {
+        width: 100%;
+      }
+    }
+    
+    /* Loading Animation */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>انتخاب بازیکنان - رئال مادرید در مقابل رئال مایورکا</h1>
+  <div id="countdown">
+    <i class="fas fa-clock"></i> زمان باقیمانده: در حال بارگذاری...
+  </div>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="showTab('select')">
+    <i class="fas fa-users"></i> انتخاب بازیکنان
+  </button>
+  <button class="tab-btn" onclick="showTab('team')">
+    <i class="fas fa-list-check"></i> تیم من
+  </button>
+</div>
+
+<div id="select" class="content">
+  <div class="team-section">
+    <div class="team-box">
+      <h3><i class="fas fa-flag"></i> رئال مادرید</h3>
+      <ul class="player-list" id="realMadridList"></ul>
+    </div>
+    <div class="team-box">
+      <h3><i class="fas fa-flag"></i> رئال مایورکا</h3>
+      <ul class="player-list" id="realMallorcaList"></ul>
+    </div>
+  </div>
+  
+  <div class="selection-controls">
+    <div class="select-wrapper">
+      <i class="fas fa-crown"></i>
+      <select id="captainSelect">
+        <option value="">انتخاب کپتان</option>
+      </select>
+    </div>
+    <div class="select-wrapper">
+      <i class="fas fa-star"></i>
+      <select id="viceCaptainSelect">
+        <option value="">انتخاب معاون کپتان</option>
+      </select>
+    </div>
+  </div>
+  
+  <div id="note"></div>
+  
+  <button class="submit-btn" onclick="submitTeam()" id="submitBtn" disabled>
+    <span id="btnText">ثبت تیم</span>
+  </button>
+</div>
+
+<div id="team" class="content" style="display:none;">
+  <div class="team-view">
+    <h2><i class="fas fa-users-between-lines"></i> تیم ثبت شده شما</h2>
+    <ul id="myTeamList"></ul>
+    
+    <div class="user-info" id="userInfoSection"></div>
+  </div>
+</div>
+
+<script>
+  // Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyDLfUbSG30O474XPAPY8QpMzo19EMfLWFc",
+    authDomain: "josh-7b6a0.firebaseapp.com",
+    databaseURL: "https://josh-7b6a0-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "josh-7b6a0",
+    storageBucket: "josh-7b6a0.appspot.com",
+    messagingSenderId: "639816255525",
+    appId: "1:639816255525:web:71a3e87374c3e7c68e17cc",
+    measurementId: "G-P2ZSBTN8FP"
+  };
+
+  // Initialize Firebase
+  const app = firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
+  const auth = firebase.auth();
+
+  // لیست بازیکنان رئال مادرید
+  const realMadridPlayers = [
+    { name: "کلیان امباپه", img: "https://img.a.transfermarkt.technology/portrait/medium/342229-1682683695.jpg?lm=1" },
+    { name: "وینیسیوس جونیور", img: "https://img.a.transfermarkt.technology/portrait/medium/371998-1664869583.jpg?lm=1" },
+    { name: "رودریگو", img: "https://img.a.transfermarkt.technology/portrait/medium/412363-1746183850.jpg?lm=1" },
+    { name: "ایندریک", img: "https://img.a.transfermarkt.technology/portrait/medium/971570-1723665994.jpg?lm=1" },
+    { name: "گونزالو گارسیا", img: "https://img.a.transfermarkt.technology/portrait/medium/935230-1701294395.jpg?lm=1" },
+    { name: "جود بیلینگهام", img: "https://img.a.transfermarkt.technology/portrait/medium/581678-1748102891.jpg?lm=1" },
+    { name: "آردا گولر", img: "https://img.a.transfermarkt.technology/portrait/medium/861410-1699472585.jpg?lm=1" },
+    { name: "فیدریکو والورده", img: "https://img.a.transfermarkt.technology/portrait/medium/369081-1731018042.jpg?lm=1" },
+    { name: "براهیم دیاز", img: "https://img.a.transfermarkt.technology/portrait/medium/314678-1744193327.jpg?lm=1" },
+    { name: "ایدواردو کاماوینگا", img: "https://img.a.transfermarkt.technology/portrait/medium/640428-1668500874.jpg?lm=1" },
+    { name: "اورلیان چوآمنی", img: "https://img.a.transfermarkt.technology/portrait/medium/413112-1668500754.jpg?lm=1" },
+    { name: "فرانکو ماستانتوئونو", img: "https://img.a.transfermarkt.technology/portrait/medium/1057316-1755702696.jpg?lm=1" },
+    { name: "دانی سبالوس", img: "https://img.a.transfermarkt.technology/portrait/medium/319745-1723666162.jpg?lm=1" },
+    { name: "تیاگو پیترچ", img: "https://img.sofascore.com/api/v1/player/2048436/image" },
+    { name: "دانیل یانیز", img: "https://img.sofascore.com/api/v1/player/1546404/image" },
+    { name: "روبرتو مارتین اوروئل", img: "https://img.sofascore.com/api/v1/player/1470069/image" },
+    { name: "آنتونیو رودیگر", img: "https://img.a.transfermarkt.technology/portrait/medium/86202-1684484602.jpg?lm=1" },
+    { name: "ترنت الکساندر-آرنولد", img: "https://img.a.transfermarkt.technology/portrait/medium/314353-1701680958.jpg?lm=1" },
+    { name: "دانیل کارواخال", img: "https://img.a.transfermarkt.technology/portrait/medium/138927-1721026790.jpg?lm=1" },
+    { name: "ادر میلیتائو", img: "https://img.a.transfermarkt.technology/portrait/medium/401530-1719653438.jpg?lm=1" },
+    { name: "رائول آسنسیو", img: "https://img.a.transfermarkt.technology/portrait/medium/935245-1731168094.jpg?lm=1" },
+    { name: "دیوید آلابا", img: "https://img.a.transfermarkt.technology/portrait/medium/59016-1684921582.jpeg?lm=1" },
+    { name: "دین هویسن", img: "https://img.a.transfermarkt.technology/portrait/medium/890290-1750251451.jpg?lm=1" },
+    { name: "فرلاند مندی", img: "https://img.a.transfermarkt.technology/portrait/medium/291417-1701294025.jpg?lm=1" },
+    { name: "فران گارسیا", img: "https://img.a.transfermarkt.technology/portrait/medium/341264-1688119965.jpg?lm=1" },
+    { name: "آلوارو کارراس", img: "https://img.a.transfermarkt.technology/portrait/medium/811778-1737497415.jpg?lm=1" },
+    { name: "تیبو کورتوا", img: "https://img.a.transfermarkt.technology/portrait/medium/108390-1717280733.jpg?lm=1" },
+    { name: "آندری لونین", img: "https://img.a.transfermarkt.technology/portrait/medium/404839-1701294131.jpg?lm=1" },
+    { name: "سرخیو مستره", img: "https://img.sofascore.com/api/v1/player/1403015/image" }
+  ];
+
+  // لیست بازیکنان رئال مایورکا
+  const realMallorcaPlayers = [
+    { name: "لوکاس برگ‌استروم", img: "https://img.a.transfermarkt.technology/portrait/medium/490606-1639405918.jpg?lm=1" },
+    { name: "ایوان کوئلار", img: "https://img.a.transfermarkt.technology/portrait/medium/27493-1664289273.jpg?lm=1" },
+    { name: "ماراش کومبولا", img: "https://img.a.transfermarkt.technology/portrait/medium/371371-1716969202.jpg?lm=1" },
+    { name: "مارتین والنیت", img: "https://img.a.transfermarkt.technology/portrait/medium/277384-1738232660.jpg?lm=1" },
+    { name: "آنتونیو راییلو", img: "https://img.a.transfermarkt.technology/portrait/medium/278296-1447228780.jpg?lm=1" },
+    { name: "دیوید لوپز", img: "https://img.a.transfermarkt.technology/portrait/medium/947431-1725880281.jpg?lm=1" },
+    { name: "ژوهان موخیخا", img: "https://img.a.transfermarkt.technology/portrait/medium/262939-1541161893.jpg?lm=1" },
+    { name: "تونی لاتو", img: "https://img.a.transfermarkt.technology/portrait/medium/320271-1496906352.jpg?lm=1" },
+    { name: "پابلو مافئو", img: "https://img.a.transfermarkt.technology/portrait/medium/251876-1699449290.jpg?lm=1" },
+    { name: "ماتئو موری", img: "https://img.a.transfermarkt.technology/portrait/medium/388513-1661413734.jpg?lm=1" },
+    { name: "سامو کوستا", img: "https://img.a.transfermarkt.technology/portrait/medium/657430-1753960841.jpg?lm=1" },
+    { name: "لیو رومان", img: "https://img.a.transfermarkt.technology/portrait/medium/562742-1745395600.jpg?lm=1" },
+    { name: "عمر ماسکارل", img: "https://img.a.transfermarkt.technology/portrait/medium/142031-1531813358.jpg?lm=1" },
+    { name: "سرخی داردر", img: "https://img.a.transfermarkt.technology/portrait/medium/142021-1664975574.jpg?lm=1" },
+    { name: "آنتونیو سانچز", img: "https://img.a.transfermarkt.technology/portrait/medium/513031-1576533215.jpg?lm=1" },
+    { name: "مانو مورلانس", img: "https://img.a.transfermarkt.technology/portrait/medium/335225-1552044533.jpg?lm=1" },
+    { name: "پابلو توره", img: "https://img.a.transfermarkt.technology/portrait/medium/720038-1724406086.jpg?lm=1" },
+    { name: "دانی رودریگز", img: "https://img.a.transfermarkt.technology/portrait/medium/139435-1583332711.jpg?lm=1" },
+    { name: "دانیل لونا", img: "https://img.a.transfermarkt.technology/portrait/medium/857830-1663127882.JPG?lm=1" },
+    { name: "خاوی لیابرِس", img: "https://img.a.transfermarkt.technology/portrait/medium/706138-1702393291.jpg?lm=1" },
+    { name: "تاکوما آسانو", img: "https://img.a.transfermarkt.technology/portrait/medium/245744-1657284052.jpg?lm=1" },
+    { name: "ودات موریکی", img: "https://img.a.transfermarkt.technology/portrait/medium/256267-1627914833.jpg?lm=1" },
+    { name: "کایل لارین", img: "https://img.a.transfermarkt.technology/portrait/medium/343463-1720430112.jpg?lm=1" },
+    { name: "ماتئو جوزف", img: "https://img.a.transfermarkt.technology/portrait/medium/834742-1749739164.jpg?lm=1" },
+    { name: "آبدون پراتس", img: "https://img.a.transfermarkt.technology/portrait/medium/177452-1696950061.jpg?lm=1" },
+    { name: "مارک دومنک", img: "https://img.a.transfermarkt.technology/portrait/medium/1296876-1746443048.jpg?lm=1" }
+  ];
+
+  const allPlayers = [...realMadridPlayers, ...realMallorcaPlayers];
+  const selectedPlayers = new Set();
+  let userTeamData = null;
+
+  // Initialize the app
+  function initApp() {
+    renderPlayers();
+    setupCountdown();
+    checkAuthState();
+  }
+
+  // Setup countdown timer without Firebase
+  function setupCountdown() {
+    const countdownElement = document.getElementById('countdown');
+    const submitButton = document.getElementById('submitBtn');
+    // 30 آگوست 2025، 11:00 PM
+    const deadline = new Date(2025, 7, 30, 23, 0, 0).getTime();
+
+    let interval;
+
+    function startTimer() {
+      if (interval) clearInterval(interval);
+      interval = setInterval(() => {
+        const now = new Date().getTime();
+        const distance = deadline - now;
+
+        if (distance < 0) {
+          clearInterval(interval);
+          countdownElement.innerHTML = '<i class="fas fa-clock"></i> مهلت انتخاب به پایان رسید';
+          submitButton.disabled = true;
+          document.querySelectorAll('.player-item').forEach(item => {
+            item.style.pointerEvents = 'none';
+            item.style.opacity = '0.6';
+          });
+          document.getElementById('captainSelect').disabled = true;
+          document.getElementById('viceCaptainSelect').disabled = true;
+        } else {
+          const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+          countdownElement.innerHTML = `
+            <i class="fas fa-clock"></i> زمان باقیمانده: ${days} روز ${hours} ساعت ${minutes} دقیقه ${seconds} ثانیه
+          `;
+          submitButton.disabled = selectedPlayers.size !== 11;
+        }
+      }, 1000);
+    }
+    startTimer();
+  }
+
+  // Render player lists
+  function renderPlayers() {
+    const realMadridList = document.getElementById('realMadridList');
+    const realMallorcaList = document.getElementById('realMallorcaList');
+    
+    realMadridList.innerHTML = realMadridPlayers.map(player => `
+      <li class="player-item" onclick="togglePlayerSelection(this, '${player.name}', 'realMadrid')">
+        <img src="${player.img}" alt="${player.name}" class="player-avatar" 
+             onerror="this.src='https://via.placeholder.com/40'">
+        <span>${player.name}</span>
+      </li>
+    `).join('');
+    
+    realMallorcaList.innerHTML = realMallorcaPlayers.map(player => `
+      <li class="player-item" onclick="togglePlayerSelection(this, '${player.name}', 'realMallorca')">
+        <img src="${player.img}" alt="${player.name}" class="player-avatar" 
+             onerror="this.src='https://via.placeholder.com/40'">
+        <span>${player.name}</span>
+      </li>
+    `).join('');
+    
+    updateNote();
+  }
+
+  // Toggle player selection
+  function togglePlayerSelection(element, playerName, team) {
+    const isSelected = element.classList.contains('selected');
+    const teamCount = [...selectedPlayers].filter(p => 
+      (team === 'realMadrid' ? realMadridPlayers : realMallorcaPlayers).some(x => x.name === p)
+    ).length;
+    
+    if (!isSelected) {
+      // Check selection limits
+      if (selectedPlayers.size >= 11) {
+        showError('حداکثر تعداد', 'شما نمیتوانید بیش از ۱۱ بازیکن انتخاب کنید');
+        return;
+      }
+      
+      if (teamCount >= 7) {
+        showError('حداکثر از یک تیم', `شما نمیتوانید بیش از ۷ بازیکن از ${team === 'realMadrid' ? 'رئال مادرید' : 'رئال مایورکا'} انتخاب کنید`);
+        return;
+      }
+      
+      selectedPlayers.add(playerName);
+      element.classList.add('selected');
+    } else {
+      selectedPlayers.delete(playerName);
+      element.classList.remove('selected');
+    }
+    
+    updateDropdowns();
+    updateNote();
+    document.getElementById('submitBtn').disabled = selectedPlayers.size !== 11;
+  }
+
+  // Update dropdown menus
+  function updateDropdowns() {
+    const captainSelect = document.getElementById('captainSelect');
+    const viceCaptainSelect = document.getElementById('viceCaptainSelect');
+    
+    captainSelect.innerHTML = '<option value="">انتخاب کپتان</option>';
+    viceCaptainSelect.innerHTML = '<option value="">انتخاب معاون کپتان</option>';
+    
+    [...selectedPlayers].forEach(player => {
+      captainSelect.innerHTML += `<option value="${player}">${player}</option>`;
+      viceCaptainSelect.innerHTML += `<option value="${player}">${player}</option>`;
+    });
+  }
+
+  // Update status note
+  function updateNote() {
+    const noteElement = document.getElementById('note');
+    const selectedCount = selectedPlayers.size;
+    const realMadridCount = [...selectedPlayers].filter(p => realMadridPlayers.some(x => x.name === p)).length;
+    const realMallorcaCount = [...selectedPlayers].filter(p => realMallorcaPlayers.some(x => x.name === p)).length;
+    
+    if (selectedCount === 11) {
+      noteElement.textContent = '✅ تیم شما کامل است! حالا کپتان و معاون کپتان را انتخاب کنید.';
+      noteElement.style.color = '#388e3c';
+    } else {
+      noteElement.textContent = `شما ${selectedCount} بازیکن انتخاب کرده اید (${realMadridCount} از رئال مادرید و ${realMallorcaCount} از رئال مایورکا). حداقل ۱۱ بازیکن و حداکثر ۷ بازیکن از یک تیم.`;
+      noteElement.style.color = '#d32f2f';
+    }
+  }
+
+  // Submit team to Firebase - نسخه نهایی
+  async function submitTeam() {
+    try {
+      const user = auth.currentUser;
+      
+      if (!user) {
+        showLoginPrompt();
+        return;
+      }
+  
+      // بررسی وضعیت تأیید ایمیل
+      if (user.providerData && user.providerData[0] && user.providerData[0].providerId === 'password' && !user.emailVerified) {
+        showVerifyPrompt();
+        return;
+      }
+      
+      const captain = document.getElementById('captainSelect').value;
+      const viceCaptain = document.getElementById('viceCaptainSelect').value;
+      
+      // اعتبارسنجی انتخاب‌ها
+      if (!captain || !viceCaptain) {
+        showError('انتخاب ناقص', 'لطفاً هم کپتان و هم معاون کپتان را انتخاب کنید');
+        return;
+      }
+      
+      if (captain === viceCaptain) {
+        showError('انتخاب نامعتبر', 'کپتان و معاون کپتان نمیتوانند یک نفر باشند');
+        return;
+      }
+      
+      // بررسی مهلت زمانی
+      const now = new Date().getTime();
+      const deadline = new Date(2025, 7, 30, 23, 0, 0).getTime(); // 30 آگوست 2025، 11:00 PM
+      if (now > deadline) {
+        showError('مهلت تمام شده', 'مهلت انتخاب تیم به پایان رسیده است.');
+        return;
+      }
+      
+      // نمایش وضعیت در حال بارگذاری
+      const btn = document.getElementById('submitBtn');
+      const btnText = document.getElementById('btnText');
+      const originalText = btnText.textContent;
+      btn.disabled = true;
+      btnText.innerHTML = '<div class="loading"></div> در حال ثبت...';
+      
+      // دریافت اطلاعات کاربر
+      let userData = {};
+      try {
+        const userSnapshot = await database.ref('users/' + user.uid).once('value');
+        userData = userSnapshot.val() || {};
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+      
+      // آماده‌سازی داده‌های تیم
+      const teamData = {
+        players: Array.from(selectedPlayers),
+        captain,
+        viceCaptain,
+        userInfo: {
+          uid: user.uid,
+          email: user.email,
+          fullName: userData.fullname || user.displayName || 'کاربر ناشناس',
+          phone: userData.phone || 'ثبت نشده',
+          profilePhoto: userData.profilePhoto || user.photoURL || 'https://via.placeholder.com/150',
+          displayName: user.displayName || userData.fullname || 'کاربر'
+        },
+        createdAt: firebase.database.ServerValue.TIMESTAMP,
+        lastUpdated: firebase.database.ServerValue.TIMESTAMP
+      };
+      
+      // ذخیره در دیتابیس با استفاده از UID به عنوان کلید
+      await database.ref('ffootball_match1/' + user.uid).set(teamData);
+      
+      // موفقیت آمیز
+      userTeamData = teamData;
+      btnText.textContent = originalText;
+      btn.disabled = false;
+      
+      Swal.fire({
+        title: 'ثبت موفق!',
+        text: 'تیم شما با موفقیت ثبت شد.',
+        icon: 'success',
+        confirmButtonText: 'متوجه شدم',
+        confirmButtonColor: '#800000',
+        timer: 3000
+      }).then(() => {
+        showTab('team');
+        renderMyTeam();
+      });
+      
+    } catch (error) {
+      console.error('Error submitting team:', error);
+      const btn = document.getElementById('submitBtn');
+      const btnText = document.getElementById('btnText');
+      btn.disabled = false;
+      btnText.textContent = 'ثبت تیم';
+      
+      // نمایش جزئیات خطا برای دیباگ
+      let errorMessage = 'مشکلی در ثبت تیم به وجود آمد. لطفاً دوباره تلاش کنید.';
+      
+      if (error.code === 'PERMISSION_DENIED') {
+        errorMessage = 'شما مجوز ثبت تیم را ندارید. لطفاً با پشتیبانی تماس بگیرید.';
+      } else if (error.code === 'DATABASE_ERROR') {
+        errorMessage = 'مشکلی در ارتباط با سرور به وجود آمده است. لطفاً اتصال اینترنت خود را بررسی کنید.';
+      }
+      
+      showError('خطا در ثبت', errorMessage);
+    }
+  }
+
+  // Check authentication state
+  function checkAuthState() {
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        checkExistingTeam(user.uid);
+      } else {
+        // Show login prompt if not authenticated
+        showLoginPrompt();
+      }
+    });
+  }
+
+  // Check if user already has a team
+  function checkExistingTeam(uid) {
+    database.ref('ffootball_match1/' + uid).once('value')
+      .then(snapshot => {
+        if (snapshot.exists()) {
+          userTeamData = snapshot.val();
+          renderMyTeam();
+          showTab('team');
+          
+          Swal.fire({
+            title: 'تیم قبلی',
+            text: 'شما قبلاً یک تیم ثبت کرده اید.',
+            icon: 'info',
+            confirmButtonText: 'متوجه شدم',
+            confirmButtonColor: '#800000'
+          });
+        }
+      })
+      .catch(error => {
+        console.error('Error checking existing team:', error);
+      });
+  }
+
+  // Render user's team
+  function renderMyTeam() {
+    if (!userTeamData) return;
+    
+    const myTeamList = document.getElementById('myTeamList');
+    const userInfoSection = document.getElementById('userInfoSection');
+    
+    myTeamList.innerHTML = userTeamData.players.map(player => {
+      const isCaptain = player === userTeamData.captain;
+      const isViceCaptain = player === userTeamData.viceCaptain;
+      
+      return `
+        <li class="team-player">
+          ${isCaptain ? '<span class="player-role">کپتان</span>' : 
+            isViceCaptain ? '<span class="player-role">معاون</span>' : ''}
+          <img src="${allPlayers.find(p => p.name === player)?.img || 'https://via.placeholder.com/40'}" 
+               alt="${player}" class="player-avatar" 
+               onerror="this.src='https://via.placeholder.com/40'">
+          <span>${player}</span>
+        </li>
+      `;
+    }).join('');
+    
+    userInfoSection.innerHTML = `
+      <img src="${userTeamData.userInfo.profilePhoto}" alt="عکس پروفایل" class="user-avatar" 
+           onerror="this.src='https://via.placeholder.com/150'">
+      <div class="user-info-item">
+        <i class="fas fa-user"></i>
+        <span>نام: ${userTeamData.userInfo.fullName}</span>
+      </div>
+      <div class="user-info-item">
+        <i class="fas fa-envelope"></i>
+        <span>ایمیل: ${userTeamData.userInfo.email}</span>
+      </div>
+      <div class="user-info-item">
+        <i class="fas fa-phone"></i>
+        <span>تلفن: ${userTeamData.userInfo.phone}</span>
+      </div>
+    `;
+  }
+
+  // Show login prompt
+  function showLoginPrompt() {
+    Swal.fire({
+      title: 'ورود به سیستم',
+      text: 'برای انتخاب تیم باید وارد حساب کاربری خود شوید',
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonText: 'ورود / ثبت نام',
+      cancelButtonText: 'بعداً',
+      confirmButtonColor: '#800000'
+    }).then(result => {
+      if (result.isConfirmed) {
+        window.location.href = 'login.html';
+      }
+    });
+  }
+
+  // Show email verification prompt
+  function showVerifyPrompt() {
+    Swal.fire({
+      title: 'تأیید ایمیل',
+      text: 'لطفاً ابتدا ایمیل خود را تأیید کنید تا بتوانید تیم خود را ثبت نمایید',
+      icon: 'warning',
+      confirmButtonText: 'ارسال مجدد ایمیل تأیید',
+      confirmButtonColor: '#800000'
+    }).then(() => {
+      auth.currentUser.sendEmailVerification()
+        .then(() => {
+          Swal.fire({
+            title: 'ایمیل ارسال شد',
+            text: 'لطفاً صندوق ورودی ایمیل خود را بررسی کنید',
+            icon: 'success',
+            confirmButtonColor: '#800000'
+          });
+        })
+        .catch(error => {
+          showError('خطا در ارسال ایمیل', 'مشکلی در ارسال ایمیل تأیید به وجود آمد');
+        });
+    });
+  }
+
+  // Show error message
+  function showError(title, message) {
+    Swal.fire({
+      title: title,
+      text: message,
+      icon: 'error',
+      confirmButtonText: 'متوجه شدم',
+      confirmButtonColor: '#800000'
+    });
+  }
+
+  // Switch between tabs
+  function showTab(tabName) {
+    document.querySelectorAll('.content').forEach(tab => {
+      tab.style.display = 'none';
+    });
+    
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    
+    document.getElementById(tabName).style.display = 'block';
+    document.querySelector(`.tab-btn[onclick="showTab('${tabName}')"]`).classList.add('active');
+  }
+
+  // Initialize the app when DOM is loaded
+  document.addEventListener('DOMContentLoaded', initApp);
+</script>
+
+</body>
+</html>
