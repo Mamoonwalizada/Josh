@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="برنامه Josh - مشاهده برنامه بازی های آینده فوتبال">
+  <title>بازی های آینده - Josh</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #800000;
+      --primary-light: #b22222;
+      --secondary: #fff5f5;
+      --card-bg: #ffffff;
+      --text: #333;
+      --text-light: #666;
+      --white: #ffffff;
+      --shadow-sm: 0 2px 8px rgba(128, 0, 0, 0.1);
+      --shadow-md: 0 4px 14px rgba(128, 0, 0, 0.15);
+      --shadow-lg: 0 6px 16px rgba(128, 0, 0, 0.25);
+      --radius-sm: 0.5rem;
+      --radius-md: 1rem;
+      --radius-lg: 1.5rem;
+      --radius-full: 9999px;
+      --transition: all 0.3s ease;
+      --header-gradient: linear-gradient(135deg, var(--primary), var(--primary-light));
+      --space-xs: 0.5rem;
+      --space-sm: 1rem;
+      --space-md: 1.5rem;
+      --space-lg: 2rem;
+      --space-xl: 3rem;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Vazirmatn', system-ui, sans-serif;
+      background: var(--secondary);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+
+    header {
+      background: var(--header-gradient);
+      color: var(--white);
+      padding: var(--space-md);
+      text-align: center;
+      box-shadow: var(--shadow-md);
+      position: relative;
+      z-index: 10;
+    }
+
+    .header-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .tabs-container {
+      position: relative;
+      background-color: var(--white);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .tabs-scroll {
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .tabs-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tabs {
+      display: inline-flex;
+      list-style: none;
+      padding: 0 var(--space-sm);
+      white-space: nowrap;
+    }
+
+    .tab {
+      position: relative;
+    }
+
+    .tab-button {
+      display: block;
+      padding: var(--space-sm) var(--space-md);
+      background: none;
+      border: none;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--primary);
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .tab-button:hover {
+      color: var(--primary-light);
+    }
+
+    .tab-button[aria-selected="true"] {
+      color: var(--primary-light);
+    }
+
+    .tab-button[aria-selected="true"]::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      right: 50%;
+      transform: translateX(50%);
+      width: 60%;
+      height: 3px;
+      background: var(--primary-light);
+      border-radius: var(--radius-full);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: var(--space-md);
+    }
+
+    .matches-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: var(--space-md);
+      margin-top: var(--space-md);
+    }
+
+    .match-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      padding: var(--space-md);
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .match-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .match-header {
+      margin-bottom: var(--space-sm);
+      text-align: center;
+    }
+
+    .match-title {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .match-teams {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: var(--space-md) 0;
+    }
+
+    .team {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 40%;
+    }
+
+    .team-logo {
+      width: 3.5rem;
+      height: 3.5rem;
+      object-fit: contain;
+      margin-bottom: var(--space-xs);
+    }
+
+    .team-name {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--primary);
+      text-align: center;
+    }
+
+    .vs {
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: var(--primary-light);
+    }
+
+    .match-details {
+      margin-top: auto;
+      text-align: center;
+    }
+
+    .match-time {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      background-color: rgba(128, 0, 0, 0.1);
+      color: var(--primary);
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--radius-full);
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .match-date {
+      margin-top: var(--space-xs);
+      font-size: 0.9rem;
+      color: var(--text-light);
+    }
+
+    .match-type {
+      display: inline-block;
+      margin-top: var(--space-sm);
+      background-color: rgba(0, 0, 0, 0.05);
+      color: var(--text-light);
+      padding: 0.25rem 0.75rem;
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+    }
+
+    .match-actions {
+      margin-top: var(--space-md);
+    }
+
+    .action-button {
+      display: block;
+      width: 100%;
+      padding: 0.75rem;
+      background-color: var(--primary);
+      color: var(--white);
+      font-size: 0.9375rem;
+      font-weight: 500;
+      border: none;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      transition: var(--transition);
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .action-button:hover {
+      background-color: var(--primary-light);
+    }
+
+    .loading,
+    .empty-state {
+      text-align: center;
+      padding: var(--space-xl);
+      grid-column: 1 / -1;
+    }
+
+    .loading-spinner {
+      width: 3rem;
+      height: 3rem;
+      border: 4px solid rgba(128, 0, 0, 0.1);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto var(--space-md);
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .back {
+      text-align: center;
+      margin: var(--space-lg) 0 var(--space-md);
+      font-size: 1.0625rem;
+      color: var(--primary);
+      text-decoration: underline;
+      display: block;
+    }
+
+    .back:hover {
+      color: var(--primary-light);
+    }
+
+    @media (max-width: 768px) {
+      .header-title {
+        font-size: 1.5rem;
+      }
+      
+      .matches-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .team-logo {
+        width: 3rem;
+        height: 3rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .header-title {
+        font-size: 1.25rem;
+      }
+      
+      .tab-button {
+        padding: 0.75rem var(--space-sm);
+        font-size: 0.9375rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1 class="header-title">بازی های آینده - Josh</h1>
+  </header>
+
+  <nav class="tabs-container" aria-label="دسته بندی بازی ها">
+    <div class="tabs-scroll">
+      <ul class="tabs" role="tablist">
+        <li class="tab" role="presentation">
+          <button 
+            class="tab-button" 
+            id="laliga-tab" 
+            role="tab" 
+            aria-selected="true" 
+            aria-controls="laliga-matches"
+            data-category="laliga"
+          >
+            🇪🇸 لیگ اسپانیا
+          </button>
+        </li>
+        <li class="tab" role="presentation">
+          <button 
+            class="tab-button" 
+            id="epl-tab" 
+            role="tab" 
+            aria-selected="false" 
+            aria-controls="epl-matches"
+            data-category="epl"
+          >
+            🏴󠁧󠁢󠁥󠁮󠁧󠁿 لیگ برتر انگلستان
+          </button>
+        </li>
+        <li class="tab" role="presentation">
+          <button 
+            class="tab-button" 
+            id="ucl-tab" 
+            role="tab" 
+            aria-selected="false" 
+            aria-controls="ucl-matches"
+            data-category="ucl"
+          >
+            🏆 لیگ قهرمانان
+          </button>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="matches-grid" id="matchList" role="tabpanel" aria-labelledby="laliga-tab">
+      <div class="loading">
+        <div class="loading-spinner" aria-hidden="true"></div>
+        <p>در حال بارگذاری بازی ها...</p>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // داده های مسابقات
+    const matchesData = {
+      laliga: [
+        { 
+          id: "match10",
+          title: "رئال مادرید vs رئال مایورکا", 
+          date: "۳۱ آگوست ۲۰۲۵",
+          time: "12:00am",
+          type: "لیگ اسپانیا",
+          link: "ffootball_match1.html", 
+          team1Logo: "https://img.sofascore.com/api/v1/team/2829/image", 
+          team2Logo: "https://tmssl.akamaized.net//images/wappen/head/237.png?lm=1407484750",
+          team1Name: "رئال مادرید",
+          team2Name: "رئال مایورکا"
+        }
+      ],
+      epl: [],
+      ucl: []
+    };
+
+    // نمایش مسابقات بر اساس دسته بندی
+    function renderMatches(category) {
+      const matchList = document.getElementById('matchList');
+      
+      // نمایش حالت بارگذاری
+      matchList.innerHTML = `
+        <div class="loading">
+          <div class="loading-spinner" aria-hidden="true"></div>
+          <p>در حال بارگذاری بازی ها...</p>
+        </div>
+      `;
+      
+      // شبیه سازی تاخیر برای UX بهتر
+      setTimeout(() => {
+        // به روزرسانی تب فعال
+        document.querySelectorAll('[role="tab"]').forEach(tab => {
+          tab.setAttribute('aria-selected', tab.dataset.category === category);
+          document.getElementById('matchList').setAttribute('aria-labelledby', `${category}-tab`);
+        });
+        
+        // پاک کردن لیست فعلی
+        matchList.innerHTML = '';
+        
+        // بررسی وجود مسابقات
+        if (!matchesData[category] || matchesData[category].length === 0) {
+          matchList.innerHTML = `
+            <div class="empty-state">
+              <p>هیچ بازی برنامه ریزی شده ای در این دسته وجود ندارد</p>
+            </div>
+          `;
+          return;
+        }
+        
+        // ایجاد کارت های مسابقه
+        matchesData[category].forEach(match => {
+          const matchCard = document.createElement('article');
+          matchCard.className = 'match-card';
+          matchCard.setAttribute('aria-labelledby', `match-${match.id}-title`);
+          
+          matchCard.innerHTML = `
+            <div class="match-header">
+              <h3 id="match-${match.id}-title" class="match-title">${match.title}</h3>
+            </div>
+            
+            <div class="match-teams">
+              <div class="team">
+                <img 
+                  src="${match.team1Logo}" 
+                  alt="${match.team1Name}" 
+                  class="team-logo" 
+                  loading="lazy"
+                  width="56"
+                  height="56"
+                />
+                <span class="team-name">${match.team1Name}</span>
+              </div>
+              
+              <span class="vs" aria-hidden="true">vs</span>
+              
+              <div class="team">
+                <img 
+                  src="${match.team2Logo}" 
+                  alt="${match.team2Name}" 
+                  class="team-logo" 
+                  loading="lazy"
+                  width="56"
+                  height="56"
+                />
+                <span class="team-name">${match.team2Name}</span>
+              </div>
+            </div>
+            
+            <div class="match-details">
+              <div class="match-time">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M12 6V12L16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                ${match.time}
+              </div>
+              
+              <div class="match-date">${match.date}</div>
+              <div class="match-type">${match.type}</div>
+            </div>
+            
+            <div class="match-actions">
+              <a href="${match.link}" class="action-button">
+                انتخاب بازیکنان
+                <span class="sr-only">برای بازی ${match.title}</span>
+              </a>
+            </div>
+          `;
+          
+          matchList.appendChild(matchCard);
+        });
+      }, 500);
+    }
+
+    // مدیریت رویدادهای تب ها
+    document.addEventListener('DOMContentLoaded', () => {
+      // بارگذاری اولیه
+      renderMatches('laliga');
+      
+      // رویداد کلیک برای تب ها
+      document.querySelector('[role="tablist"]').addEventListener('click', (e) => {
+        const tabButton = e.target.closest('[role="tab"]');
+        if (tabButton) {
+          renderMatches(tabButton.dataset.category);
+        }
+      });
+      
+      // پشتیبانی از صفحه کلید برای تب ها
+      document.querySelectorAll('[role="tab"]').forEach(tab => {
+        tab.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            renderMatches(e.target.dataset.category);
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
