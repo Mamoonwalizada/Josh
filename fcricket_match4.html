@@ -696,8 +696,7 @@
       };
       
       // ذخیره در دیتابیس با استفاده از ایمیل به عنوان کلید
-      const userEmailKey = user.email.replace(/\./g, ',');
-      await database.ref('fcricket_match4/' + userEmailKey).set(teamData);
+      await database.ref('fcricket_match4/' + user.uid).set(teamData);
       
       // موفقیت آمیز
       userTeamData = teamData;
