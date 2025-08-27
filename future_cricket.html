@@ -367,18 +367,6 @@
           team2Name: "پاکستان"
         },
         { 
-          id: "match2",
-          title: "بازی دوم", 
-          date: "30 آگست 2025",
-          time: "7:30pm",
-          type: "T20 بین المللی",
-          link: "not.html", 
-          team1Logo: "https://upload.wikimedia.org/wikipedia/commons/3/32/Flag_of_Pakistan.svg", 
-          team2Logo: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_160,q_50/lsci/db/PICTURES/CMS/382100/382186.png",
-          team1Name: "پاکستان",
-          team2Name: "امارات متحده عربی"
-        },
-        { 
           id: "match3",
           title: "بازی سوم", 
           date: "1 سپتامبر 2025",
@@ -401,18 +389,6 @@
           team2Logo: "https://upload.wikimedia.org/wikipedia/commons/3/32/Flag_of_Pakistan.svg",
           team1Name: "افغانستان",
           team2Name: "پاکستان"
-        },
-        { 
-          id: "match5",
-          title: "بازی پنجم", 
-          date: "4 سپتامبر 2025",
-          time: "7:30pm",
-          type: "T20 بین المللی",
-          link: "not.html",
-          team1Logo: "https://upload.wikimedia.org/wikipedia/commons/3/32/Flag_of_Pakistan.svg",
-          team2Logo: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_160,q_50/lsci/db/PICTURES/CMS/382100/382186.png",
-          team1Name: "پاکستان",
-          team2Name: "امارات متحده عربی"
         },
         { 
           id: "match6",
@@ -543,7 +519,7 @@
       // بارگذاری اولیه
       renderMatches('global');
       
-      // رویداد کلیک برای تب ها
+      // رویداد کلیک для تب ها
       document.querySelector('[role="tablist"]').addEventListener('click', (e) => {
         const tabButton = e.target.closest('[role="tab"]');
         if (tabButton) {
