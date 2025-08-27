@@ -691,7 +691,7 @@
           errorMessage = "فرمت ایمیل وارد شده نامعتبر است.";
           break;
         case "auth/invalid-credential":
-          errorMessage = "ایمیل или رمز عبور اشتباه است. لطفاً اطلاعات را بررسی کنید.";
+          errorMessage = "ایمیل یا رمز عبور اشتباه است. لطفاً اطلاعات را بررسی کنید.";
           break;
         case "auth/too-many-requests":
           errorMessage = "تعداد درخواست ها بیش از حد مجاز است. لطفاً چند دقیقه دیگر تلاش کنید.";
@@ -765,6 +765,10 @@
           return;
         }
         
+        // Save login state to localStorage
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('userEmail', user.email);
+        
         showAlert("ورود با موفقیت انجام شد. در حال انتقال به پروفایل...", true);
         
         setTimeout(() => {
@@ -788,8 +792,11 @@
         const result = await signInWithPopup(auth, googleProvider);
         const user = result.user;
         
-        // Save email to localStorage
+        // Save email and login state to localStorage
         localStorage.setItem('lastEmail', user.email);
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('userEmail', user.email);
+        
         showAlert("ورود با گوگل موفقیت آمیز بود. در حال انتقال...", true);
         
         setTimeout(() => {
@@ -809,8 +816,22 @@
     // اضافه کردن event listener برای دکمه گوگل
     document.getElementById('googleSignIn').addEventListener('click', handleGoogleSignIn);
 
+    // Check if user is already logged in
+    function checkLoginStatus() {
+      const isLoggedIn = localStorage.getItem('isLoggedIn');
+      const userEmail = localStorage.getItem('userEmail');
+      
+      if (isLoggedIn === 'true' && userEmail) {
+        // کاربر قبلاً وارد شده است، به صفحه پروفایل هدایت شود
+        window.location.href = "profile.html";
+      }
+    }
+
     // Initialize page
     document.addEventListener('DOMContentLoaded', function() {
+      // Check if user is already logged in
+      checkLoginStatus();
+      
       // Load last email from localStorage
       const lastEmail = localStorage.getItem('lastEmail');
       if (lastEmail) {
