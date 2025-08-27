@@ -523,7 +523,7 @@
       <div class="divider">یا</div>
       
       <div class="social-login">
-        <button type="button" class="social-btn google-btn" id="googleSignIn">
+        <button type="button" class="social-btn google-btn">
           <i class="fab fa-google social-icon google"></i>
         </button>
       </div>
@@ -547,8 +547,7 @@
       browserLocalPersistence,
       GoogleAuthProvider,
       signInWithPopup,
-      onAuthStateChanged,
-      signOut
+      onAuthStateChanged
     } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
     // Firebase configuration
@@ -567,11 +566,6 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const googleProvider = new GoogleAuthProvider();
-
-    // تنظیمات اضافی برای نمایش لیست حساب‌ها
-    googleProvider.setCustomParameters({
-      prompt: 'select_account'
-    });
 
     // Set persistence to local to maintain login state
     setPersistence(auth, browserLocalPersistence)
@@ -700,7 +694,7 @@
           errorMessage = "حساب کاربری شما غیرفعال شده است. لطفاً با پشتیبانی تماس بگیرید.";
           break;
         case "auth/network-request-failed":
-          errorMessage = "خطا در اتصال به اینترنت. لطفاً اتصال شبکه خود را بررسی کنید.";
+          errorMessage = "خطا در اتصال به اینترنت. لطفاً اتصال сети خود را بررسی کنید.";
           break;
         default:
           errorMessage = `خطا در ورود: ${error.message}`;
@@ -765,10 +759,6 @@
           return;
         }
         
-        // Save login state to localStorage
-        localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('userEmail', user.email);
-        
         showAlert("ورود با موفقیت انجام شد. در حال انتقال به پروفایل...", true);
         
         setTimeout(() => {
@@ -784,54 +774,23 @@
     });
 
     // Social login handlers
-    async function handleGoogleSignIn() {
+    document.querySelector('.google-btn').addEventListener('click', async () => {
       try {
-        // ابتدا از هر حساب قبلی خارج شو
-        await signOut(auth);
-        
         const result = await signInWithPopup(auth, googleProvider);
         const user = result.user;
-        
-        // Save email and login state to localStorage
+        // Save email to localStorage
         localStorage.setItem('lastEmail', user.email);
-        localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('userEmail', user.email);
-        
         showAlert("ورود با گوگل موفقیت آمیز بود. در حال انتقال...", true);
-        
         setTimeout(() => {
           window.location.href = "profile.html";
         }, 1500);
       } catch (error) {
-        console.error("Error in Google sign-in:", error);
-        
-        if (error.code === 'auth/popup-closed-by-user') {
-          showAlert("پنجره ورود بسته شد. لطفاً دوباره تلاش کنید.", false);
-        } else {
-          showAlert(`خطا در ورود با گوگل: ${error.message}`, false);
-        }
+        showAlert(`خطا در ورود با گوگل: ${error.message}`, false);
       }
-    }
-
-    // اضافه کردن event listener برای دکمه گوگل
-    document.getElementById('googleSignIn').addEventListener('click', handleGoogleSignIn);
-
-    // Check if user is already logged in
-    function checkLoginStatus() {
-      const isLoggedIn = localStorage.getItem('isLoggedIn');
-      const userEmail = localStorage.getItem('userEmail');
-      
-      if (isLoggedIn === 'true' && userEmail) {
-        // کاربر قبلاً وارد شده است، به صفحه پروفایل هدایت شود
-        window.location.href = "profile.html";
-      }
-    }
+    });
 
     // Initialize page
     document.addEventListener('DOMContentLoaded', function() {
-      // Check if user is already logged in
-      checkLoginStatus();
-      
       // Load last email from localStorage
       const lastEmail = localStorage.getItem('lastEmail');
       if (lastEmail) {
@@ -840,11 +799,6 @@
       
       setupPasswordToggle();
       setupRippleEffect();
-      
-      // اطمینان از خروج کاربر هنگام بارگذاری صفحه
-      signOut(auth).catch(error => {
-        console.log("Error signing out on page load:", error);
-      });
       
       // Auto-focus email field
       document.getElementById('email').focus();
