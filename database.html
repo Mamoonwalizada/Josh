@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سیستم مدیریت بازیکنان و تیم‌ها</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-database-compat.js"></script>
+    <style>
+        :root {
+            --primary-color: #4e73df;
+            --secondary-color: #f8f9fc;
+            --accent-color: #36b9cc;
+        }
+        
+        body {
+            background-color: var(--secondary-color);
+            font-family: 'Vazir', sans-serif;
+        }
+        
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2e59d9;
+        }
+        
+        .player-card, .team-card {
+            transition: transform 0.3s;
+            height: 100%;
+        }
+        
+        .player-card:hover, .team-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .search-box {
+            border-radius: 20px;
+            padding: 10px 15px;
+        }
+        
+        .player-img, .team-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        
+        .action-btn {
+            margin: 0 3px;
+            cursor: pointer;
+        }
+        
+        .section-title {
+            border-right: 4px solid var(--primary-color);
+            padding-right: 10px;
+            margin: 20px 0;
+        }
+        
+        .copy-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-4">
+        <header class="text-center mb-5">
+            <h1 class="text-primary">سیستم مدیریت بازیکنان و تیم‌ها</h1>
+            <p class="text-muted">مدیریت جامع اطلاعات بازیکنان و تیم‌های ورزشی</p>
+        </header>
+
+        <!-- اعلان کپی موفق -->
+        <div class="alert alert-success copy-notification" role="alert">
+            اطلاعات با موفقیت کپی شد!
+        </div>
+
+        <div class="row">
+            <!-- بخش بازیکنان -->
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="m-0">بازیکنان</h5>
+                        <button class="btn btn-sm btn-light" data-bs-toggle="modal" data-bs-target="#addPlayerModal">
+                            <i class="bi bi-plus-circle"></i> افزودن بازیکن
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="bi bi-search"></i></span>
+                            <input type="text" id="playerSearch" class="form-control search-box" placeholder="جستجوی بازیکن...">
+                        </div>
+                        
+                        <div id="playersContainer" class="row">
+                            <!-- بازیکنان اینجا نمایش داده می‌شوند -->
+                        </div>
+                        
+                        <div class="text-center mt-3">
+                            <button id="showMorePlayers" class="btn btn-outline-primary">نمایش بازیکنان بیشتر</button>
+                            <button id="showLessPlayers" class="btn btn-outline-secondary d-none">نمایش بازیکنان کمتر</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- بخش تیم‌ها -->
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="m-0">تیم‌ها</h5>
+                        <button class="btn btn-sm btn-light" data-bs-toggle="modal" data-bs-target="#addTeamModal">
+                            <i class="bi bi-plus-circle"></i> افزودن تیم
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="bi bi-search"></i></span>
+                            <input type="text" id="teamSearch" class="form-control search-box" placeholder="جستجوی تیم...">
+                        </div>
+                        
+                        <div id="teamsContainer" class="row">
+                            <!-- تیم‌ها اینجا نمایش داده می‌شوند -->
+                        </div>
+                        
+                        <div class="text-center mt-3">
+                            <button id="showMoreTeams" class="btn btn-outline-primary">نمایش تیم‌های بیشتر</button>
+                            <button id="showLessTeams" class="btn btn-outline-secondary d-none">نمایش تیم‌های کمتر</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال افزودن بازیکن -->
+    <div class="modal fade" id="addPlayerModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">افزودن بازیکن جدید</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addPlayerForm">
+                        <div class="mb-3">
+                            <label for="playerName" class="form-label">نام بازیکن</label>
+                            <input type="text" class="form-control" id="playerName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="playerImage" class="form-label">لینک تصویر بازیکن</label>
+                            <input type="url" class="form-control" id="playerImage" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="playerTeams" class="form-label">تیم‌ها (می‌توانید چند تیم انتخاب کنید)</label>
+                            <select multiple class="form-select" id="playerTeams" size="3">
+                                <!-- تیم‌ها اینجا بارگذاری می‌شوند -->
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
+                    <button type="button" class="btn btn-primary" id="savePlayerBtn">ذخیره بازیکن</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال ویرایش بازیکن -->
+    <div class="modal fade" id="editPlayerModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">ویرایش بازیکن</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editPlayerForm">
+                        <input type="hidden" id="editPlayerId">
+                        <div class="mb-3">
+                            <label for="editPlayerName" class="form-label">نام بازیکن</label>
+                            <input type="text" class="form-control" id="editPlayerName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editPlayerImage" class="form-label">لینک تصویر بازیکن</label>
+                            <input type="url" class="form-control" id="editPlayerImage" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editPlayerTeams" class="form-label">تیم‌ها (می‌توانید چند تیم انتخاب کنید)</label>
+                            <select multiple class="form-select" id="editPlayerTeams" size="3">
+                                <!-- تیم‌ها اینجا بارگذاری می‌شوند -->
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
+                    <button type="button" class="btn btn-primary" id="updatePlayerBtn">بروزرسانی بازیکن</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال افزودن تیم -->
+    <div class="modal fade" id="addTeamModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">افزودن تیم جدید</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addTeamForm">
+                        <div class="mb-3">
+                            <label for="teamName" class="form-label">نام تیم</label>
+                            <input type="text" class="form-control" id="teamName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="teamImage" class="form-label">لینک تصویر تیم</label>
+                            <input type="url" class="form-control" id="teamImage" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
+                    <button type="button" class="btn btn-primary" id="saveTeamBtn">ذخیره تیم</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال ویرایش تیم -->
+    <div class="modal fade" id="editTeamModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">ویرایش تیم</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editTeamForm">
+                        <input type="hidden" id="editTeamId">
+                        <div class="mb-3">
+                            <label for="editTeamName" class="form-label">نام تیم</label>
+                            <input type="text" class="form-control" id="editTeamName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editTeamImage" class="form-label">لینک تصویر تیم</label>
+                            <input type="url" class="form-control" id="editTeamImage" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
+                    <button type="button" class="btn btn-primary" id="updateTeamBtn">بروزرسانی تیم</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال جزئیات تیم -->
+    <div class="modal fade" id="teamDetailsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="teamDetailsTitle">جزئیات تیم</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-4">
+                        <img id="teamDetailImage" src="" class="team-img" alt="تصویر تیم">
+                        <h3 id="teamDetailName" class="mt-3"></h3>
+                    </div>
+                    <h4 class="section-title">بازیکنان این تیم</h4>
+                    <div id="teamPlayersList" class="row">
+                        <!-- بازیکنان تیم اینجا نمایش داده می‌شوند -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+                    <button type="button" class="btn btn-primary" id="copyTeamDetailsBtn">کپی اطلاعات تیم</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCxGP77HDOGd6awe2fFhL8CTDWj5CIwdFs",
+            authDomain: "mamoon-e8637.firebaseapp.com",
+            databaseURL: "https://mamoon-e8637-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "mamoon-e8637",
+            storageBucket: "mamoon-e8637.firebasestorage.app",
+            messagingSenderId: "96252428643",
+            appId: "1:96252428643:web:a5021864bb4ba054199356",
+            measurementId: "G-WX1ZPNR7GB"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // متغیرهای جهانی
+        let players = {};
+        let teams = {};
+        let playersPerPage = 6;
+        let teamsPerPage = 6;
+        let currentPlayersPage = 1;
+        let currentTeamsPage = 1;
+        let filteredPlayers = null;
+        let filteredTeams = null;
+
+        // وقتی DOM کاملاً لود شد
+        document.addEventListener('DOMContentLoaded', () => {
+            // دریافت داده‌ها از Firebase
+            loadPlayers();
+            loadTeams();
+
+            // رویدادهای جستجو
+            document.getElementById('playerSearch').addEventListener('input', searchPlayers);
+            document.getElementById('teamSearch').addEventListener('input', searchTeams);
+
+            // رویدادهای نمایش بیشتر/کمتر
+            document.getElementById('showMorePlayers').addEventListener('click', showMorePlayers);
+            document.getElementById('showLessPlayers').addEventListener('click', showLessPlayers);
+            document.getElementById('showMoreTeams').addEventListener('click', showMoreTeams);
+            document.getElementById('showLessTeams').addEventListener('click', showLessTeams);
+
+            // رویدادهای ذخیره و بروزرسانی
+            document.getElementById('savePlayerBtn').addEventListener('click', savePlayer);
+            document.getElementById('saveTeamBtn').addEventListener('click', saveTeam);
+            document.getElementById('updatePlayerBtn').addEventListener('click', updatePlayer);
+            document.getElementById('updateTeamBtn').addEventListener('click', updateTeam);
+
+            // رویداد کپی اطلاعات تیم
+            document.getElementById('copyTeamDetailsBtn').addEventListener('click', copyTeamDetails);
+        });
+
+        // بارگذاری بازیکنان از Firebase
+        function loadPlayers() {
+            const playersRef = database.ref('players');
+            playersRef.on('value', (snapshot) => {
+                players = snapshot.val() || {};
+                displayPlayers();
+                populateTeamSelects();
+            });
+        }
+
+        // بارگذاری تیم‌ها از Firebase
+        function loadTeams() {
+            const teamsRef = database.ref('teams');
+            teamsRef.on('value', (snapshot) => {
+                teams = snapshot.val() || {};
+                displayTeams();
+                populateTeamSelects();
+            });
+        }
+
+        // نمایش بازیکنان در صفحه
+        function displayPlayers() {
+            const container = document.getElementById('playersContainer');
+            container.innerHTML = '';
+            
+            const playersToDisplay = filteredPlayers ?? players;
+            const playerKeys = Object.keys(playersToDisplay);
+            const endIndex = Math.min(currentPlayersPage * playersPerPage, playerKeys.length);
+            
+            if (playerKeys.length === 0) {
+                container.innerHTML = '<div class="col-12 text-center text-muted py-4">هیچ بازیکنی یافت نشد</div>';
+                return;
+            }
+            
+            for (let i = 0; i < endIndex; i++) {
+                const key = playerKeys[i];
+                const player = playersToDisplay[key];
+                
+                const playerCard = document.createElement('div');
+                playerCard.className = 'col-md-6 col-lg-4 mb-4';
+                playerCard.innerHTML = `
+                    <div class="card player-card">
+                        <img src="${player.image}" class="player-img" alt="${player.name}">
+                        <div class="card-body">
+                            <h5 class="card-title">${player.name}</h5>
+                            <div class="d-flex justify-content-between">
+                                <button class="btn btn-sm btn-outline-primary action-btn" onclick="editPlayer('${key}')" title="ویرایش">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-info action-btn" onclick="copyPlayerData('${key}')" title="کپی اطلاعات">
+                                    <i class="bi bi-clipboard"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger action-btn" onclick="deletePlayer('${key}')" title="حذف">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(playerCard);
+            }
+            
+            // مدیریت نمایش دکمه‌های بیشتر/کمتر
+            togglePaginationButtons('Players', endIndex < playerKeys.length, currentPlayersPage > 1);
+        }
+
+        // نمایش تیم‌ها در صفحه
+        function displayTeams() {
+            const container = document.getElementById('teamsContainer');
+            container.innerHTML = '';
+            
+            const teamsToDisplay = filteredTeams ?? teams;
+            const teamKeys = Object.keys(teamsToDisplay);
+            const endIndex = Math.min(currentTeamsPage * teamsPerPage, teamKeys.length);
+            
+            if (teamKeys.length === 0) {
+                container.innerHTML = '<div class="col-12 text-center text-muted py-4">هیچ تیمی یافت نشد</div>';
+                return;
+            }
+            
+            for (let i = 0; i < endIndex; i++) {
+                const key = teamKeys[i];
+                const team = teamsToDisplay[key];
+                
+                const teamCard = document.createElement('div');
+                teamCard.className = 'col-md-6 col-lg-4 mb-4';
+                teamCard.innerHTML = `
+                    <div class="card team-card">
+                        <img src="${team.image}" class="team-img" alt="${team.name}">
+                        <div class="card-body">
+                            <h5 class="card-title">${team.name}</h5>
+                            <div class="d-flex justify-content-between">
+                                <button class="btn btn-sm btn-outline-primary action-btn" onclick="editTeam('${key}')" title="ویرایش">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-info action-btn" onclick="showTeamDetails('${key}')" title="مشاهده جزئیات">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger action-btn" onclick="deleteTeam('${key}')" title="حذف">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(teamCard);
+            }
+            
+            // مدیریت نمایش دکمه‌های بیشتر/کمتر
+            togglePaginationButtons('Teams', endIndex < teamKeys.length, currentTeamsPage > 1);
+        }
+
+        // تابع کمکی برای مدیریت دکمه‌های صفحه‌بندی
+        function togglePaginationButtons(type, showMore, showLess) {
+            const showMoreBtn = document.getElementById(`showMore${type}`);
+            const showLessBtn = document.getElementById(`showLess${type}`);
+            
+            showMoreBtn.classList.toggle('d-none', !showMore);
+            showLessBtn.classList.toggle('d-none', !showLess);
+        }
+
+        // جستجوی بازیکنان
+        function searchPlayers() {
+            const searchTerm = document.getElementById('playerSearch').value.toLowerCase().trim();
+            
+            if (!searchTerm) {
+                filteredPlayers = null;
+                currentPlayersPage = 1;
+                displayPlayers();
+                return;
+            }
+            
+            filteredPlayers = Object.fromEntries(
+                Object.entries(players).filter(([_, player]) => player.name.toLowerCase().includes(searchTerm))
+            );
+            
+            currentPlayersPage = 1;
+            displayPlayers();
+        }
+
+        // جستجوی تیم‌ها
+        function searchTeams() {
+            const searchTerm = document.getElementById('teamSearch').value.toLowerCase().trim();
+            
+            if (!searchTerm) {
+                filteredTeams = null;
+                currentTeamsPage = 1;
+                displayTeams();
+                return;
+            }
+            
+            filteredTeams = Object.fromEntries(
+                Object.entries(teams).filter(([_, team]) => team.name.toLowerCase().includes(searchTerm))
+            );
+            
+            currentTeamsPage = 1;
+            displayTeams();
+        }
+
+        // نمایش بازیکنان بیشتر
+        function showMorePlayers() {
+            currentPlayersPage++;
+            displayPlayers();
+        }
+
+        // نمایش بازیکنان کمتر
+        function showLessPlayers() {
+            currentPlayersPage = Math.max(1, currentPlayersPage - 1);
+            displayPlayers();
+        }
+
+        // نمایش تیم‌های بیشتر
+        function showMoreTeams() {
+            currentTeamsPage++;
+            displayTeams();
+        }
+
+        // نمایش تیم‌های کمتر
+        function showLessTeams() {
+            currentTeamsPage = Math.max(1, currentTeamsPage - 1);
+            displayTeams();
+        }
+
+        // پر کردن dropdown تیم‌ها
+        function populateTeamSelects() {
+            const selects = [document.getElementById('playerTeams'), document.getElementById('editPlayerTeams')];
+            
+            selects.forEach(select => {
+                select.innerHTML = '';
+                Object.entries(teams).forEach(([key, team]) => {
+                    const option = document.createElement('option');
+                    option.value = key;
+                    option.textContent = team.name;
+                    select.appendChild(option);
+                });
+            });
+        }
+
+        // ذخیره بازیکن جدید
+        async function savePlayer() {
+            const name = document.getElementById('playerName').value.trim();
+            const image = document.getElementById('playerImage').value.trim();
+            const teamsSelect = document.getElementById('playerTeams');
+            const selectedTeams = Array.from(teamsSelect.selectedOptions).map(option => option.value);
+            
+            if (!name || !image) {
+                alert('لطفاً نام و تصویر بازیکن را وارد کنید');
+                return;
+            }
+            
+            const newPlayer = { name, image, teams: selectedTeams };
+            
+            try {
+                await database.ref('players').push(newPlayer);
+                document.getElementById('addPlayerForm').reset();
+                bootstrap.Modal.getInstance(document.getElementById('addPlayerModal')).hide();
+            } catch (error) {
+                console.error('خطا در ذخیره بازیکن:', error);
+                alert('خطا در ذخیره بازیکن');
+            }
+        }
+
+        // ذخیره تیم جدید
+        async function saveTeam() {
+            const name = document.getElementById('teamName').value.trim();
+            const image = document.getElementById('teamImage').value.trim();
+            
+            if (!name || !image) {
+                alert('لطفاً نام و تصویر تیم را وارد کنید');
+                return;
+            }
+            
+            const newTeam = { name, image };
+            
+            try {
+                await database.ref('teams').push(newTeam);
+                document.getElementById('addTeamForm').reset();
+                bootstrap.Modal.getInstance(document.getElementById('addTeamModal')).hide();
+            } catch (error) {
+                console.error('خطا در ذخیره تیم:', error);
+                alert('خطا در ذخیره تیم');
+            }
+        }
+
+        // ویرایش بازیکن
+        function editPlayer(playerId) {
+            const player = players[playerId];
+            
+            document.getElementById('editPlayerId').value = playerId;
+            document.getElementById('editPlayerName').value = player.name;
+            document.getElementById('editPlayerImage').value = player.image;
+            
+            const teamsSelect = document.getElementById('editPlayerTeams');
+            Array.from(teamsSelect.options).forEach(option => {
+                option.selected = player.teams?.includes(option.value) ?? false;
+            });
+            
+            new bootstrap.Modal(document.getElementById('editPlayerModal')).show();
+        }
+
+        // بروزرسانی بازیکن
+        async function updatePlayer() {
+            const playerId = document.getElementById('editPlayerId').value;
+            const name = document.getElementById('editPlayerName').value.trim();
+            const image = document.getElementById('editPlayerImage').value.trim();
+            const teamsSelect = document.getElementById('editPlayerTeams');
+            const selectedTeams = Array.from(teamsSelect.selectedOptions).map(option => option.value);
+            
+            if (!name || !image) {
+                alert('لطفاً نام و تصویر بازیکن را وارد کنید');
+                return;
+            }
+            
+            const updatedPlayer = { name, image, teams: selectedTeams };
+            
+            try {
+                await database.ref(`players/${playerId}`).update(updatedPlayer);
+                bootstrap.Modal.getInstance(document.getElementById('editPlayerModal')).hide();
+            } catch (error) {
+                console.error('خطا در بروزرسانی بازیکن:', error);
+                alert('خطا در بروزرسانی بازیکن');
+            }
+        }
+
+        // ویرایش تیم
+        function editTeam(teamId) {
+            const team = teams[teamId];
+            
+            document.getElementById('editTeamId').value = teamId;
+            document.getElementById('editTeamName').value = team.name;
+            document.getElementById('editTeamImage').value = team.image;
+            
+            new bootstrap.Modal(document.getElementById('editTeamModal')).show();
+        }
+
+        // بروزرسانی تیم
+        async function updateTeam() {
+            const teamId = document.getElementById('editTeamId').value;
+            const name = document.getElementById('editTeamName').value.trim();
+            const image = document.getElementById('editTeamImage').value.trim();
+            
+            if (!name || !image) {
+                alert('لطفاً نام و تصویر تیم را وارد کنید');
+                return;
+            }
+            
+            const updatedTeam = { name, image };
+            
+            try {
+                await database.ref(`teams/${teamId}`).update(updatedTeam);
+                bootstrap.Modal.getInstance(document.getElementById('editTeamModal')).hide();
+            } catch (error) {
+                console.error('خطا در بروزرسانی تیم:', error);
+                alert('خطا در بروزرسانی تیم');
+            }
+        }
+
+        // حذف بازیکن
+        async function deletePlayer(playerId) {
+            if (!confirm('آیا از حذف این بازیکن اطمینان دارید؟')) return;
+            
+            try {
+                await database.ref(`players/${playerId}`).remove();
+            } catch (error) {
+                console.error('خطا در حذف بازیکن:', error);
+                alert('خطا در حذف بازیکن');
+            }
+        }
+
+        // حذف تیم
+        async function deleteTeam(teamId) {
+            if (!confirm('آیا از حذف این تیم اطمینان دارید؟')) return;
+            
+            try {
+                await database.ref(`teams/${teamId}`).remove();
+            } catch (error) {
+                console.error('خطا در حذف تیم:', error);
+                alert('خطا در حذف تیم');
+            }
+        }
+
+        // نمایش جزئیات تیم
+        function showTeamDetails(teamId) {
+            const team = teams[teamId];
+            
+            document.getElementById('teamDetailsTitle').textContent = `جزئیات تیم: ${team.name}`;
+            document.getElementById('teamDetailImage').src = team.image;
+            document.getElementById('teamDetailName').textContent = team.name;
+            
+            const playersList = document.getElementById('teamPlayersList');
+            playersList.innerHTML = '';
+            
+            let hasPlayers = false;
+            Object.entries(players).forEach(([playerId, player]) => {
+                if (player.teams?.includes(teamId)) {
+                    hasPlayers = true;
+                    const playerCol = document.createElement('div');
+                    playerCol.className = 'col-md-6 mb-3';
+                    playerCol.innerHTML = `
+                        <div class="d-flex align-items-center p-2 border rounded">
+                            <img src="${player.image}" class="rounded me-3" width="50" height="50" alt="${player.name}">
+                            <div>
+                                <h6 class="mb-0">${player.name}</h6>
+                                <small class="text-muted">بازیکن</small>
+                            </div>
+                        </div>
+                    `;
+                    playersList.appendChild(playerCol);
+                }
+            });
+            
+            if (!hasPlayers) {
+                playersList.innerHTML = '<div class="col-12 text-center text-muted py-3">هیچ بازیکنی در این تیم وجود ندارد</div>';
+            }
+            
+            document.getElementById('copyTeamDetailsBtn').dataset.teamId = teamId;
+            
+            new bootstrap.Modal(document.getElementById('teamDetailsModal')).show();
+        }
+
+        // کپی اطلاعات بازیکن
+        async function copyPlayerData(playerId) {
+            const player = players[playerId];
+            const textToCopy = `نام: ${player.name}\nتصویر: ${player.image}`;
+            
+            try {
+                await navigator.clipboard.writeText(textToCopy);
+                showCopyNotification();
+            } catch (err) {
+                console.error('خطا در کپی اطلاعات:', err);
+                alert('خطا در کپی اطلاعات');
+            }
+        }
+
+        // کپی اطلاعات تیم
+        async function copyTeamDetails() {
+            const teamId = document.getElementById('copyTeamDetailsBtn').dataset.teamId;
+            const team = teams[teamId];
+            
+            let textToCopy = `نام تیم: ${team.name}\nتصویر تیم: ${team.image}\n\nبازیکنان:\n`;
+            
+            let playerCount = 0;
+            Object.entries(players).forEach(([_, player]) => {
+                if (player.teams?.includes(teamId)) {
+                    playerCount++;
+                    textToCopy += `${playerCount}. ${player.name} (${player.image})\n`;
+                }
+            });
+            
+            if (playerCount === 0) {
+                textToCopy += 'هیچ بازیکنی در این تیم وجود ندارد';
+            }
+            
+            try {
+                await navigator.clipboard.writeText(textToCopy);
+                showCopyNotification();
+            } catch (err) {
+                console.error('خطا در کپی اطلاعات:', err);
+                alert('خطا در کپی اطلاعات');
+            }
+        }
+
+        // نمایش اعلان کپی موفق
+        function showCopyNotification() {
+            const notification = document.querySelector('.copy-notification');
+            notification.style.display = 'block';
+            setTimeout(() => notification.style.display = 'none', 2000);
+        }
+    </script>
+</body>
+</html>
