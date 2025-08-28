@@ -183,7 +183,7 @@
           await auth.signOut();
           setShowLogoutModal(false);
           showAlert('شما با موفقیت خارج شدید', 'success');
-          setTimeout(() => window.location.href = 'login.html', 1500);
+          setTimeout(() => window.location.href = 'index.html', 1500); // تغییر مسیر به index.html
         } catch (error) {
           console.error('خطا در خروج:', error.code, error.message);
           showAlert(`خطا در خروج از حساب: ${error.message}`, 'error');
@@ -206,7 +206,7 @@
           await user.delete();
           
           showAlert('حساب کاربری شما با موفقیت حذف شد', 'success');
-          setTimeout(() => window.location.href = 'login.html', 2000);
+          setTimeout(() => window.location.href = 'index.html', 2000); // تغییر مسیر به index.html
         } catch (error) {
           console.error('خطا در حذف حساب:', error.code, error.message);
           
