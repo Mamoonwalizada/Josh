@@ -214,7 +214,7 @@
             showAlert('برای حذف حساب، لطفاً مجدداً وارد شوید', 'error');
             setTimeout(() => {
               auth.signOut();
-              window.location.href = 'login.html';
+              window.location.href = 'index.html';
             }, 2000);
           } else {
             showAlert(`خطا در حذف حساب: ${error.message}`, 'error');
