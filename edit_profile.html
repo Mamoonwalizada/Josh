@@ -3,107 +3,431 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>نمایه - Josh</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>ویرایش پروفایل - Josh</title>
   <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font/dist/font-face.css" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Vazir', 'Tahoma', 'sans-serif'],
-          },
-          colors: {
-            primary: {
-              50: '#fdf2f8',
-              100: '#fce7f3',
-              200: '#fbcfe8',
-              300: '#f9a8d4',
-              400: '#f472b6',
-              500: '#ec4899',
-              600: '#db2777',
-              700: '#be185d',
-              800: '#9d174d',
-              900: '#831843',
-            },
-            secondary: {
-              500: '#7e22ce',
-              600: '#6b21a8',
-            },
-            success: {
-              500: '#10b981',
-              600: '#059669',
-            },
-            danger: {
-              500: '#ef4444',
-              600: '#dc2626',
-            },
-          },
-          boxShadow: {
-            'neumorphism': '8px 8px 16px #d1d9e6, -8px -8px 16px #ffffff',
-            'neumorphism-inset': 'inset 4px 4px 8px #d1d9e6, inset -4px -4px 8px #ffffff',
-          },
-        }
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.2.96/css/materialdesignicons.min.css" />
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    :root {
+      --primary: #7b1fa2;
+      --primary-dark: #4a148c;
+      --primary-light: #9c27b0;
+      --secondary: #d81b60;
+      --secondary-dark: #b71c1c;
+      --text-primary: #2d3748;
+      --text-secondary: #4a5568;
+      --bg-light: #f8f9fa;
+      --bg-white: #ffffff;
+      --border-light: #e2e8f0;
+      --error: #e53e3e;
+      --success: #38a169;
+      --warning: #dd6b20;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+      --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+      --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Vazir, Tahoma, sans-serif;
+      background: var(--bg-light);
+      color: var(--text-primary);
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .profile-container {
+      width: 100%;
+      max-width: 500px;
+      background: var(--bg-white);
+      border-radius: var(--radius-lg);
+      padding: 32px 24px;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      border: 1px solid var(--border-light);
+    }
+
+    h2 {
+      margin-bottom: 24px;
+      font-weight: 800;
+      font-size: 1.5rem;
+      color: var(--primary-dark);
+      text-align: center;
+      position: relative;
+      padding-bottom: 12px;
+    }
+
+    h2::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      right: 50%;
+      transform: translateX(50%);
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      border-radius: 3px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    label {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .required::after {
+      content: '*';
+      color: var(--error);
+      font-size: 0.8rem;
+      margin-right: 4px;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="tel"] {
+      width: 100%;
+      padding: 12px 16px 12px 40px;
+      font-size: 0.95rem;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      outline: none;
+      transition: var(--transition);
+      background-color: var(--bg-white);
+      color: var(--text-primary);
+    }
+
+    input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(123, 31, 162, 0.2);
+    }
+
+    .input-icon {
+      position: absolute;
+      right: 1px;
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+    }
+
+    .btn-group {
+      margin-top: 24px;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      font-family: Vazir, Tahoma, sans-serif;
+      font-weight: 600;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: var(--transition);
+      min-width: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, var(--primary-dark), var(--secondary-dark));
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: var(--bg-white);
+      color: var(--primary);
+      border: 1px solid var(--primary);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(123, 31, 162, 0.05);
+      border-color: var(--primary-dark);
+    }
+
+    .message {
+      margin-top: 16px;
+      font-size: 0.9rem;
+      min-height: 20px;
+      text-align: center;
+    }
+
+    .profile-photo-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .profile-photo-wrapper {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      padding: 4px;
+      box-shadow: var(--shadow-md);
+    }
+
+    #profilePhoto {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid white;
+      background-color: #f9f0f0;
+    }
+
+    .photo-upload-btn {
+      margin-top: 12px;
+      background: var(--bg-white);
+      color: var(--primary);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: var(--transition);
+      border: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .photo-upload-btn:hover {
+      background: rgba(123, 31, 162, 0.05);
+      border-color: var(--primary);
+    }
+
+    #photoInput {
+      display: none;
+    }
+
+    .optional-field {
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      opacity: 0.8;
+    }
+
+    .password-toggle {
+      position: absolute;
+      left: 12px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+    }
+
+    @media (max-width: 480px) {
+      .profile-container {
+        padding: 24px 16px;
+      }
+      
+      .btn-group {
+        flex-direction: column;
+      }
+      
+      button {
+        width: 100%;
       }
     }
-  </script>
-  <style>
-    body {
-      background-color: #f3f4f6;
+
+    .password-strength {
+      margin-top: 4px;
+      height: 4px;
+      border-radius: 2px;
+      background: #e2e8f0;
+      overflow: hidden;
     }
-    .profile-ring {
-      box-shadow: 0 0 0 4px #ec4899, 0 0 20px rgba(236, 72, 153, 0.3);
+
+    .strength-bar {
+      height: 100%;
+      width: 0%;
+      transition: var(--transition);
     }
-    .animate-pulse {
-      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+
+    .strength-weak {
+      background: var(--error);
+      width: 33%;
     }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
+
+    .strength-medium {
+      background: var(--warning);
+      width: 66%;
     }
-    .modal-overlay {
-      position: fixed;
+
+    .strength-strong {
+      background: var(--success);
+      width: 100%;
+    }
+
+    .password-hints {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-top: 4px;
+      display: none;
+    }
+
+    .password-hints.show {
+      display: block;
+    }
+
+    .hint-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 2px;
+    }
+
+    .hint-valid {
+      color: var(--success);
+    }
+
+    .hint-invalid {
+      color: var(--text-secondary);
+    }
+
+    .form-group.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .form-group.disabled label {
+      color: var(--text-secondary);
+    }
+
+    .form-group.disabled input {
+      background-color: var(--bg-light);
+      border-color: var(--border-light);
+    }
+
+    .loading-overlay {
+      position: absolute;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      background-color: rgba(0, 0, 0, 0.5);
+      background: rgba(255, 255, 255, 0.8);
       display: flex;
       justify-content: center;
       align-items: center;
-      z-index: 1000;
+      border-radius: 50%;
+      z-index: 10;
+      display: none;
     }
-    .modal-content {
-      background-color: white;
-      padding: 2rem;
-      border-radius: 1rem;
-      max-width: 24rem;
-      width: 100%;
-      text-align: center;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
+    .spinner {
+      width: 30px;
+      height: 30px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
     }
-    .delete-confirmation-input {
-      direction: ltr;
-      text-align: center;
-      letter-spacing: 0.1em;
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4">
-  <div id="app"></div>
+<body>
 
-  <!-- React & Firebase Libraries -->
-  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <div class="profile-container">
+    <h2>ویرایش نمایه</h2>
+
+    <div class="profile-photo-container">
+      <div class="profile-photo-wrapper">
+        <div class="loading-overlay" id="photoLoading">
+          <div class="spinner"></div>
+        </div>
+        <img id="profilePhoto" src="https://via.placeholder.com/120?text=JP" alt="عکس نمایه" />
+      </div>
+      <label for="photoInput" class="photo-upload-btn">
+        <span class="mdi mdi-camera"></span>
+        تغییر عکس نمایه
+      </label>
+      <input type="file" id="photoInput" accept="image/*" />
+    </div>
+
+    <form id="profileForm" autocomplete="off">
+      <div class="form-group">
+        <label for="fullname">نام کامل</label>
+        <div class="input-wrapper">
+          <span class="input-icon mdi mdi-account"></span>
+          <input type="text" id="fullname" name="fullname" placeholder="نام و نام خانوادگی" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="phone">شماره تلفن</label>
+        <div class="input-wrapper">
+          <span class="input-icon mdi mdi-phone"></span>
+          <input type="tel" id="phone" name="phone" placeholder="+93XXXXXXXXX" dir="ltr" />
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button type="submit" class="btn-primary">
+          <span class="mdi mdi-content-save"></span>
+          ذخیره تغییرات
+        </button>
+        <button type="button" id="cancelBtn" class="btn-secondary">
+          <span class="mdi mdi-close"></span>
+          انصراف
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Firebase Libraries -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-  <script type="text/babel">
-    const { useState, useEffect } = React;
-
+  <script>
     // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyDLfUbSG30O474XPAPY8QpMzo19EMfLWFc",
@@ -118,301 +442,284 @@
 
     // Initialize Firebase
     const app = firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth(app);
-    const database = firebase.database(app);
+    const database = firebase.database();
+    const auth = firebase.auth();
 
-    const ProfilePage = () => {
-      const [user, setUser] = useState(null);
-      const [profile, setProfile] = useState(null);
-      const [loading, setLoading] = useState(true);
-      const [alert, setAlert] = useState({ show: false, message: '', type: '' });
-      const [showLogoutModal, setShowLogoutModal] = useState(false);
-      const [showDeleteModal, setShowDeleteModal] = useState(false);
-      const [deleteConfirmation, setDeleteConfirmation] = useState('');
-      const [deleting, setDeleting] = useState(false);
+    // DOM elements
+    const fullnameInput = document.getElementById('fullname');
+    const phoneInput = document.getElementById('phone');
+    const profilePhoto = document.getElementById('profilePhoto');
+    const photoInput = document.getElementById('photoInput');
+    const form = document.getElementById('profileForm');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const photoLoading = document.getElementById('photoLoading');
 
-      useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged((authUser) => {
-          if (!authUser) {
-            showAlert('لطفاً ابتدا وارد شوید', 'error');
-            setTimeout(() => window.location.href = 'login.html', 2000);
-            return;
-          }
-          
-          // اصلاح شده: بررسی اینکه آیا کاربر از طریق ارائه‌دهنده‌های اجتماعی وارد شده است
-          // کاربران با گوگل/فیسبوک نیازی به تأیید ایمیل ندارند
-          const isSocialLogin = authUser.providerData && 
-            authUser.providerData.some(provider => 
-              provider.providerId === 'google.com' || provider.providerId === 'facebook.com'
-            );
-          
-          if (!authUser.emailVerified && !isSocialLogin) {
-            showAlert('لطفاً ابتدا ایمیل خود را تأیید کنید', 'error');
-            setTimeout(() => window.location.href = 'login.html', 2000);
-            return;
-          }
-          
-          setUser(authUser);
-          loadProfileData(authUser.uid);
-        });
+    // تابع برای تولید حروف اول نام
+    function getUserInitials(fullname) {
+      if (!fullname) return 'JP';
+      
+      return fullname
+        .split(' ')
+        .map(n => n[0])
+        .join('')
+        .toUpperCase()
+        .substring(0, 2);
+    }
 
-        return () => unsubscribe();
-      }, []);
+    // تابع برای تولید URL تصویر پیش‌فرض با حروف اول
+    function getDefaultAvatar(initials) {
+      return `https://via.placeholder.com/120/7b1fa2/ffffff?text=${initials}`;
+    }
 
-      const loadProfileData = (userId) => {
-        setLoading(true);
-        
-        const userRef = database.ref('users/' + userId);
-        
-        userRef.on('value', (snapshot) => {
+    // Check auth state
+    auth.onAuthStateChanged((user) => {
+      if (!user) {
+        showAuthWarning();
+      } else {
+        loadUserData(user);
+      }
+    });
+
+    // Show auth warning
+    function showAuthWarning() {
+      Swal.fire({
+        title: 'ورود لازم است',
+        text: 'لطفاً ابتدا وارد حساب کاربری خود شوید',
+        icon: 'warning',
+        confirmButtonText: 'ورود',
+        confirmButtonColor: 'var(--primary)',
+        background: 'var(--bg-white)',
+        allowOutsideClick: false
+      }).then(() => {
+        window.location.href = 'login.html';
+      });
+    }
+
+    // Load user data
+    function loadUserData(user) {
+      const userId = user.uid;
+      const userRef = database.ref('users/' + userId);
+      
+      userRef.once('value')
+        .then((snapshot) => {
           if (snapshot.exists()) {
-            setProfile(snapshot.val());
+            const userData = snapshot.val();
+            if (userData.fullname) fullnameInput.value = userData.fullname;
+            if (userData.phone) phoneInput.value = userData.phone;
+            
+            // بررسی و تنظیم عکس پروفایل
+            if (userData.profilePhoto && userData.profilePhoto.trim() !== '') {
+              // اگر عکس در دیتابیس ذخیره شده است
+              profilePhoto.src = userData.profilePhoto;
+            } else {
+              // اگر کاربر با Google وارد شده و عکس دارد
+              const providerData = user.providerData;
+              const googleProvider = providerData.find(provider => provider.providerId === 'google.com');
+              
+              if (googleProvider && googleProvider.photoURL) {
+                profilePhoto.src = googleProvider.photoURL;
+              } else {
+                // اگر هیچ عکسی وجود ندارد، از حروف اول نام استفاده کنید
+                const initials = getUserInitials(userData.fullname || user.displayName);
+                profilePhoto.src = getDefaultAvatar(initials);
+              }
+            }
           } else {
-            showAlert('اطلاعات کاربر یافت نشد', 'error');
+            // اگر رکورد کاربر وجود ندارد، آن را ایجاد کنید
+            const providerData = user.providerData;
+            const googleProvider = providerData.find(provider => provider.providerId === 'google.com');
+            let profilePhotoUrl = '';
+            
+            if (googleProvider && googleProvider.photoURL) {
+              profilePhotoUrl = googleProvider.photoURL;
+            } else {
+              const initials = getUserInitials(user.displayName);
+              profilePhotoUrl = getDefaultAvatar(initials);
+            }
+            
+            userRef.set({
+              fullname: user.displayName || '',
+              phone: '',
+              profilePhoto: profilePhotoUrl,
+              lastUpdated: new Date().toISOString()
+            }).then(() => {
+              profilePhoto.src = profilePhotoUrl;
+            }).catch((error) => {
+              console.error('Error creating user record:', error);
+              showError('خطا در ایجاد پروفایل کاربر: ' + getErrorMessage(error));
+            });
           }
-          setLoading(false);
-        }, (error) => {
-          console.error('خطا در دریافت اطلاعات:', error);
-          showAlert('خطا در دریافت اطلاعات نمایه', 'error');
-          setLoading(false);
+        })
+        .catch((error) => {
+          console.error('Error loading user data:', error);
+          showError('خطا در دریافت اطلاعات نمایه: ' + getErrorMessage(error));
         });
-      };
+    }
 
-      const handleLogout = async () => {
-        try {
-          await auth.signOut();
-          setShowLogoutModal(false);
-          showAlert('شما با موفقیت خارج شدید', 'success');
-          setTimeout(() => window.location.href = 'index.html', 1500); // تغییر مسیر به index.html
-        } catch (error) {
-          console.error('خطا در خروج:', error.code, error.message);
-          showAlert(`خطا در خروج از حساب: ${error.message}`, 'error');
-        }
-      };
-
-      const handleDeleteAccount = async () => {
-        if (deleteConfirmation !== 'حذف') {
-          showAlert('لطفاً کلمه "حذف" را به درستی تایپ کنید', 'error');
+    // Convert image to Base64 with compression
+    function compressAndConvertToBase64(file, maxWidth = 400, quality = 0.8) {
+      return new Promise((resolve, reject) => {
+        if (!file.type.match('image.*')) {
+          reject(new Error('File is not an image'));
           return;
         }
 
-        setDeleting(true);
-        try {
-          // حذف اطلاعات از دیتابیس
-          const userRef = database.ref('users/' + user.uid);
-          await userRef.remove();
-          
-          // حذف کاربر از Authentication
-          await user.delete();
-          
-          showAlert('حساب کاربری شما با موفقیت حذف شد', 'success');
-          setTimeout(() => window.location.href = 'index.html', 2000); // تغییر مسیر به index.html
-        } catch (error) {
-          console.error('خطا در حذف حساب:', error.code, error.message);
-          
-          if (error.code === 'auth/requires-recent-login') {
-            showAlert('برای حذف حساب، لطفاً مجدداً وارد شوید', 'error');
-            setTimeout(() => {
-              auth.signOut();
-              window.location.href = 'login.html';
-            }, 2000);
-          } else {
-            showAlert(`خطا در حذف حساب: ${error.message}`, 'error');
-          }
-        } finally {
-          setDeleting(false);
-          setShowDeleteModal(false);
-          setDeleteConfirmation('');
-        }
-      };
+        const reader = new FileReader();
+        reader.onload = (readerEvent) => {
+          const image = new Image();
+          image.onload = () => {
+            const canvas = document.createElement('canvas');
+            let width = image.width;
+            let height = image.height;
 
-      const showAlert = (message, type) => {
-        setAlert({ show: true, message, type });
-        setTimeout(() => setAlert({ ...alert, show: false }), 5000);
-      };
+            if (width > maxWidth) {
+              height *= maxWidth / width;
+              width = maxWidth;
+            }
 
-      if (!user) {
-        return (
-          <div className="flex flex-col items-center justify-center min-h-screen">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
-            <p className="mt-4 text-gray-600">در حال بررسی وضعیت احراز هویت...</p>
-          </div>
-        );
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(image, 0, 0, width, height);
+            
+            resolve(canvas.toDataURL('image/jpeg', quality));
+          };
+          image.src = readerEvent.target.result;
+        };
+        reader.onerror = error => reject(error);
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // Handle profile photo upload
+    photoInput.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      if (file.size > 5 * 1024 * 1024) {
+        showError('حجم عکس باید کمتر از 5 مگابایت باشد');
+        return;
       }
 
-      return (
-        <div className="w-full max-w-md">
-          {/* Alert Notification */}
-          {alert.show && (
-            <div className={`mb-6 p-4 rounded-lg ${alert.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-              {alert.message}
-              <button 
-                onClick={() => setAlert({ ...alert, show: false })}
-                className="mr-2 text-sm font-medium"
-              >
-                ✕
-              </button>
-            </div>
-          )}
+      try {
+        photoLoading.style.display = 'flex';
+        const base64Image = await compressAndConvertToBase64(file);
+        const userId = auth.currentUser.uid;
+        await database.ref('users/' + userId).update({
+          profilePhoto: base64Image,
+          lastUpdated: new Date().toISOString()
+        });
+        profilePhoto.src = base64Image;
+        showSuccess('عکس نمایه با موفقیت ذخیره شد');
+      } catch (error) {
+        console.error('Error saving photo:', error);
+        showError('خطا در ذخیره عکس نمایه: ' + getErrorMessage(error));
+      } finally {
+        photoLoading.style.display = 'none';
+      }
+    });
 
-          {/* Logout Confirmation Modal */}
-          {showLogoutModal && (
-            <div className="modal-overlay">
-              <div className="modal-content">
-                <h3 className="text-lg font-bold text-gray-800 mb-4">خروج از حساب</h3>
-                <p className="text-gray-600 mb-6">آیا مطمئن هستید که می‌خواهید از حساب خود خارج شوید؟</p>
-                <div className="flex justify-center gap-4">
-                  <button
-                    onClick={handleLogout}
-                    className="bg-primary-500 text-white py-2 px-4 rounded-lg hover:bg-primary-600 transition-all duration-300"
-                  >
-                    تأیید
-                  </button>
-                  <button
-                    onClick={() => setShowLogoutModal(false)}
-                    className="bg-gray-200 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-300 transition-all duration-300"
-                  >
-                    لغو
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
+    // Form validation
+    function validateForm() {
+      if (phoneInput.value && !/^\+93[0-9]{9}$/.test(phoneInput.value)) {
+        showError('شماره تلفن معتبر نیست (باید با +93 شروع شود و 12 رقم داشته باشد)');
+        return false;
+      }
 
-          {/* Delete Account Confirmation Modal */}
-          {showDeleteModal && (
-            <div className="modal-overlay">
-              <div className="modal-content">
-                <div className="mb-6 text-center">
-                  <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i className="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
-                  </div>
-                  <h3 className="text-lg font-bold text-gray-800 mb-2">حذف حساب کاربری</h3>
-                  <p className="text-gray-600 mb-4">این عمل غیرقابل بازگشت است! تمام اطلاعات شما حذف خواهد شد.</p>
-                  <p className="text-sm text-gray-500 mb-2">لطفاً کلمه "<span className="font-bold">حذف</span>" را تایپ کنید تا عمل حذف تأیید شود:</p>
-                  <input
-                    type="text"
-                    value={deleteConfirmation}
-                    onChange={(e) => setDeleteConfirmation(e.target.value)}
-                    className="delete-confirmation-input w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                    placeholder="حذف"
-                    dir="auto"
-                  />
-                </div>
-                <div className="flex justify-center gap-4">
-                  <button
-                    onClick={handleDeleteAccount}
-                    disabled={deleting || deleteConfirmation !== 'حذف'}
-                    className={`py-2 px-4 rounded-lg transition-all duration-300 flex items-center gap-2 ${
-                      deleting || deleteConfirmation !== 'حذف' 
-                        ? 'bg-gray-400 cursor-not-allowed' 
-                        : 'bg-red-500 hover:bg-red-600 text-white'
-                    }`}
-                  >
-                    {deleting ? (
-                      <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></div>
-                        در حال حذف...
-                      </>
-                    ) : (
-                      <>
-                        <i className="fas fa-trash-alt"></i>
-                        حذف حساب
-                      </>
-                    )}
-                  </button>
-                  <button
-                    onClick={() => {
-                      setShowDeleteModal(false);
-                      setDeleteConfirmation('');
-                    }}
-                    className="bg-gray-200 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-300 transition-all duration-300"
-                  >
-                    لغو
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
+      if (fullnameInput.value.length > 100) {
+        showError('نام کامل نمی‌تواند بیشتر از 100 کاراکتر باشد');
+        return false;
+      }
 
-          {/* Profile Card */}
-          <div className="bg-white rounded-2xl shadow-xl overflow-hidden transition-all duration-300 hover:shadow-2xl">
-            <div className="p-6">
-              {/* Profile Header */}
-              <div className="flex flex-col items-center mb-6">
-                <div className="relative mb-4">
-                  <img 
-                    src={profile?.profilePhoto || 'https://via.placeholder.com/140?text=عکس+پروفایل'} 
-                    alt="عکس پروفایل" 
-                    className="w-32 h-32 rounded-full profile-ring object-cover"
-                  />
-                  {loading && (
-                    <div className="absolute inset-0 bg-black bg-opacity-20 rounded-full flex items-center justify-center">
-                      <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white"></div>
-                    </div>
-                  )}
-                </div>
-                <h2 className="text-2xl font-bold text-gray-800">نمایه شما</h2>
-              </div>
+      return true;
+    }
 
-              {/* Profile Info */}
-              {loading ? (
-                <div className="space-y-4">
-                  <div className="h-6 bg-gray-200 rounded-full animate-pulse w-3/4 mx-auto"></div>
-                  <div className="h-6 bg-gray-200 rounded-full animate-pulse w-2/3 mx-auto"></div>
-                </div>
-              ) : (
-                <div className="space-y-4 text-center">
-                  <div className="bg-gray-50 p-4 rounded-xl">
-                    <p className="text-gray-500 text-sm">نام کامل</p>
-                    <p className="font-medium text-gray-800">{profile?.fullname || 'نام ثبت نشده'}</p>
-                  </div>
-                  <div className="bg-gray-50 p-4 rounded-xl">
-                    <p className="text-gray-500 text-sm">شماره تلفن</p>
-                    <p className="font-medium text-gray-800">{profile?.phone || 'شماره تلفن ثبت نشده'}</p>
-                  </div>
-                </div>
-              )}
-            </div>
+    // Form submission
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!validateForm()) return;
 
-            {/* Action Buttons */}
-            <div className="p-6 bg-gray-50 rounded-b-2xl space-y-3">
-              <button 
-                onClick={() => window.location.href = 'edit_profile.html'}
-                className="w-full bg-gradient-to-r from-primary-500 to-secondary-500 text-white py-3 px-6 rounded-xl font-medium hover:from-primary-600 hover:to-secondary-600 transition-all duration-300 flex items-center justify-center gap-2"
-              >
-                <i className="fas fa-user-edit"></i>
-                ویرایش نمایه
-              </button>
-              <button 
-                onClick={() => setShowLogoutModal(true)}
-                className="w-full bg-white text-primary-600 text-primary-600 py-3 px-6 rounded-xl font-medium border border-primary-200 hover:bg-primary-50 transition-all duration-300 flex items-center justify-center gap-2"
-              >
-                <i className="fas fa-sign-out-alt"></i>
-                خروج از حساب
-              </button>
-              <button 
-                onClick={() => setShowDeleteModal(true)}
-                className="w-full bg-gradient-to-r from-danger-500 to-red-600 text-white py-3 px-6 rounded-xl font-medium hover:from-danger-600 hover:to-red-700 transition-all duration-300 flex items-center justify-center gap-2"
-              >
-                <i className="fas fa-trash-alt"></i>
-                حذف حساب کاربری
-              </button>
-              <button 
-                onClick={() => window.location.href = 'index.html'}
-                className="w-full bg-gradient-to-r from-success-500 to-green-600 text-white py-3 px-6 rounded-xl font-medium hover:from-success-600 hover:to-green-700 transition-all duration-300 flex items-center justify-center gap-2"
-              >
-                <i className="fas fa-home"></i>
-                بازگشت به صفحه اصلی
-              </button>
-            </div>
-          </div>
-        </div>
-      );
-    };
+      const user = auth.currentUser;
+      if (!user) {
+        showError('کاربر وارد نشده است. لطفاً دوباره وارد شوید.');
+        return;
+      }
 
-    // Render the app
-    ReactDOM.render(<ProfilePage />, document.getElementById('app'));
+      try {
+        const updates = {
+          fullname: fullnameInput.value.trim(),
+          phone: phoneInput.value.trim(),
+          lastUpdated: new Date().toISOString()
+        };
+
+        await database.ref(`users/${user.uid}`).update(updates);
+        showSuccess('اطلاعات با موفقیت ذخیره شد');
+      } catch (error) {
+        console.error('Error saving changes:', error);
+        showError('خطا در ذخیره تغییرات: ' + getErrorMessage(error));
+      }
+    });
+
+    // Cancel button
+    cancelBtn.addEventListener('click', () => {
+      Swal.fire({
+        title: 'انصراف از تغییرات',
+        text: 'آیا مطمئن هستید می‌خواهید از ذخیره تغییرات انصراف دهید؟',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'بله، انصراف',
+        cancelButtonText: 'خیر، ادامه ویرایش',
+        confirmButtonColor: 'var(--primary)',
+        background: 'var(--bg-white)'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = 'profile.html';
+        }
+      });
+    });
+
+    // Helper function for error messages
+    function getErrorMessage(error) {
+      switch (error.code) {
+        case 'auth/wrong-password':
+          return 'رمز عبور فعلی نادرست است';
+        case 'auth/weak-password':
+          return 'رمز عبور جدید بسیار ضعیف است';
+        case 'auth/requires-recent-login':
+          return 'برای تغییر رمز عبور، لطفاً دوباره وارد شوید';
+        case 'auth/invalid-credential':
+          return 'اعتبارسنجی ناموفق بود';
+        case 'permission-denied':
+          return 'دسترسی به پایگاه داده محدود شده است';
+        case 'database/unknown':
+          return 'خطای ناشناخته در پایگاه داده';
+        default:
+          return error.message || 'خطای ناشناخته';
+      }
+    }
+
+    // Helper functions for notifications
+    function showError(message) {
+      Swal.fire({
+        title: 'خطا',
+        text: message,
+        icon: 'error',
+        confirmButtonText: 'متوجه شدم',
+        confirmButtonColor: 'var(--primary)',
+        background: 'var(--bg-white)'
+      });
+    }
+
+    function showSuccess(message) {
+      Swal.fire({
+        title: 'موفقیت',
+        text: message,
+        icon: 'success',
+        confirmButtonText: 'درست است',
+        confirmButtonColor: 'var(--primary)',
+        background: 'var(--bg-white)'
+      });
+    }
   </script>
 </body>
 </html>
