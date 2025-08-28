@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>انتخاب بازیکن - افغانستان در مقابل امارات متحده عربی</title>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <style>
+    :root {
+      --primary-color: #800000;
+      --secondary-color: #f8f1f1;
+      --text-color: #333;
+      --light-gray: #f5f5f5;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Tahoma', 'Segoe UI', sans-serif;
+      background-color: #f9f9f9;
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+    
+    header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 1rem;
+      text-align: center;
+      box-shadow: var(--box-shadow);
+      position: relative;
+    }
+    
+    header h1 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    #countdown {
+      background-color: rgba(0, 0, 0, 0.2);
+      padding: 0.3rem 0.5rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      display: inline-block;
+    }
+    
+    .tabs {
+      display: flex;
+      justify-content: center;
+      background-color: var(--light-gray);
+      padding: 0.5rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    
+    .tab-btn {
+      background: none;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+      color: var(--primary-color);
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    
+    .tab-btn.active {
+      font-weight: bold;
+    }
+    
+    .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60%;
+      height: 3px;
+      background-color: var(--primary-color);
+      border-radius: 3px;
+    }
+    
+    .content {
+      padding: 1.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .team-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+    }
+    
+    .team-box {
+      background-color: white;
+      border-radius: var(--border-radius);
+      padding: 1.2rem;
+      box-shadow: var(--box-shadow);
+      transition: transform 0.3s ease;
+    }
+    
+    .team-box:hover {
+      transform: translateY(-5px);
+    }
+    
+    .team-box h3 {
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .team-box h3 i {
+      font-size: 1.2rem;
+    }
+    
+    .player-list {
+      list-style: none;
+      max-height: 400px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--primary-color) #f1f1f1;
+    }
+    
+    .player-list::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .player-list::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    
+    .player-list::-webkit-scrollbar-thumb {
+      background-color: var(--primary-color);
+      border-radius: 6px;
+    }
+    
+    .player-item {
+      padding: 0.8rem;
+      margin: 0.5rem 0;
+      background-color: var(--light-gray);
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    
+    .player-item:hover {
+      background-color: #e9e9e9;
+    }
+    
+    .player-item.selected {
+      background-color: var(--primary-color);
+      color: white;
+      font-weight: bold;
+    }
+    
+    .player-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid white;
+    }
+    
+    .player-item.selected .player-avatar {
+      border-color: var(--primary-color);
+    }
+    
+    .selection-controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    
+    .select-wrapper {
+      position: relative;
+      min-width: 250px;
+    }
+    
+    .select-wrapper i {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--primary-color);
+    }
+    
+    select {
+      width: 100%;
+      padding: 0.8rem 1rem 0.8rem 2.5rem;
+      font-size: 1rem;
+      border: 1px solid #ddd;
+      border-radius: var(--border-radius);
+      background-color: white;
+      appearance: none;
+      cursor: pointer;
+      transition: border-color 0.3s;
+    }
+    
+    select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(128, 0, 0, 0.1);
+    }
+    
+    #note {
+      color: #d32f2f;
+      margin: 1rem 0;
+      text-align: center;
+      font-weight: 500;
+      min-height: 1.5rem;
+    }
+    
+    .submit-btn {
+      display: block;
+      margin: 1.5rem auto;
+      padding: 0.8rem 2rem;
+      font-size: 1rem;
+      font-weight: bold;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 10px rgba(128, 0, 0, 0.2);
+    }
+    
+    .submit-btn:hover {
+      background-color: #6a0000;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(128, 0, 0, 0.3);
+    }
+    
+    .submit-btn:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    /* Team View Styles */
+    .team-view {
+      background-color: white;
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      box-shadow: var(--box-shadow);
+    }
+    
+    .team-view h2 {
+      color: var(--primary-color);
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    
+    #myTeamList {
+      list-style: none;
+    }
+    
+    .team-player {
+      padding: 0.8rem 0;
+      border-bottom: 1px dashed #ddd;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    
+    .team-player:last-child {
+      border-bottom: none;
+    }
+    
+    .player-role {
+      font-size: 0.8rem;
+      background-color: var(--primary-color);
+      color: white;
+      padding: 0.2rem 0.5rem;
+      border-radius: 10px;
+      margin-right: 0.5rem;
+    }
+    
+    .user-info {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #eee;
+    }
+    
+    .user-info-item {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 0.8rem;
+    }
+    
+    .user-info-item i {
+      color: var(--primary-color);
+      width: 1.5rem;
+      text-align: center;
+    }
+    
+    .user-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--primary-color);
+      display: block;
+      margin: 1rem auto;
+    }
+    
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      .team-section {
+        grid-template-columns: 1fr;
+      }
+      
+      .selection-controls {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .select-wrapper {
+        width: 100%;
+      }
+    }
+    
+    /* Loading Animation */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>انتخاب بازیکنان - افغانستان در مقابل امارات متحده عربی</h1>
+  <div id="countdown">
+    <i class="fas fa-clock"></i> زمان باقیمانده: در حال بارگذاری...
+  </div>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="showTab('select')">
+    <i class="fas fa-users"></i> انتخاب بازیکنان
+  </button>
+  <button class="tab-btn" onclick="showTab('team')">
+    <i class="fas fa-list-check"></i> تیم من
+  </button>
+</div>
+
+<div id="select" class="content">
+  <div class="team-section">
+    <div class="team-box">
+      <h3><i class="fas fa-flag"></i> تیم افغانستان</h3>
+      <ul class="player-list" id="afgList"></ul>
+    </div>
+    <div class="team-box">
+      <h3><i class="fas fa-flag"></i> تیم امارات متحده عربی</h3>
+      <ul class="player-list" id="uaeList"></ul>
+    </div>
+  </div>
+  
+  <div class="selection-controls">
+    <div class="select-wrapper">
+      <i class="fas fa-crown"></i>
+      <select id="captainSelect">
+        <option value="">انتخاب کپتان</option>
+      </select>
+    </div>
+    <div class="select-wrapper">
+      <i class="fas fa-star"></i>
+      <select id="viceCaptainSelect">
+        <option value="">انتخاب معاون کپتان</option>
+      </select>
+    </div>
+  </div>
+  
+  <div id="note"></div>
+  
+  <button class="submit-btn" onclick="submitTeam()" id="submitBtn" disabled>
+    <span id="btnText">ثبت تیم</span>
+  </button>
+</div>
+
+<div id="team" class="content" style="display:none;">
+  <div class="team-view">
+    <h2><i class="fas fa-users-between-lines"></i> تیم ثبت شده شما</h2>
+    <ul id="myTeamList"></ul>
+    
+    <div class="user-info" id="userInfoSection"></div>
+  </div>
+</div>
+
+<script>
+  // Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyDLfUbSG30O474XPAPY8QpMzo19EMfLWFc",
+    authDomain: "josh-7b6a0.firebaseapp.com",
+    databaseURL: "https://josh-7b6a0-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "josh-7b6a0",
+    storageBucket: "josh-7b6a0.appspot.com",
+    messagingSenderId: "639816255525",
+    appId: "1:639816255525:web:71a3e87374c3e7c68e17cc",
+    measurementId: "G-P2ZSBTN8FP"
+  };
+
+  // Initialize Firebase
+  const app = firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
+  const auth = firebase.auth();
+
+  // لیست بازیکنان با تصاویر واقعی‌تر
+  const afgPlayers = [
+    { name: "عظمت الله عمرزی", img: "https://img1.hscicdn.com/image/upload/f_auto,t_h_100_2x/lsci/db/PICTURES/CMS/383200/383229.1.png" },
+    { name: "درویش رسولی", img: "https://img1.hscicdn.com/image/upload/f_auto,t_h_100_2x/lsci/db/PICTURES/CMS/405300/405309.1.jpg" },
+    { name: "فرید احمد ملک", img: "https://img1.hscicdn.com/image/upload/f_auto,t_h_100_2x/lsci/db/PICTURES/CMS/381900/381923.2.png" },
+    { name: "فضل الحق فاروقی", img: "https://img1.hscicdn.com/image/upload/f_auto,t_h_100_2x/lsci/db/PICTURES/CMS/383200/383236.1.png" },
+    { name: "الله محمد غضنفر", img: "https://img1.hscicdn.com/image/upload/f_auto,t_h_100_2x/lsci/db/PICTURES/CMS/390500/390546.2.png" },
+    { name: "گلبدین نایب", img: "https://img1.hscicdn.com/image/upload/f_auto,t_h_100_2x/lsci/db/PICTURES/CMS/381900/381925.2.png" },
+    { name: "ابراهیم زدران", img: "https://img1.hscicdn.com/image/upload/f_auto,t_h_100_2x/lsci/db/PICTURES/CMS/383200/383225.1.png" },
+    { name: "کریم جنت", img: "https://img1.hscicdn.com/image/upload/f_auto,t_h_100_2x/lsci/db/PICTURES/CMS/383200/383232.1.png" },
+    { name: "محمد اسحاق", img: "https://img1.hscicdn.com/image/upload/f_auto,t_h_100_2x/lsci/db/PICTURES/CMS/383200/383223.5.png" },
+    { name: "محمد نبی", img: "https://img1.hscicdn.com/image/upload/f_auto,t_h_100_2x/lsci/db/PICTURES/CMS/381900/381920.2.png" },
+    { name: "مجیب الرحمان", img: "https://img1.hscicdn.com/image/upload/f_auto,t_h_100_2x/lsci/db/PICTURES/CMS/383200/383240.1.png" },
+    { name: "ننگیال خروتی", img: "https://img1.hscicdn.com/image/upload/f_auto,t_h_100_2x/lsci/db/PICTURES/CMS/383200/383233.3.png" },
+    { name: "نوین الحق", img: "https://img1.hscicdn.com/image/upload/f_auto,t_h_100_2x/lsci/db/PICTURES/CMS/383200/383238.1.png" },
+    { name: "نور احمد", img: "https://img1.hscicdn.com/image/upload/f_auto,t_h_100_2x/lsci/db/PICTURES/CMS/383200/383239.1.png" },
+    { name: "رحمان الله گربز", img: "https://img1.hscicdn.com/image/upload/f_auto,t_h_100_2x/lsci/db/PICTURES/CMS/383200/383237.1.png" },
+    { name: "راشد خان", img: "https://img1.hscicdn.com/image/upload/f_auto,t_h_100_2x/lsci/db/PICTURES/CMS/383200/383228.1.png" },
+    { name: "صدیق اتل", img: "https://img1.hscicdn.com/image/upload/f_auto,t_h_100_2x/lsci/db/PICTURES/CMS/390600/390614.2.png" },
+    { name: "وفیع الله تره خیل", img: "https://i.ibb.co/vxqXXZLQ/20250808-225516.jpg" },
+    { name: "شرف الدین اشرف", img: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320,q_50/lsci/db/PICTURES/CMS/320500/320508.1.png" },
+    { name: "محمد سلیم صافی", img: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320,q_50/lsci/db/PICTURES/CMS/375400/375449.1.png" },
+    { name: "عبدالله احمدزی", img: "https://i.ibb.co/vxqXXZLQ/20250808-225516.jpg" },
+    { name: "بشیر احمد", img: "https://i.ibb.co/vxqXXZLQ/20250808-225516.jpg" }
+  ];
+
+  const uaePlayers = [
+    { name: "محمد وسیم", img: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320,q_50/lsci/db/PICTURES/CMS/354900/354962.1.png" },
+    { name: "آصف خان", img: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320,q_50/lsci/db/PICTURES/CMS/384200/384242.1.png" },
+    { name: "راهول چوپرا", img: "https://i.ibb.co/vxqXXZLQ/20250808-225516.jpg" },
+    { name: "ایتان دیسوزا", img: "https://i.ibb.co/vxqXXZLQ/20250808-225516.jpg" },
+    { name: "حیدر علی", img: "https://i.ibb.co/vxqXXZLQ/20250808-225516.jpg" },
+    { name: "جنید صدیقی", img: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320,q_50/lsci/db/PICTURES/CMS/354900/354960.1.png" },
+    { name: "هارشد کوشیک", img: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320,q_50/lsci/db/PICTURES/CMS/405400/405475.1.png" },
+    { name: "محمد فاروق", img: "https://i.ibb.co/vxqXXZLQ/20250808-225516.jpg" },
+    { name: "محمد جواد الله", img: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320,q_50/lsci/db/PICTURES/CMS/392800/392880.2.png" },
+    { name: "محمد روهید", img: "https://i.ibb.co/vxqXXZLQ/20250808-225516.jpg" },
+    { name: "محمد ذهیب", img: "https://i.ibb.co/vxqXXZLQ/20250808-225516.jpg" },
+    { name: "دهروف پاراشار", img: "https://i.ibb.co/vxqXXZLQ/20250808-225516.jpg" },
+    { name: "ساغر خان", img: "https://i.ibb.co/vxqXXZLQ/20250808-225516.jpg" },
+    { name: "علیشان شرفو", img: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320,q_50/lsci/db/PICTURES/CMS/351800/351852.1.png" },
+    { name: "آریانش شرما", img: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320,q_50/lsci/db/PICTURES/CMS/384200/384247.1.png" }
+  ];
+
+  const allPlayers = [...afgPlayers, ...uaePlayers];
+  const selectedPlayers = new Set();
+  let userTeamData = null;
+
+  // Initialize the app
+  function initApp() {
+    renderPlayers();
+    setupCountdown();
+    checkAuthState();
+  }
+
+  // Setup countdown timer without Firebase
+  function setupCountdown() {
+    const countdownElement = document.getElementById('countdown');
+    const submitButton = document.getElementById('submitBtn');
+    // تاریخ فعلی: 28 آگوست 2025 ساعت 4:00 بعد از ظهر
+    // مهلت نهایی: 1 سپتامبر 2025 ساعت 6:30 بعد از ظهر
+    const deadline = new Date(2025, 8, 1, 18, 30, 0).getTime(); // 1 سپتامبر 2025، 6:30 PM
+
+    let interval;
+
+    function startTimer() {
+      if (interval) clearInterval(interval);
+      interval = setInterval(() => {
+        const now = new Date().getTime();
+        const distance = deadline - now;
+
+        if (distance < 0) {
+          clearInterval(interval);
+          countdownElement.innerHTML = '<i class="fas fa-clock"></i> مهلت انتخاب به پایان رسید';
+          submitButton.disabled = true;
+          document.querySelectorAll('.player-item').forEach(item => {
+            item.style.pointerEvents = 'none';
+            item.style.opacity = '0.6';
+          });
+          document.getElementById('captainSelect').disabled = true;
+          document.getElementById('viceCaptainSelect').disabled = true;
+        } else {
+          const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+          countdownElement.innerHTML = `
+            <i class="fas fa-clock"></i> زمان باقیمانده: ${days} روز ${hours} ساعت ${minutes} دقیقه ${seconds} ثانیه
+          `;
+          submitButton.disabled = selectedPlayers.size !== 11;
+        }
+      }, 1000);
+    }
+    startTimer();
+  }
+
+  // Render player lists
+  function renderPlayers() {
+    const afgList = document.getElementById('afgList');
+    const uaeList = document.getElementById('uaeList');
+    
+    afgList.innerHTML = afgPlayers.map(player => `
+      <li class="player-item" onclick="togglePlayerSelection(this, '${player.name}', 'afg')">
+        <img src="${player.img}" alt="${player.name}" class="player-avatar" 
+             onerror="this.src='https://via.placeholder.com/40'">
+        <span>${player.name}</span>
+      </li>
+    `).join('');
+    
+    uaeList.innerHTML = uaePlayers.map(player => `
+      <li class="player-item" onclick="togglePlayerSelection(this, '${player.name}', 'uae')">
+        <img src="${player.img}" alt="${player.name}" class="player-avatar" 
+             onerror="this.src='https://via.placeholder.com/40'">
+        <span>${player.name}</span>
+      </li>
+    `).join('');
+    
+    updateNote();
+  }
+
+  // Toggle player selection
+  function togglePlayerSelection(element, playerName, team) {
+    const isSelected = element.classList.contains('selected');
+    const teamCount = [...selectedPlayers].filter(p => 
+      (team === 'afg' ? afgPlayers : uaePlayers).some(x => x.name === p)
+    ).length;
+    
+    if (!isSelected) {
+      // Check selection limits
+      if (selectedPlayers.size >= 11) {
+        showError('حداکثر تعداد', 'شما نمیتوانید بیش از ۱۱ بازیکن انتخاب کنید');
+        return;
+      }
+      
+      if (teamCount >= 7) {
+        showError('حداکثر از یک تیم', `شما نمیتوانید بیش از ۷ بازیکن از ${team === 'afg' ? 'افغانستان' : 'امارات متحده عربی'} انتخاب کنید`);
+        return;
+      }
+      
+      selectedPlayers.add(playerName);
+      element.classList.add('selected');
+    } else {
+      selectedPlayers.delete(playerName);
+      element.classList.remove('selected');
+    }
+    
+    updateDropdowns();
+    updateNote();
+    document.getElementById('submitBtn').disabled = selectedPlayers.size !== 11;
+  }
+
+  // Update dropdown menus
+  function updateDropdowns() {
+    const captainSelect = document.getElementById('captainSelect');
+    const viceCaptainSelect = document.getElementById('viceCaptainSelect');
+    
+    captainSelect.innerHTML = '<option value="">انتخاب کپتان</option>';
+    viceCaptainSelect.innerHTML = '<option value="">انتخاب معاون کپتان</option>';
+    
+    [...selectedPlayers].forEach(player => {
+      captainSelect.innerHTML += `<option value="${player}">${player}</option>`;
+      viceCaptainSelect.innerHTML += `<option value="${player}">${player}</option>`;
+    });
+  }
+
+  // Update status note
+  function updateNote() {
+    const noteElement = document.getElementById('note');
+    const selectedCount = selectedPlayers.size;
+    const afgCount = [...selectedPlayers].filter(p => afgPlayers.some(x => x.name === p)).length;
+    const uaeCount = [...selectedPlayers].filter(p => uaePlayers.some(x => x.name === p)).length;
+    
+    if (selectedCount === 11) {
+      noteElement.textContent = '✅ تیم شما کامل است! حالا کپتان و معاون کپتان را انتخاب کنید.';
+      noteElement.style.color = '#388e3c';
+    } else {
+      noteElement.textContent = `شما ${selectedCount} بازیکن انتخاب کرده اید (${afgCount} از افغانستان و ${uaeCount} از امارات متحده عربی). حداقل ۱۱ بازیکن و حداکثر ۷ بازیکن از یک تیم.`;
+      noteElement.style.color = '#d32f2f';
+    }
+  }
+
+  // Submit team to Firebase - نسخه نهایی
+  async function submitTeam() {
+    try {
+      const user = auth.currentUser;
+      
+      if (!user) {
+        showLoginPrompt();
+        return;
+      }
+  
+      // بررسی وضعیت تأیید ایمیل
+      if (user.providerData && user.providerData[0] && user.providerData[0].providerId === 'password' && !user.emailVerified) {
+        showVerifyPrompt();
+        return;
+      }
+      
+      const captain = document.getElementById('captainSelect').value;
+      const viceCaptain = document.getElementById('viceCaptainSelect').value;
+      
+      // اعتبارسنجی انتخاب‌ها
+      if (!captain || !viceCaptain) {
+        showError('انتخاب ناقص', 'لطفاً هم کپتان و هم معاون کپتان را انتخاب کنید');
+        return;
+      }
+      
+      if (captain === viceCaptain) {
+        showError('انتخاب نامعتبر', 'کپتان و معاون کپتان نمیتوانند یک نفر باشند');
+        return;
+      }
+      
+      // بررسی مهلت زمانی
+      const now = new Date().getTime();
+      const deadline = new Date(2025, 8, 1, 18, 30, 0).getTime(); // 1 سپتامبر 2025، 6:30 PM
+      if (now > deadline) {
+        showError('مهلت تمام شده', 'مهلت انتخاب تیم به پایان رسیده است.');
+        return;
+      }
+      
+      // نمایش وضعیت در حال بارگذاری
+      const btn = document.getElementById('submitBtn');
+      const btnText = document.getElementById('btnText');
+      const originalText = btnText.textContent;
+      btn.disabled = true;
+      btnText.innerHTML = '<div class="loading"></div> در حال ثبت...';
+      
+      // دریافت اطلاعات کاربر
+      let userData = {};
+      try {
+        const userSnapshot = await database.ref('users/' + user.uid).once('value');
+        userData = userSnapshot.val() || {};
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+      
+      // آماده‌سازی داده‌های تیم
+      const teamData = {
+        players: Array.from(selectedPlayers),
+        captain,
+        viceCaptain,
+        userInfo: {
+          uid: user.uid,
+          email: user.email,
+          fullName: userData.fullname || user.displayName || 'کاربر ناشناس',
+          phone: userData.phone || 'ثبت نشده',
+          profilePhoto: userData.profilePhoto || user.photoURL || 'https://via.placeholder.com/150',
+          displayName: user.displayName || userData.fullname || 'کاربر'
+        },
+        createdAt: firebase.database.ServerValue.TIMESTAMP,
+        lastUpdated: firebase.database.ServerValue.TIMESTAMP
+      };
+      
+      // ذخیره در دیتابیس با استفاده از UID به عنوان کلید - در fcricket_match1
+      await database.ref('fcricket_match1/' + user.uid).set(teamData);
+      
+      // موفقیت آمیز
+      userTeamData = teamData;
+      btnText.textContent = originalText;
+      btn.disabled = false;
+      
+      Swal.fire({
+        title: 'ثبت موفق!',
+        text: 'تیم شما با موفقیت ثبت شد.',
+        icon: 'success',
+        confirmButtonText: 'متوجه شدم',
+        confirmButtonColor: '#800000',
+        timer: 3000
+      }).then(() => {
+        showTab('team');
+        renderMyTeam();
+      });
+      
+    } catch (error) {
+      console.error('Error submitting team:', error);
+      const btn = document.getElementById('submitBtn');
+      const btnText = document.getElementById('btnText');
+      btn.disabled = false;
+      btnText.textContent = 'ثبت تیم';
+      
+      // نمایش جزئیات خطا для دیباگ
+      let errorMessage = 'مشکلی در ثبت تیم به وجود آمد. لطفاً دوباره تلاش کنید.';
+      
+      if (error.code === 'PERMISSION_DENIED') {
+        errorMessage = 'شما مجوز ثبت تیم را ندارید. لطفاً با پشتیبانی تماس بگیرید.';
+      } else if (error.code === 'DATABASE_ERROR') {
+        errorMessage = 'خطای ارتباط با پایگاه داده. لطفاً اتصال اینترنت خود را بررسی کنید.';
+      }
+      
+      showError('خطا در ثبت', errorMessage);
+    }
+  }
+
+  // تابع بارگذاری تیم کاربر - نسخه اصلاح شده
+  async function loadUserTeam() {
+    const user = auth.currentUser;
+    if (!user) return;
+    
+    try {
+      // استفاده از UID به جای ایمیل برای سازگاری با روش ذخیره‌سازی
+      const snapshot = await database.ref('fcricket_match1/' + user.uid).once('value');
+      
+      if (snapshot.exists()) {
+        userTeamData = snapshot.val();
+        renderMyTeam();
+      }
+    } catch (error) {
+      console.error('Error loading team:', error);
+    }
+  }
+
+  // Render user's team
+  function renderMyTeam() {
+    if (!userTeamData) return;
+    
+    const teamList = document.getElementById('myTeamList');
+    const userInfoSection = document.getElementById('userInfoSection');
+    
+    // Clear previous content
+    teamList.innerHTML = '';
+    userInfoSection.innerHTML = '';
+    
+    // Add players
+    teamList.innerHTML = '<h3>بازیکنان انتخاب شده:</h3>';
+    userTeamData.players.forEach((player, index) => {
+      const playerItem = document.createElement('li');
+      playerItem.className = 'team-player';
+      
+      let roleBadge = '';
+      if (player === userTeamData.captain) {
+        roleBadge = '<span class="player-role">کپتان</span>';
+      } else if (player === userTeamData.viceCaptain) {
+        roleBadge = '<span class="player-role">معاون</span>';
+      }
+      
+      playerItem.innerHTML = `
+        ${roleBadge}
+        <span>${index + 1}. ${player}</span>
+      `;
+      teamList.appendChild(playerItem);
+    });
+    
+    // Add user info
+    userInfoSection.innerHTML = `
+      <h3><i class="fas fa-user-circle"></i> اطلاعات ثبت کننده</h3>
+      <div class="user-info-item">
+        <i class="fas fa-user"></i>
+        <span>${userTeamData.userInfo.fullName}</span>
+      </div>
+      <div class="user-info-item">
+        <i class="fas fa-envelope"></i>
+        <span>${userTeamData.userInfo.email}</span>
+      </div>
+      <div class="user-info-item">
+        <i class="fas fa-phone"></i>
+        <span>${userTeamData.userInfo.phone}</span>
+      </div>
+      <img src="${userTeamData.userInfo.profilePhoto || 'https://via.placeholder.com/150'}" 
+           alt="تصویر پروفایل" 
+           class="user-avatar"
+           onerror="this.src='https://via.placeholder.com/150'">
+    `;
+  }
+
+  // Switch between tabs
+  function showTab(tabId) {
+    document.getElementById('select').style.display = tabId === 'select' ? 'block' : 'none';
+    document.getElementById('team').style.display = tabId === 'team' ? 'block' : 'none';
+    
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelector(`.tab-btn[onclick="showTab('${tabId}')"]`).classList.add('active');
+    
+    if (tabId === 'team') {
+      loadUserTeam();
+    }
+  }
+
+  // Authentication functions
+  function checkAuthState() {
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        // User is signed in
+        await loadUserTeam();
+      } else {
+        // No user is signed in
+        showLoginPrompt();
+      }
+    });
+  }
+
+  function showLoginPrompt() {
+    Swal.fire({
+      title: 'ورود / ثبت نام',
+      text: 'برای انتخاب تیم خود باید وارد حساب کاربری شوید',
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonText: 'ورود / ثبت نام',
+      cancelButtonText: 'بعداً',
+      confirmButtonColor: '#800000'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        showAuthModal();
+      }
+    });
+  }
+
+  function showVerifyPrompt() {
+    Swal.fire({
+      title: 'تأیید ایمیل',
+      text: 'لطفاً ایمیل خود را برای ادامه کار تأیید کنید',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'ارسال دوباره ایمیل تأیید',
+      cancelButtonText: 'بعداً',
+      confirmButtonColor: '#800000'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        auth.currentUser.sendEmailVerification()
+          .then(() => {
+            Swal.fire({
+              title: 'ایمیل ارسال شد',
+              text: 'لطفاً صندوق ورودی ایمیل خود را بررسی کنید',
+              icon: 'success',
+              confirmButtonColor: '#800000'
+            });
+          })
+          .catch((error) => {
+            showError('خطا', 'مشکلی در ارسال ایمیل تأیید به وجود آمد');
+          });
+      }
+    });
+  }
+
+  function showAuthModal() {
+    Swal.fire({
+      title: 'ورود / ثبت نام',
+      html: `
+        <input type="email" id="login-email" class="swal2-input" placeholder="ایمیل">
+        <input type="password" id="login-password" class="swal2-input" placeholder="رمز عبور">
+        <p style="font-size: 14px; margin-top: 10px;">
+          با ورود یا ثبت نام، <a href="#" style="color: #800000;">شرایط استفاده</a> و 
+          <a href="#" style="color: #800000;">قوانین حریم خصوصی</a> را می‌پذیرید.
+        </p>
+      `,
+      confirmButtonText: 'ورود / ثبت نام',
+      showCancelButton: true,
+      cancelButtonText: 'انصراف',
+      confirmButtonColor: '#800000',
+      focusConfirm: false,
+      preConfirm: () => {
+        const email = Swal.getPopup().querySelector('#login-email').value;
+        const password = Swal.getPopup().querySelector('#login-password').value;
+        
+        if (!email || !password) {
+          Swal.showValidationMessage('لطفاً ایمیل و رمز عبور را وارد کنید');
+          return false;
+        }
+        
+        return { email, password };
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const { email, password } = result.value;
+        
+        // Try to sign in, if fails then create new account
+        auth.signInWithEmailAndPassword(email, password)
+          .then((userCredential) => {
+            // Signed in
+            Swal.fire({
+              title: 'خوش آمدید!',
+              text: 'با موفقیت وارد شدید',
+              icon: 'success',
+              confirmButtonColor: '#800000'
+            });
+          })
+          .catch((signInError) => {
+            // If sign in fails, try to create a new account
+            if (signInError.code === 'auth/user-not-found') {
+              auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                  // Send email verification
+                  userCredential.user.sendEmailVerification();
+                  
+                  // Save basic user info
+                  database.ref('users/' + userCredential.user.uid).set({
+                    email: email,
+                    createdAt: firebase.database.ServerValue.TIMESTAMP
+                  });
+                  
+                  Swal.fire({
+                    title: 'حساب کاربری ایجاد شد',
+                    text: 'لطفاً ایمیل خود را برای تأیید بررسی کنید',
+                    icon: 'success',
+                    confirmButtonColor: '#800000'
+                  });
+                })
+                .catch((signUpError) => {
+                  showError('خطا در ثبت نام', signUpError.message);
+                });
+            } else {
+              showError('خطا در ورود', signInError.message);
+            }
+          });
+      }
+    });
+  }
+
+  // Utility functions
+  function showError(title, text) {
+    Swal.fire({
+      title,
+      text,
+      icon: 'error',
+      confirmButtonColor: '#800000'
+    });
+  }
+
+  // Initialize the app
+  window.onload = initApp;
+</script>
+</body>
+</html>
