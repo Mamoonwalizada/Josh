@@ -446,9 +446,9 @@
     <img id="profileImage" src="https://via.placeholder.com/80" alt="نمایه" />
     <small id="profileName">کاربر مهمان</small>
   </div>
-  <a href="profile.html" class="active"><i class="fas fa-user"></i> نمایه</a>
-  <a href="register.html"><i class="fas fa-user-plus"></i> ثبت نام</a>
-  <a href="login.html"><i class="fas fa-sign-in-alt"></i> ورود</a>
+  <a href="#" onclick="signInWithGoogle()"><i class="fas fa-user"></i> نمایه</a>
+  <a href="#" onclick="signInWithGoogle()"><i class="fas fa-user-plus"></i> ثبت نام</a>
+  <a href="#" onclick="signInWithGoogle()"><i class="fas fa-sign-in-alt"></i> ورود</a>
   <a href="prizes.html"><i class="fas fa-trophy"></i> جوایز</a>
   <a href="howtoplay.html"><i class="fas fa-gamepad"></i> رهنمای بازی </a>
   <a href="points.html"><i class="fas fa-star"></i> سیستم امتیاز</a>
@@ -561,20 +561,89 @@
     document.body.style.overflow = '';
   }
 
+  // Google Sign-In function
+  function signInWithGoogle() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    
+    Swal.fire({
+      title: 'در حال انتقال به گوگل...',
+      text: 'لطفاً منتظر بمانید',
+      icon: 'info',
+      showConfirmButton: false,
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
+    auth.signInWithPopup(provider)
+      .then((result) => {
+        // User signed in
+        const user = result.user;
+        
+        // Save user data to database
+        const userData = {
+          uid: user.uid,
+          fullname: user.displayName,
+          email: user.email,
+          profilePhoto: user.photoURL,
+          createdAt: firebase.database.ServerValue.TIMESTAMP,
+          lastLogin: firebase.database.ServerValue.TIMESTAMP
+        };
+        
+        // Update user data in database
+        db.ref('users/' + user.uid).set(userData)
+          .then(() => {
+            // Save user data to localStorage
+            localStorage.setItem('user', JSON.stringify(userData));
+            
+            Swal.fire({
+              title: 'خوش آمدید!',
+              text: `${user.displayName} عزیز، به Josh خوش آمدید`,
+              icon: 'success',
+              confirmButtonText: 'متشکرم',
+              confirmButtonColor: '#9c27b0',
+              background: 'var(--card-bg)',
+              color: 'var(--text-dark)'
+            }).then(() => {
+              // Update UI
+              document.getElementById('profileName').innerText = user.displayName;
+              document.getElementById('profileImage').src = user.photoURL;
+            });
+          })
+          .catch((error) => {
+            console.error('Error saving user data:', error);
+            Swal.fire({
+              title: 'خطا',
+              text: 'خطا در ذخیره اطلاعات کاربر: ' + error.message,
+              icon: 'error',
+              confirmButtonText: 'متوجه شدم',
+              confirmButtonColor: '#9c27b0',
+              background: 'var(--card-bg)',
+              color: 'var(--text-dark)'
+            });
+          });
+      })
+      .catch((error) => {
+        console.error('Error during Google sign-in:', error);
+        Swal.fire({
+          title: 'خطا در ورود',
+          text: error.message,
+          icon: 'error',
+          confirmButtonText: 'متوجه شدم',
+          confirmButtonColor: '#9c27b0',
+          background: 'var(--card-bg)',
+          color: 'var(--text-dark)'
+        });
+      });
+  }
+
   function goToProfile() {
     const user = auth.currentUser;
     if (user) {
-      const providerData = user.providerData;
-      const isEmailProvider = providerData.some(
-        (provider) => provider.providerId === 'password'
-      );
-      if (isEmailProvider && !user.emailVerified) {
-        showVerifyAlert();
-      } else {
-        window.location.href = 'profile.html';
-      }
+      window.location.href = 'profile.html';
     } else {
-      showLoginAlert();
+      signInWithGoogle();
     }
   }
 
@@ -582,29 +651,21 @@
     const user = auth.currentUser;
     
     if (user) {
-      const providerData = user.providerData;
-      const isEmailProvider = providerData.some(
-        (provider) => provider.providerId === 'password'
-      );
-      if (isEmailProvider && !user.emailVerified) {
-        showVerifyAlert();
-      } else {
-        Swal.fire({
-          title: `آماده بازی ${gameType === 'cricket' ? 'کرکت' : 'فوتبال'} هستید؟`,
-          text: 'بهترین عملکرد خود را نشان دهید!',
-          icon: 'question',
-          showCancelButton: true,
-          confirmButtonText: 'شروع بازی',
-          cancelButtonText: 'بعداً',
-          confirmButtonColor: '#9c27b0',
-          background: 'var(--card-bg)',
-          color: 'var(--text-dark)'
-        }).then((result) => {
-          if (result.isConfirmed) {
-            window.location.href = `${gameType}.html`;
-          }
-        });
-      }
+      Swal.fire({
+        title: `آماده بازی ${gameType === 'cricket' ? 'کرکت' : 'فوتبال'} هستید؟`,
+        text: 'بهترین عملکرد خود را نشان دهید!',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'شروع بازی',
+        cancelButtonText: 'بعداً',
+        confirmButtonColor: '#9c27b0',
+        background: 'var(--card-bg)',
+        color: 'var(--text-dark)'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = `${gameType}.html`;
+        }
+      });
     } else {
       showLoginAlert();
     }
@@ -613,35 +674,17 @@
   function showLoginAlert() {
     Swal.fire({
       title: 'ورود لازم است',
-      html: 'برای بازی کردن باید وارد حساب کاربری خود شوید یا ثبت نام کنید',
+      html: 'برای بازی کردن باید وارد حساب کاربری خود شوید',
       icon: 'info',
       showCancelButton: true,
-      confirmButtonText: 'ورود / ثبت نام',
+      confirmButtonText: 'ورود با گوگل',
       cancelButtonText: 'بعداً',
       confirmButtonColor: '#9c27b0',
       background: 'var(--card-bg)',
       color: 'var(--text-dark)'
     }).then((result) => {
       if (result.isConfirmed) {
-        window.location.href = 'login.html';
-      }
-    });
-  }
-
-  function showVerifyAlert() {
-    Swal.fire({
-      title: 'تأیید ایمیل لازم است',
-      html: 'برای دسترسی به این بخش، ابتدا ایمیل خود را تأیید کنید',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'رفتن به ورود',
-      cancelButtonText: 'بعداً',
-      confirmButtonColor: '#9c27b0',
-      background: 'var(--card-bg)',
-      color: 'var(--text-dark)'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        window.location.href = 'login.html';
+        signInWithGoogle();
       }
     });
   }
@@ -693,20 +736,22 @@
           }
         }).catch(error => {
           console.error('Error loading user data:', error);
-          Swal.fire({
-            title: 'خطا',
-            text: 'خطا در دریافت اطلاعات کاربر: ' + error.message,
-            icon: 'error',
-            confirmButtonText: 'متوجه شدم',
-            confirmButtonColor: '#9c27b0',
-            background: 'var(--card-bg)',
-            color: 'var(--text-dark)'
-          });
         });
+        
+        // Update last login time
+        db.ref('users/' + user.uid + '/lastLogin').set(firebase.database.ServerValue.TIMESTAMP);
       } else {
         // User is signed out
         document.getElementById('profileName').innerText = 'کاربر مهمان';
         document.getElementById('profileImage').src = 'https://via.placeholder.com/80';
+        
+        // Try to load from localStorage if available
+        const cachedUser = localStorage.getItem('user');
+        if (cachedUser) {
+          const userData = JSON.parse(cachedUser);
+          document.getElementById('profileName').innerText = userData.fullname;
+          document.getElementById('profileImage').src = userData.profilePhoto;
+        }
       }
     });
   });
