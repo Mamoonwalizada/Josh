@@ -850,27 +850,6 @@
     `;
   }
 
-  // Show verify prompt
-  function showVerifyPrompt() {
-    const tbody = document.querySelector("#rankingTable tbody");
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="3">
-          <div class="status-container">
-            <div class="status-icon error-icon">
-              <i class="fas fa-exclamation-triangle"></i>
-            </div>
-            <div class="status-message">لطفاً برای دسترسی به جدول امتیازات، ایمیل خود را تأیید کنید.</div>
-            <button class="login-btn" onclick="window.location.href='login.html'">
-              <i class="fas fa-sign-in-alt"></i>
-              ورود به سیستم
-            </button>
-          </div>
-        </td>
-      </tr>
-    `;
-  }
-
   // Update time display - Now using Gregorian calendar
   function updateTimeDisplay() {
     if (!lastUpdateTime) return;
@@ -1116,25 +1095,7 @@
     // Set up auth state listener
     auth.onAuthStateChanged((user) => {
       if (user) {
-        // Check if email is verified
-        if (!user.emailVerified) {
-          document.getElementById('authMessage').style.display = 'flex';
-          document.getElementById('authMessage').innerHTML = `
-            <div class="auth-icon">
-              <i class="fas fa-lock"></i>
-            </div>
-            <div class="auth-message">برای مشاهده جدول امتیازات، لطفاً ایمیل خود را تأیید کنید</div>
-            <button class="login-btn" onclick="window.location.href='login.html'">
-              <i class="fas fa-sign-in-alt"></i>
-              ورود به سیستم
-            </button>
-          `;
-          document.getElementById('searchContainer').style.display = 'none';
-          document.getElementById('rankingTableContainer').style.display = 'none';
-          document.getElementById('podiumContainer').style.display = 'none';
-          return;
-        }
-        // User is signed in and email is verified
+        // User is signed in - no need to check email verification
         document.getElementById('authMessage').style.display = 'none';
         document.getElementById('searchContainer').style.display = 'block';
         document.getElementById('rankingTableContainer').style.display = 'block';
@@ -1148,9 +1109,10 @@
       }
     });
 
-    // Set up login button
+    // Set up login button - redirect to Google sign-in
     document.getElementById('loginBtn').addEventListener('click', () => {
-      window.location.href = 'login.html';
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithRedirect(provider);
     });
 
     setupSearch();
