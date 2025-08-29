@@ -65,7 +65,7 @@
       border: 2px solid #800000;
       border-radius: 14px;
       padding: 10px 6px;
-      width: 100px;
+      width: 120px;
       text-align: center;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
       transition: transform 0.3s ease;
@@ -76,13 +76,19 @@
     }
 
     .player-box img {
-      width: 50px;
-      height: 50px;
+      width: 60px;
+      height: 60px;
       border-radius: 50%;
       object-fit: cover;
       margin-bottom: 5px;
       border: 2px solid #b22222;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .player-box img:hover {
+      transform: scale(1.1);
     }
 
     .player-box h4 {
@@ -92,11 +98,18 @@
       font-weight: 600;
     }
 
-    .player-box span {
+    .player-name {
       font-size: 12px;
       font-weight: 500;
       color: #333;
-      white-space: nowrap;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-height: 2.4em;
+      line-height: 1.2em;
+      padding: 0 2px;
     }
 
     .container {
@@ -163,20 +176,20 @@
       }
 
       .player-box {
-        width: 90px;
+        width: 100px;
         padding: 8px;
       }
 
       .player-box img {
-        width: 45px;
-        height: 45px;
+        width: 50px;
+        height: 50px;
       }
 
       .player-box h4 {
         font-size: 12px;
       }
 
-      .player-box span {
+      .player-name {
         font-size: 11px;
       }
 
@@ -199,18 +212,8 @@
   <div class="players-section">
     <div class="player-box">
       <h4>اشتراک کننده هفته</h4>
-      <img src="https://i.ibb.co/Zp6X6v5N/download.jpg" alt="بازیکن هفته" />
-      <span>Hedayatullah Barakzai</span></span>
-    </div>
-    <div class="player-box">
-      <h4>اشتراک کننده ماه</h4>
-      <img src="https://i.ibb.co/vxqXXZLQ/20250808-225516.jpg" alt="بازیکن ماه" />
-      <span>وجود&nbsp;ندارد</span>
-    </div>
-    <div class="player-box">
-      <h4>اشتراک کننده سال</h4>
-      <img src="https://i.ibb.co/vxqXXZLQ/20250808-225516.jpg" alt="بازیکن سال" />
-      <span>وجود&nbsp;ندارد</span>
+      <img src="https://i.ibb.co/Zp6X6v5N/download.jpg" alt="بازیکن هفته" onclick="showPlayerImage('https://i.ibb.co/Zp6X6v5N/download.jpg', 'Hedayatullah Barakzai')" />
+      <div class="player-name">Hedayatullah Barakzai</div>
     </div>
   </div>
 
@@ -221,6 +224,24 @@
   </div>
 
   <script>
+    // تابع برای نمایش تصویر بازیکن در اندازه بزرگ
+    function showPlayerImage(imageUrl, playerName) {
+      Swal.fire({
+        title: playerName,
+        imageUrl: imageUrl,
+        imageWidth: 300,
+        imageHeight: 300,
+        imageAlt: playerName,
+        confirmButtonText: 'بستن',
+        confirmButtonColor: '#b22222',
+        background: '#fff9f9',
+        showCloseButton: true,
+        customClass: {
+          closeButton: 'swal-close-button'
+        }
+      });
+    }
+
     // این تابع میتواند برای نمایش پیام های دیگر استفاده شود
     function showSweetAlert(title, message, icon) {
       Swal.fire({
