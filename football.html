@@ -1,42 +1,67 @@
 <!DOCTYPE html>
-<html lang="fa">
+<html lang="fa" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>فوتبال - Josh</title>
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap');
+    
+    :root {
+      --primary: #1e40af;
+      --primary-dark: #1e3a8a;
+      --secondary: #dc2626;
+      --secondary-dark: #b91c1c;
+      --accent: #f59e0b;
+      --light: #f3f4f6;
+      --dark: #1f2937;
+      --success: #10b981;
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --header-gradient: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      --button-gradient: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     html, body {
       font-family: 'Vazirmatn', Tahoma, sans-serif;
       margin: 0;
       padding: 0;
       height: 100vh;
-      overflow: hidden;
+      overflow-x: hidden;
+      background: linear-gradient(135deg, #1e3a8a 0%, #dc2626 100%);
+      color: var(--dark);
       position: relative;
     }
 
     body::before {
       content: "";
-      background: url('https://i.pinimg.com/736x/ba/65/be/ba65be040cc711486e12cd55d4af5c90.jpg') center/cover no-repeat;
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      filter: blur(1px) brightness(0.9);
+      background: url('https://i.pinimg.com/736x/ba/65/be/ba65be040cc711486e12cd55d4af5c90.jpg') center/cover no-repeat;
+      opacity: 0.15;
       z-index: -1;
     }
 
-    body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      color: #fff;
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
     }
 
     header {
-      background: linear-gradient(to right, rgba(128, 0, 0, 0.9), rgba(178, 34, 34, 0.9));
+      background: var(--header-gradient);
       color: white;
       width: 100%;
       padding: 20px 0;
@@ -44,179 +69,361 @@
       text-align: center;
       position: relative;
       font-weight: 700;
-      letter-spacing: 1px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+      border-radius: 0 0 20px 20px;
+      margin-bottom: 30px;
     }
 
-    .players-section {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 18px;
-      margin-top: 20px;
-      flex-shrink: 0;
-    }
-
-    .player-box {
-      background-color: rgba(255, 255, 255, 0.95);
-      border: 2px solid #800000;
-      border-radius: 14px;
-      padding: 10px 6px;
+    header::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      right: 50%;
+      transform: translateX(50%);
       width: 100px;
+      height: 4px;
+      background: var(--secondary);
+      border-radius: 2px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .logo i {
+      color: var(--secondary);
+      font-size: 32px;
+    }
+
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .featured-player {
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 25px;
+      width: 100%;
+      max-width: 500px;
       text-align: center;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .featured-player:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .featured-player::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 5px;
+      height: 100%;
+      background: var(--secondary);
+    }
+
+    .player-of-week {
+      font-size: 18px;
+      color: var(--primary);
+      font-weight: 600;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .player-of-week i {
+      color: var(--secondary);
+    }
+
+    .player-image {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 0 auto 15px;
+      border: 4px solid var(--primary);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .player-image:hover {
+      transform: scale(1.05);
+      border-color: var(--secondary);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .player-name {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 5px;
+    }
+
+    .player-status {
+      font-size: 14px;
+      color: var(--secondary);
+      font-weight: 500;
+      padding: 5px 12px;
+      background-color: rgba(220, 38, 38, 0.1);
+      border-radius: 20px;
+      display: inline-block;
+    }
+
+    .actions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      width: 100%;
+      max-width: 800px;
+      margin-top: 20px;
+    }
+
+    .action-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 25px;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .action-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: var(--button-gradient);
+      transform: scaleX(0);
+      transform-origin: left;
       transition: transform 0.3s ease;
     }
 
-    .player-box:hover {
+    .action-card:hover {
       transform: translateY(-5px);
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
     }
 
-    .player-box img {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin-bottom: 5px;
-      border: 2px solid #b22222;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    .action-card:hover::before {
+      transform: scaleX(1);
     }
 
-    .player-box h4 {
-      font-size: 13px;
-      margin: 4px 0;
-      color: #800000;
-      font-weight: 600;
+    .action-icon {
+      font-size: 40px;
+      margin-bottom: 15px;
+      color: var(--primary);
     }
 
-    .player-box span {
-      font-size: 12px;
-      font-weight: 500;
-      color: #333;
-      white-space: nowrap;
+    .action-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 10px;
     }
 
-    .container {
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 18px;
-      width: 100%;
-      max-width: 300px;
-      padding: 10px 15px;
-    }
-
-    .link-btn {
-      background: linear-gradient(to right, rgba(216, 27, 96, 0.97), rgba(123, 31, 162, 0.97));
-      color: white;
-      border: none;
-      padding: 18px 0;
-      border-radius: 50px;
-      font-size: 26px;
-      cursor: pointer;
-      font-weight: 600;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-      transition: all 0.3s ease;
-      user-select: none;
-      border: 1px solid rgba(255, 255, 255, 0.4);
-    }
-
-    .link-btn:hover {
-      background: linear-gradient(to left, rgba(194, 24, 91, 0.97), rgba(106, 27, 154, 0.97));
-      transform: scale(1.04);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+    .action-description {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.6;
     }
 
     .back-btn {
-      font-size: 17px;
-      color: #fff;
-      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 30px;
+      padding: 12px 25px;
+      background: var(--card-bg);
+      color: var(--primary);
+      border: 2px solid var(--primary);
+      border-radius: 50px;
+      font-size: 16px;
+      font-weight: 600;
       cursor: pointer;
-      font-weight: 500;
-      text-align: center;
-      padding: 8px;
-      border-radius: 20px;
-      background-color: rgba(0, 0, 0, 0.25);
       transition: all 0.3s ease;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
 
     .back-btn:hover {
-      color: #ffcccb;
-      background-color: rgba(0, 0, 0, 0.35);
+      background: var(--primary);
+      color: white;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
     }
 
-    @media (max-width: 480px) {
-      body::before {
-        filter: blur(0.5px) brightness(0.92);
+    /* Animation for cards */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
       }
-      
-      .players-section {
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-top: 20px;
+      to {
+        opacity: 1;
+        transform: translateY(0);
       }
+    }
 
-      .player-box {
-        width: 90px;
-        padding: 8px;
-      }
+    .featured-player, .action-card {
+      animation: fadeInUp 0.6s ease forwards;
+    }
 
-      .player-box img {
-        width: 45px;
-        height: 45px;
-      }
+    .action-card:nth-child(2) {
+      animation-delay: 0.2s;
+    }
 
-      .player-box h4 {
-        font-size: 12px;
-      }
-
-      .player-box span {
-        font-size: 11px;
-      }
-
-      .link-btn {
+    /* Responsive styles */
+    @media (max-width: 768px) {
+      header {
         font-size: 22px;
         padding: 16px 0;
       }
+      
+      .actions-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .featured-player {
+        padding: 20px;
+      }
+      
+      .player-image {
+        width: 100px;
+        height: 100px;
+      }
+      
+      .action-card {
+        padding: 20px;
+      }
+    }
 
+    @media (max-width: 480px) {
+      .container {
+        padding: 15px;
+      }
+      
       header {
-        font-size: 24px;
-        padding: 16px 0;
+        font-size: 20px;
+        margin-bottom: 20px;
+      }
+      
+      .player-of-week {
+        font-size: 16px;
+      }
+      
+      .player-name {
+        font-size: 18px;
+      }
+      
+      .action-title {
+        font-size: 18px;
+      }
+      
+      .action-icon {
+        font-size: 32px;
       }
     }
   </style>
 </head>
 <body>
 
-  <header>⚽ فوتبال - Josh</header>
-
-  <div class="players-section">
-    <div class="player-box">
-      <h4>اشتراک کننده هفته</h4>
-      <img src="https://i.ibb.co/vxqXXZLQ/20250808-225516.jpg" alt="20250808-225516" border="0"></a>
-      <span>موجود&nbsp;نیست!</span>
-    </div>
-    <div class="player-box">
-      <h4>اشتراک کننده ماه</h4>
-      <img src="https://i.ibb.co/vxqXXZLQ/20250808-225516.jpg" alt="20250808-225516" border="0"></a>
-      <span>موجود&nbsp;نیست!</span>
-    </div>
-    <div class="player-box">
-      <h4>اشتراک کننده سال</h4>
-      <img src="https://i.ibb.co/vxqXXZLQ/20250808-225516.jpg" alt="20250808-225516" border="0"></a>
-      <span>موجود&nbsp;نیست!</span>
-    </div>
-  </div>
-
   <div class="container">
-    <button class="link-btn" onclick="location.href='future_football.html'"> بازی های آینده</button>
-    <button class="link-btn" onclick="location.href='sure.html'"> بازی های گذشته</button>
-    <div class="back-btn" onclick="location.href='index.html'">← برگشت به صفحه اصلی</div>
+    <header>
+      <div class="logo">
+        <i class="fas fa-futbol"></i>
+        <span>فوتبال - Josh</span>
+      </div>
+    </header>
+
+    <div class="main-content">
+      <div class="featured-player">
+        <div class="player-of-week">
+          <i class="fas fa-trophy"></i>
+          <span>اشتراک کننده هفته</span>
+        </div>
+        <img src="https://i.ibb.co/vxqXXZLQ/20250808-225516.jpg" class="player-image" alt="اشتراک کننده هفته" 
+             onclick="showPlayerImage('https://i.ibb.co/vxqXXZLQ/20250808-225516.jpg', 'اشتراک کننده هفته')" />
+        <h3 class="player-name">موجود نیست!</h3>
+        <p class="player-status">در حال حاضر انتخاب نشده</p>
+      </div>
+
+      <div class="actions-grid">
+        <div class="action-card" onclick="location.href='future_football.html'">
+          <div class="action-icon">
+            <i class="far fa-calendar-alt"></i>
+          </div>
+          <h3 class="action-title">بازی های آینده</h3>
+          <p class="action-description">مشاهده برنامه بازی های آینده و زمان بندی مسابقات</p>
+        </div>
+
+        <div class="action-card" onclick="location.href='sure.html'">
+          <div class="action-icon">
+            <i class="far fa-clock"></i>
+          </div>
+          <h3 class="action-title">بازی های گذشته</h3>
+          <p class="action-description">نتایج و آمار بازی های گذشته را مشاهده کنید</p>
+        </div>
+      </div>
+
+      <button class="back-btn" onclick="location.href='index.html'">
+        <i class="fas fa-arrow-right"></i>
+        بازگشت به صفحه اصلی
+      </button>
+    </div>
   </div>
+
+  <script>
+    // تابع برای نمایش تصویر بازیکن در اندازه بزرگ
+    function showPlayerImage(imageUrl, playerName) {
+      Swal.fire({
+        title: playerName,
+        imageUrl: imageUrl,
+        imageWidth: 300,
+        imageHeight: 300,
+        imageAlt: playerName,
+        confirmButtonText: 'بستن',
+        confirmButtonColor: '#1e40af',
+        background: '#ffffff',
+        showCloseButton: true,
+        customClass: {
+          closeButton: 'swal-close-button'
+        }
+      });
+    }
+
+    // این تابع میتواند برای نمایش پیام های دیگر استفاده شود
+    function showSweetAlert(title, message, icon) {
+      Swal.fire({
+        title: title,
+        text: message,
+        icon: icon,
+        confirmButtonText: 'متوجه شدم',
+        confirmButtonColor: '#1e40af',
+        background: '#ffffff',
+        showCancelButton: true,
+        cancelButtonText: 'انصراف',
+        cancelButtonColor: '#6b7280'
+      });
+    }
+  </script>
 
 </body>
 </html>
