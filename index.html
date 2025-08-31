@@ -752,10 +752,40 @@
         }
       }
     });
+
+    // غیرفعال کردن کش برای نمایش فوری تغییرات
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function(registrations) {
+        for (let registration of registrations) {
+          registration.unregister(); // حذف کش قدیمی
+        }
+      });
+      
+      caches.keys().then(function(cacheNames) {
+        cacheNames.forEach(function(cacheName) {
+          caches.delete(cacheName); // پاک کردن حافظه موقت
+        });
+      });
+    }
   });
 
   // Event listeners
   themeToggle.addEventListener('click', toggleTheme);
+</script>
+
+<!-- ثبت Service Worker -->
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('sw.js')
+      .then(function(registration) {
+        console.log('ServiceWorker ثبت شد با دامنه: ', registration.scope);
+      })
+      .catch(function(error) {
+        console.log('ثبت ServiceWorker شکست خورد: ', error);
+      });
+  });
+}
 </script>
 </body>
 </html>
