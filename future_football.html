@@ -390,20 +390,7 @@
   <script>
     // داده های مسابقات
     const matchesData = {
-      laliga: [
-        { 
-          id: "match10",
-          title: "رئال مادرید vs رئال مایورکا", 
-          date: "۳۱ آگوست ۲۰۲۵",
-          time: "12:00am",
-          type: "لیگ اسپانیا",
-          link: "ffootball_match1.html", 
-          team1Logo: "https://tmssl.akamaized.net//images/wappen/head/418.png?lm=1729684474", 
-          team2Logo: "https://tmssl.akamaized.net//images/wappen/head/237.png?lm=1407484750",
-          team1Name: "رئال مادرید",
-          team2Name: "رئال مایورکا"
-        }
-      ],
+      laliga: [],
       epl: [],
       ucl: []
     };
@@ -435,7 +422,7 @@
         if (!matchesData[category] || matchesData[category].length === 0) {
           matchList.innerHTML = `
             <div class="empty-state">
-              <p>هیچ بازی برنامه ریزی شده ای در این دسته وجود ندارد</p>
+              <p>بازی برای نمایش موجود نیست</p>
             </div>
           `;
           return;
