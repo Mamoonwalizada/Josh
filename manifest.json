@@ -1,7 +1,24 @@
 {
-  "name": "Josh",
-  "theme_color": "#000000",
-  "background_color": "#000000",
+  "name": "Josh - بازی های هیجان انگیز",
   "short_name": "Josh",
-  "id": "Josh"
+  "description": "جامعه بازی های هیجان انگیز Josh - فوتبال و کرکت",
+  "start_url": "/index-2.html",
+  "display": "standalone",
+  "background_color": "#9c27b0",
+  "theme_color": "#9c27b0",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://i.ibb.co/2Y0TgqYr/file-00000000a56462468cec427eb252720e.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://i.ibb.co/2Y0TgqYr/file-00000000a56462468cec427eb252720e.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["games", "entertainment"],
+  "lang": "fa"
 }
