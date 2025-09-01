@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>رده بندی فانتزی کریکت - بازی اول | جدول امتیازات</title>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #6c5ce7;
+      --primary-dark: #5649c0;
+      --primary-light: #a29bfe;
+      --secondary: #00b894;
+      --accent: #fd79a8;
+      --background: #f8f9fa;
+      --card-bg: #ffffff;
+      --text: #2d3436;
+      --text-light: #636e72;
+      --border: #dfe6e9;
+      --gold: #fdcb6e;
+      --silver: #b2bec3;
+      --bronze: #e17055;
+      --success: #00b894;
+      --error: #d63031;
+      --warning: #fdcb6e;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+      --shadow-md: 0 4px 6px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.08);
+      --shadow-lg: 0 10px 25px rgba(0,0,0,0.1), 0 5px 10px rgba(0,0,0,0.05);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Vazirmatn', sans-serif;
+      background-color: var(--background);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 0;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    /* Header Styles */
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 8px;
+    }
+    
+    .header p {
+      color: var(--text-light);
+      font-size: 1rem;
+    }
+    
+    /* Card Styles */
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+      margin-bottom: 30px;
+      transition: var(--transition);
+    }
+    
+    .card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-3px);
+    }
+    
+    .card-header {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      padding: 20px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .card-header h2 {
+      font-weight: 600;
+      margin: 0;
+      font-size: 1.5rem;
+      text-align: center;
+    }
+    
+    /* Search Styles */
+    .search-container {
+      position: relative;
+      width: 100%;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    
+    .search-input {
+      width: 100%;
+      padding: 12px 20px;
+      padding-right: 45px;
+      border-radius: 50px;
+      border: none;
+      font-size: 1rem;
+      background-color: rgba(255, 255, 255, 0.9);
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+    
+    .search-input:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.3);
+    }
+    
+    .search-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--primary);
+    }
+    
+    /* Podium Styles */
+    .podium-container {
+      background: linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+      padding: 30px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .podium-title {
+      text-align: center;
+      margin-bottom: 20px;
+      color: var(--primary-dark);
+      font-weight: 600;
+      font-size: 1.2rem;
+    }
+    
+    .podium {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      height: 220px;
+      gap: 15px;
+      padding: 0 20px;
+    }
+    
+    .podium-step {
+      flex: 1;
+      max-width: 150px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: var(--transition);
+    }
+    
+    .podium-step:hover {
+      transform: translateY(-5px);
+    }
+    
+    .podium-rank {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: white;
+      position: relative;
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .podium-1 {
+      height: 180px;
+      background: linear-gradient(to top, var(--gold), #ffeaa7);
+      z-index: 3;
+    }
+    
+    .podium-2 {
+      height: 140px;
+      background: linear-gradient(to top, var(--silver), #dfe6e9);
+      z-index: 2;
+    }
+    
+    .podium-3 {
+      height: 100px;
+      background: linear-gradient(to top, var(--bronze), #fab1a0);
+      z-index: 1;
+    }
+    
+    .podium-badge {
+      position: absolute;
+      top: -20px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.2rem;
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .podium-1 .podium-badge {
+      background: var(--gold);
+    }
+    
+    .podium-2 .podium-badge {
+      background: var(--silver);
+    }
+    
+    .podium-3 .podium-badge {
+      background: var(--bronze);
+    }
+    
+    .podium-info {
+      width: 100%;
+      background: white;
+      padding: 15px 10px;
+      text-align: center;
+      border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .podium-name {
+      font-weight: 600;
+      margin-bottom: 5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .podium-score {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+    }
+    
+    /* Table Styles */
+    .table-container {
+      overflow-x: auto;
+      padding: 0 15px;
+    }
+    
+    .ranking-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 8px;
+      margin: 15px 0;
+    }
+    
+    .ranking-table thead th {
+      background-color: var(--primary-light);
+      color: white;
+      font-weight: 600;
+      padding: 15px;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      white-space: nowrap;
+    }
+    
+    .ranking-table thead th:first-child {
+      border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+    }
+    
+    .ranking-table thead th:last-child {
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+    
+    .ranking-table tbody tr {
+      transition: var(--transition);
+      background: white;
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .ranking-table tbody tr:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .ranking-table td {
+      padding: 15px;
+      text-align: center;
+      vertical-align: middle;
+    }
+    
+    .rank-cell {
+      font-weight: bold;
+      font-size: 1.1rem;
+      position: relative;
+    }
+    
+    .gold-rank { color: var(--gold); }
+    .silver-rank { color: var(--silver); }
+    .bronze-rank { color: var(--bronze); }
+    
+    .user-cell {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      justify-content: flex-start;
+    }
+    
+    .profile-pic {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--primary-light);
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .profile-pic:hover {
+      transform: scale(1.05);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .user-info {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .user-name {
+      font-weight: 600;
+    }
+    
+    .user-phone {
+      font-size: 0.8rem;
+      color: var(--text-light);
+    }
+    
+    .score-cell {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--primary-dark);
+    }
+    
+    /* Status Styles */
+    .status-container {
+      padding: 40px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .status-icon {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+    
+    .loading-icon {
+      animation: spin 1s linear infinite;
+      color: var(--primary);
+    }
+    
+    .error-icon {
+      color: var(--error);
+    }
+    
+    .empty-icon {
+      color: var(--primary-light);
+    }
+    
+    .status-message {
+      font-size: 1.1rem;
+      color: var(--text-light);
+    }
+    
+    .retry-btn {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .retry-btn:hover {
+      background: var(--primary-dark);
+      box-shadow: var(--shadow-md);
+    }
+    
+    /* Update Time */
+    .update-time {
+      text-align: center;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.9);
+      margin-top: 10px;
+    }
+    
+    /* Auth Message */
+    .auth-container {
+      padding: 40px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .auth-icon {
+      font-size: 2.5rem;
+      color: var(--warning);
+    }
+    
+    .auth-message {
+      font-size: 1.1rem;
+      color: var(--text-light);
+    }
+    
+    .login-btn {
+      margin-top: 15px;
+      padding: 12px 24px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .login-btn:hover {
+      background: var(--primary-dark);
+      box-shadow: var(--shadow-md);
+    }
+    
+    /* Image Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+      overflow: auto;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .modal-content {
+      display: block;
+      max-width: 90%;
+      max-height: 80%;
+      margin: auto;
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-lg);
+      object-fit: contain;
+    }
+    
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      color: white;
+      font-size: 40px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: var(--transition);
+      z-index: 1001;
+    }
+    
+    .modal-close:hover {
+      color: var(--accent);
+    }
+    
+    /* Animations */
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.5s ease-out forwards;
+    }
+    
+    /* Responsive Styles */
+    @media (max-width: 992px) {
+      .container {
+        padding: 15px;
+      }
+      
+      .podium {
+        height: 180px;
+      }
+      
+      .podium-1 {
+        height: 150px;
+      }
+      
+      .podium-2 {
+        height: 120px;
+      }
+      
+      .podium-3 {
+        height: 90px;
+      }
+      
+      .podium-step {
+        max-width: 120px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 1.8rem;
+      }
+      
+      .ranking-table thead {
+        display: none;
+      }
+      
+      .ranking-table tbody tr {
+        display: block;
+        margin-bottom: 15px;
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-md);
+      }
+      
+      .ranking-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-align: left;
+        padding: 12px 15px;
+        border-bottom: 1px solid var(--border);
+      }
+      
+      .ranking-table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        margin-left: 10px;
+        color: var(--primary);
+      }
+      
+      .user-cell {
+        justify-content: space-between;
+      }
+      
+      .podium {
+        height: 150px;
+        gap: 10px;
+      }
+      
+      .podium-1 {
+        height: 120px;
+      }
+      
+      .podium-2 {
+        height: 100px;
+      }
+      
+      .podium-3 {
+        height: 80px;
+      }
+      
+      .podium-step {
+        max-width: 100px;
+      }
+      
+      .podium-name {
+        font-size: 0.9rem;
+      }
+      
+      .podium-score {
+        font-size: 1rem;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .header h1 {
+        font-size: 1.5rem;
+      }
+      
+      .podium {
+        height: 130px;
+      }
+      
+      .podium-1 {
+        height: 100px;
+      }
+      
+      .podium-2 {
+        height: 80px;
+      }
+      
+      .podium-3 {
+        height: 60px;
+      }
+      
+      .podium-step {
+        max-width: 80px;
+      }
+      
+      .podium-rank {
+        font-size: 2rem;
+      }
+      
+      .podium-badge {
+        width: 30px;
+        height: 30px;
+        font-size: 1rem;
+        top: -15px;
+      }
+      
+      .podium-name {
+        font-size: 0.8rem;
+      }
+      
+      .podium-score {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Image Modal -->
+<div id="imageModal" class="modal">
+  <span class="modal-close" id="modalClose">&times;</span>
+  <img class="modal-content" id="modalImage">
+</div>
+
+<div class="container">
+  <div class="header fade-in">
+    <h1>رده بندی فانتزی کریکت - بازی اول</h1>
+    <p>جدول امتیازات اشتراک کننده ها </p>
+  </div>
+  
+  <div class="card fade-in">
+    <div class="card-header">
+      <h2>لیست اشخاص شرکت کننده</h2>
+      <div class="search-container" id="searchContainer" style="display: none;">
+        <input type="text" class="search-input" id="searchInput" placeholder="جستجوی اشتراک کننده ها">
+        <i class="fas fa-search search-icon"></i>
+      </div>
+      <div class="update-time" id="updateTime"></div>
+    </div>
+    
+    <!-- Podium Section -->
+    <div id="podiumContainer" style="display: none;">
+      <div class="podium-container">
+        <div class="podium-title">اشتراک کننده های برتر</div>
+        <div class="podium">
+          <div class="podium-step">
+            <div class="podium-rank podium-1">1</div>
+            <div class="podium-badge"><i class="fas fa-trophy"></i></div>
+            <div class="podium-info">
+              <div class="podium-name" id="firstPlaceName"></div>
+              <div class="podium-score" id="firstPlaceScore"></div>
+            </div>
+          </div>
+          <div class="podium-step">
+            <div class="podium-rank podium-2">2</div>
+            <div class="podium-badge"><i class="fas fa-medal"></i></div>
+            <div class="podium-info">
+              <div class="podium-name" id="secondPlaceName"></div>
+              <div class="podium-score" id="secondPlaceScore"></div>
+            </div>
+          </div>
+          <div class="podium-step">
+            <div class="podium-rank podium-3">3</div>
+            <div class="podium-badge"><i class="fas fa-award"></i></div>
+            <div class="podium-info">
+              <div class="podium-name" id="thirdPlaceName"></div>
+              <div class="podium-score" id="thirdPlaceScore"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Ranking Table -->
+    <div class="table-container" id="rankingTableContainer" style="display: none;">
+      <table class="ranking-table" id="rankingTable">
+        <thead>
+          <tr>
+            <th width="10%">رتبه</th>
+            <th width="70%">نام اشتراک کننده</th>
+            <th width="20%">امتیاز</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td colspan="3">
+              <div class="status-container">
+                <div class="status-icon loading-icon">
+                  <i class="fas fa-spinner"></i>
+                </div>
+                <div class="status-message">در حال بارگذاری اطلاعات...</div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Auth Message -->
+    <div id="authMessage" class="auth-container" style="display: none;">
+      <div class="auth-icon">
+        <i class="fas fa-lock"></i>
+      </div>
+      <div class="auth-message">برای مشاهده جدول امتیازات، لطفاً وارد حساب کاربری خود شوید</div>
+      <button class="login-btn" id="loginBtn">
+        <i class="fas fa-sign-in-alt"></i>
+        ورود به سیستم
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyDLfUbSG30O474XPAPY8QpMzo19EMfLWFc",
+    authDomain: "josh-7b6a0.firebaseapp.com",
+    databaseURL: "https://josh-7b6a0-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "josh-7b6a0",
+    storageBucket: "josh-7b6a0.appspot.com",
+    messagingSenderId: "639816255525",
+    appId: "1:639816255525:web:71a3e87374c3e7c68e17cc",
+    measurementId: "G-P2ZSBTN8FP"
+  };
+
+  // Initialize Firebase
+  const app = firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
+  const auth = firebase.auth();
+
+  // Store all teams data
+  let allTeams = [];
+  let lastUpdateTime = null;
+
+  // Check Firebase connection
+  function checkFirebaseConnection() {
+    return new Promise((resolve, reject) => {
+      const connectionRef = database.ref(".info/connected");
+      const timeout = setTimeout(() => {
+        connectionRef.off();
+        reject(new Error("اتصال به سرور زمان گذر کرد. لطفاً اتصال اینترنت خود را بررسی نمایید."));
+      }, 5000);
+
+      connectionRef.on("value", (snapshot) => {
+        if (snapshot.val() === true) {
+          clearTimeout(timeout);
+          connectionRef.off();
+          resolve();
+        }
+      });
+    });
+  }
+
+  // Show loading state
+  function showLoading() {
+    const tbody = document.querySelector("#rankingTable tbody");
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="3">
+          <div class="status-container">
+            <div class="status-icon loading-icon">
+              <i class="fas fa-spinner"></i>
+            </div>
+            <div class="status-message">در حال بارگذاری اطلاعات...</div>
+          </div>
+        </td>
+      </tr>
+    `;
+  }
+
+  // Show error message
+  function showError(message) {
+    const tbody = document.querySelector("#rankingTable tbody");
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="3">
+          <div class="status-container">
+            <div class="status-icon error-icon">
+              <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="status-message">${message}</div>
+            <button class="retry-btn" onclick="loadRankingData()">
+              <i class="fas fa-sync-alt"></i>
+              تلاش مجدد
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }
+
+  // Show empty state
+  function showEmptyState() {
+    const tbody = document.querySelector("#rankingTable tbody");
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="3">
+          <div class="status-container">
+            <div class="status-icon empty-icon">
+              <i class="fas fa-info-circle"></i>
+            </div>
+            <div class="status-message">هیچ اشتراک کننده یافت نشد</div>
+          </div>
+        </td>
+      </tr>
+    `;
+  }
+
+  // Update time display - Now using Gregorian calendar
+  function updateTimeDisplay() {
+    if (!lastUpdateTime) return;
+    
+    const now = new Date();
+    const options = { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      calendar: 'gregory'
+    };
+    
+    document.getElementById('updateTime').textContent = `آخرین بروزرسانی: ${lastUpdateTime.toLocaleDateString('en-US', options)}`;
+  }
+
+  // Format score with commas
+  function formatScore(score) {
+    return score.toFixed(1).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
+  // Load ranking data
+  async function loadRankingData() {
+    try {
+      showLoading();
+      await checkFirebaseConnection();
+      
+      // Get player scores and teams data from database
+      const [playersSnapshot, teamsSnapshot] = await Promise.all([
+        database.ref("fcricket_match1/player_scores").once("value"),
+        database.ref("fcricket_match1").once("value")
+      ]);
+
+      const playersScores = playersSnapshot.val() || {};
+      const allData = teamsSnapshot.val();
+
+      if (!allData) {
+        showEmptyState();
+        return;
+      }
+
+      // Process team data
+      allTeams = [];
+      
+      Object.keys(allData).forEach(key => {
+        if (key === "player_scores") return;
+        
+        const teamData = allData[key];
+        
+        if (!teamData.players || !Array.isArray(teamData.players)) return;
+        
+        let totalScore = 0;
+        
+        // Calculate each player's score
+        teamData.players.forEach(playerName => {
+          const playerKey = Object.keys(playersScores).find(
+            k => decodeURIComponent(k) === playerName
+          );
+          
+          if (playerKey) {
+            totalScore += playersScores[playerKey] || 0;
+          }
+        });
+        
+        // Add captain score (double points)
+        if (teamData.captain) {
+          const captainKey = Object.keys(playersScores).find(
+            k => decodeURIComponent(k) === teamData.captain
+          );
+          if (captainKey) {
+            totalScore += playersScores[captainKey] || 0;
+          }
+        }
+        
+        // Add vice-captain score (half points)
+        if (teamData.viceCaptain) {
+          const viceCaptainKey = Object.keys(playersScores).find(
+            k => decodeURIComponent(k) === teamData.viceCaptain
+          );
+          if (viceCaptainKey) {
+            totalScore += (playersScores[viceCaptainKey] || 0) * 0.5;
+          }
+        }
+        
+        // Store team information - اصلاح شده: استفاده از fullName به جای displayName
+        allTeams.push({
+          key: key,
+          name: teamData.userInfo?.fullName || teamData.userInfo?.displayName || "اشتراک کننده ناشناس",
+          phone: teamData.userInfo?.phone || "",
+          // اصلاح شده: استفاده مستقیم از profilePhoto بدون تغییر
+          photo: teamData.userInfo?.profilePhoto || `https://ui-avatars.com/api/?name=${encodeURIComponent(teamData.userInfo?.fullName || teamData.userInfo?.displayName || "تیم")}&background=${getRandomColor()}`,
+          score: totalScore
+        });
+      });
+
+      // Sort teams by score (descending)
+      allTeams.sort((a, b) => b.score - a.score);
+
+      // Update last update time
+      lastUpdateTime = new Date();
+      
+      // Render the ranking table
+      renderRankingTable(allTeams);
+      updateTimeDisplay();
+      
+    } catch (error) {
+      console.error("Error loading data:", error);
+      showError(error.message || "خطا در دریافت اطلاعات از سرور");
+    }
+  }
+
+  // Generate random color for avatar background
+  function getRandomColor() {
+    const colors = ['6c5ce7', '00b894', '0984e3', 'fd79a8', 'e17055', '00cec9'];
+    return colors[Math.floor(Math.random() * colors.length)];
+  }
+
+  // Image Modal functionality
+  function setupImageModal() {
+    const modal = document.getElementById("imageModal");
+    const modalImg = document.getElementById("modalImage");
+    const closeBtn = document.getElementById("modalClose");
+    
+    // Close modal when clicking on close button
+    closeBtn.onclick = function() {
+      modal.style.display = "none";
+    }
+    
+    // Close modal when clicking outside the image
+    modal.onclick = function(event) {
+      if (event.target === modal) {
+        modal.style.display = "none";
+      }
+    }
+    
+    // Function to open modal with image
+    window.openImageModal = function(imgSrc, userName) {
+      // Check if image source is valid
+      if (!imgSrc || imgSrc.includes('ui-avatars.com')) {
+        // Don't open modal for auto-generated avatars
+        return;
+      }
+      
+      modal.style.display = "flex";
+      modalImg.src = imgSrc;
+      modalImg.alt = `عکس پروفایل ${userName}`;
+    }
+  }
+
+  // Render ranking table
+  function renderRankingTable(teams) {
+    const tbody = document.querySelector("#rankingTable tbody");
+    const podiumContainer = document.getElementById("podiumContainer");
+    
+    // Update podium for top 3 teams
+    if (teams.length >= 3) {
+      podiumContainer.style.display = "block";
+      
+      document.getElementById("firstPlaceName").textContent = teams[0].name;
+      document.getElementById("firstPlaceScore").textContent = formatScore(teams[0].score);
+      
+      document.getElementById("secondPlaceName").textContent = teams[1].name;
+      document.getElementById("secondPlaceScore").textContent = formatScore(teams[1].score);
+      
+      document.getElementById("thirdPlaceName").textContent = teams[2].name;
+      document.getElementById("thirdPlaceScore").textContent = formatScore(teams[2].score);
+    } else {
+      podiumContainer.style.display = "none";
+    }
+    
+    // Render table rows
+    tbody.innerHTML = "";
+    
+    if (teams.length === 0) {
+      showEmptyState();
+      return;
+    }
+    
+    teams.forEach((team, index) => {
+      const row = document.createElement("tr");
+      row.className = "fade-in";
+      
+      let rankClass = "";
+      if (index === 0) rankClass = "gold-rank";
+      else if (index === 1) rankClass = "silver-rank";
+      else if (index === 2) rankClass = "bronze-rank";
+      
+      // Check if the photo is a real image or auto-generated avatar
+      const isRealImage = team.photo && !team.photo.includes('ui-avatars.com');
+      
+      row.innerHTML = `
+        <td class="rank-cell ${rankClass}" data-label="رتبه">
+          ${index + 1}
+          ${index < 3 ? '<i class="fas fa-trophy"></i>' : ''}
+        </td>
+        <td data-label="نام اشتراک کننده">
+          <div class="user-cell">
+            <img src="${team.photo}" class="profile-pic" alt="${team.name}" 
+                 onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(team.name)}&background=${getRandomColor()}'"
+                 ${isRealImage ? `onclick="openImageModal('${team.photo}', '${team.name.replace(/'/g, "\\'")}')"` : 'style="cursor: default;"'}>
+            <div class="user-info">
+              <span class="user-name">${team.name}</span>
+              ${team.phone ? `<span class="user-phone">${team.phone}</span>` : ''}
+            </div>
+          </div>
+        </td>
+        <td class="score-cell" data-label="امتیاز">${formatScore(team.score)}</td>
+      `;
+      
+      tbody.appendChild(row);
+    });
+  }
+
+  // Setup search functionality
+  function setupSearch() {
+    const searchInput = document.getElementById("searchInput");
+    
+    searchInput.addEventListener("input", (e) => {
+      const searchTerm = e.target.value.trim().toLowerCase();
+      
+      if (searchTerm === "") {
+        renderRankingTable(allTeams);
+        return;
+      }
+      
+      const filteredTeams = allTeams.filter(team => 
+        team.name.toLowerCase().includes(searchTerm) || 
+        (team.phone && team.phone.includes(searchTerm))
+      );
+      
+      if (filteredTeams.length > 0) {
+        renderRankingTable(filteredTeams);
+      } else {
+        showEmptyState();
+      }
+    });
+  }
+
+  // Initialize the application
+  function initApp() {
+    // Set up auth state listener
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        // User is signed in - no need to check email verification
+        document.getElementById('authMessage').style.display = 'none';
+        document.getElementById('searchContainer').style.display = 'block';
+        document.getElementById('rankingTableContainer').style.display = 'block';
+        loadRankingData();
+      } else {
+        // User is signed out
+        document.getElementById('authMessage').style.display = 'flex';
+        document.getElementById('searchContainer').style.display = 'none';
+        document.getElementById('rankingTableContainer').style.display = 'none';
+        document.getElementById('podiumContainer').style.display = 'none';
+      }
+    });
+
+    // Set up login button - redirect to Google sign-in
+    document.getElementById('loginBtn').addEventListener('click', () => {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithRedirect(provider);
+    });
+
+    setupSearch();
+    setupImageModal();
+  }
+
+  // Initialize when page loads
+  window.addEventListener('DOMContentLoaded', initApp);
+</script>
+</body>
+</html>
