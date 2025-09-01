@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>بازیکنان برتر - افغانستان و امارات متحده عربی</title>
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font/dist/font-face.css" rel="stylesheet" />
+  <style>
+    :root {
+      --primary-color: #0c4da2;
+      --secondary-color: #a4c5f4;
+      --accent-color: #d81b60;
+      --text-color: #333;
+      --light-gray: #f5f8ff;
+      --white: #ffffff;
+      --card-bg: #ffffff;
+      --header-bg: linear-gradient(to left, #0c4da2, #1e78e0);
+      --afghanistan: #009900;
+      --uae: #CC0000;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    html, body {
+      height: 100%;
+      background-color: var(--light-gray);
+      font-family: Vazir, Tahoma, sans-serif;
+    }
+
+    header {
+      background: var(--header-bg);
+      color: var(--white);
+      padding: 1.5rem;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(12, 77, 162, 0.15);
+      position: relative;
+    }
+
+    .team-logos {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 1rem;
+    }
+
+    .team-logo {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: white;
+      padding: 5px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    .filters {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .filter-btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 2rem;
+      background: var(--white);
+      color: var(--text-color);
+      cursor: pointer;
+      font-family: inherit;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      transition: all 0.3s;
+    }
+
+    .filter-btn.active {
+      background: var(--primary-color);
+      color: white;
+    }
+
+    .players-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .player-card {
+      background-color: var(--card-bg);
+      border-radius: 0.5rem;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      padding: 1rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+    }
+
+    .player-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .player-rank {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-weight: bold;
+      color: var(--primary-color);
+      font-size: 1.1rem;
+      padding-right: 10px;
+    }
+
+    .player-image {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--secondary-color);
+      margin-left: 1rem;
+      margin-right: 2rem;
+    }
+
+    .player-info {
+      flex: 1;
+      margin-right: 2rem;
+    }
+
+    .player-name {
+      font-weight: bold;
+      color: var(--primary-color);
+      font-size: 1.1rem;
+    }
+
+    .player-team {
+      font-size: 0.9rem;
+      color: #555;
+      margin-top: 0.3rem;
+    }
+
+    .player-score {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 0.3rem 0.8rem;
+      border-radius: 1rem;
+      font-weight: bold;
+      margin-left: 0.5rem;
+    }
+
+    .team-afghanistan {
+      border-right: 4px solid var(--afghanistan);
+    }
+
+    .team-uae {
+      border-right: 4px solid var(--uae);
+    }
+
+    .negative-score {
+      background-color: #d81b60;
+    }
+
+    @media (max-width: 600px) {
+      .player-card {
+        padding: 0.8rem;
+      }
+      
+      .player-image {
+        width: 50px;
+        height: 50px;
+        margin-right: 1.5rem;
+      }
+      
+      .player-rank {
+        right: 0.5rem;
+        padding-right: 5px;
+      }
+      
+      .player-info {
+        margin-right: 1.5rem;
+      }
+      
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      .team-logos {
+        gap: 1rem;
+      }
+
+      .team-logo {
+        width: 50px;
+        height: 50px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>بازیکنان برتر - افغانستان و امارات متحده عربی</h1>
+    <div class="team-logos">
+      <img src="https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_160,q_50/lsci/db/PICTURES/CMS/381800/381892.png" alt="افغانستان" class="team-logo">
+      <img src="https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_160,q_50/lsci/db/PICTURES/CMS/382100/382186.png" alt="امارات متحده عربی" class="team-logo">
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="filters">
+      <button class="filter-btn active" data-team="all">همه بازیکنان</button>
+      <button class="filter-btn" data-team="afghanistan">افغانستان</button>
+      <button class="filter-btn" data-team="uae">امارات متحده عربی</button>
+      <button class="filter-btn" data-sort="high">بالاترین امتیاز</button>
+      <button class="filter-btn" data-sort="low">پایین‌ترین امتیاز</button>
+    </div>
+
+    <div class="players-list" id="playersContainer">
+      <!-- بازیکنان به صورت دینامیک درج خواهند شد -->
+    </div>
+  </div>
+
+  <script>
+    // داده‌های بازیکنان
+    const players = [
+      // بازیکنان افغانستان
+      {
+        name: "راشد خان",
+        team: "افغانستان",
+        image: "https://img1.hscicdn.com/image/upload/f_auto,t_h_100_2x/lsci/db/PICTURES/CMS/383200/383228.1.png",
+        score: 72.88,
+        teamClass: "team-afghanistan"
+      },
+      {
+        name: "ابراهیم زدران",
+        team: "افغانستان",
+        image: "https://img1.hscicdn.com/image/upload/f_auto,t_h_100_2x/lsci/db/PICTURES/CMS/383200/383225.1.png",
+        score: 68.4,
+        teamClass: "team-afghanistan"
+      },
+      {
+        name: "صدیق اتل",
+        team: "افغانستان",
+        image: "https://img1.hscicdn.com/image/upload/f_auto,t_h_100_2x/lsci/db/PICTURES/CMS/390600/390614.2.png",
+        score: 57.68,
+        teamClass: "team-afghanistan"
+      },
+      {
+        name: "شرف الدین اشرف",
+        team: "افغانستان",
+        image: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320,q_50/lsci/db/PICTURES/CMS/320500/320508.1.png",
+        score: 35.89,
+        teamClass: "team-afghanistan"
+      },
+      {
+        name: "محمد نبی",
+        team: "افغانستان",
+        image: "https://img1.hscicdn.com/image/upload/f_auto,t_h_100_2x/lsci/db/PICTURES/CMS/381900/381920.2.png",
+        score: 23.95,
+        teamClass: "team-afghanistan"
+      },
+      {
+        name: "فضل الحق فاروقی",
+        team: "افغانستان",
+        image: "https://img1.hscicdn.com/image/upload/f_auto,t_h_100_2x/lsci/db/PICTURES/CMS/383200/383236.1.png",
+        score: 24.96,
+        teamClass: "team-afghanistan"
+      },
+      {
+        name: "عظمت الله عمرزی",
+        team: "افغانستان",
+        image: "https://img1.hscicdn.com/image/upload/f_auto,t_h_100_2x/lsci/db/PICTURES/CMS/383200/383229.1.png",
+        score: 13.74,
+        teamClass: "team-afghanistan"
+      },
+      {
+        name: "کریم جنت",
+        team: "افغانستان",
+        image: "https://img1.hscicdn.com/image/upload/f_auto,t_h_100_2x/lsci/db/PICTURES/CMS/383200/383232.1.png",
+        score: 31.6,
+        teamClass: "team-afghanistan"
+      },
+      {
+        name: "مجیب الرحمان",
+        team: "افغانستان",
+        image: "https://img1.hscicdn.com/image/upload/f_auto,t_h_100_2x/lsci/db/PICTURES/CMS/383200/383240.1.png",
+        score: -1.48,
+        teamClass: "team-afghanistan"
+      },
+      {
+        name: "رحمان الله گربز",
+        team: "افغانستان",
+        image: "https://img1.hscicdn.com/image/upload/f_auto,t_h_100_2x/lsci/db/PICTURES/CMS/383200/383237.1.png",
+        score: -7.73,
+        teamClass: "team-afghanistan"
+      },
+      // بازیکنان امارات متحده عربی
+      {
+        name: "محمد وسیم",
+        team: "امارات متحده عربی",
+        image: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320,q_50/lsci/db/PICTURES/CMS/354900/354962.1.png",
+        score: 51.33,
+        teamClass: "team-uae"
+      },
+      {
+        name: "درویش رسولی",
+        team: "امارات متحده عربی",
+        image: "https://img1.hscicdn.com/image/upload/f_auto,t_h_100_2x/lsci/db/PICTURES/CMS/405300/405309.1.jpg",
+        score: 8.7,
+        teamClass: "team-uae"
+      },
+      {
+        name: "حیدر علی",
+        team: "امارات متحده عربی",
+        image: "https://i.ibb.co/vxqXXZLQ/20250808-225516.jpg",
+        score: 8.22,
+        teamClass: "team-uae"
+      },
+      {
+        name: "راهول چوپرا",
+        team: "امارات متحده عربی",
+        image: "https://i.ibb.co/vxqXXZLQ/20250808-225516.jpg",
+        score: 19.37,
+        teamClass: "team-uae"
+      },
+      {
+        name: "محمد روهید",
+        team: "امارات متحده عربی",
+        image: "https://i.ibb.co/vxqXXZLQ/20250808-225516.jpg",
+        score: 32.25,
+        teamClass: "team-uae"
+      },
+      {
+        name: "آصف خان",
+        team: "امارات متحده عربی",
+        image: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320,q_50/lsci/db/PICTURES/CMS/384200/384242.1.png",
+        score: -4.82,
+        teamClass: "team-uae"
+      },
+      {
+        name: "ایتان دیسوزا",
+        team: "امارات متحده عربی",
+        image: "https://i.ibb.co/vxqXXZLQ/20250808-225516.jpg",
+        score: 3.67,
+        teamClass: "team-uae"
+      },
+      {
+        name: "جنید صدیقی",
+        team: "امارات متحده عربی",
+        image: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320,q_50/lsci/db/PICTURES/CMS/354900/354960.1.png",
+        score: 6.73,
+        teamClass: "team-uae"
+      },
+      {
+        name: "ساغر خان",
+        team: "امارات متحده عربی",
+        image: "https://i.ibb.co/vxqXXZLQ/20250808-225516.jpg",
+        score: 6.82,
+        teamClass: "team-uae"
+      },
+      {
+        name: "محمد ذهیب",
+        team: "امارات متحده عربی",
+        image: "https://i.ibb.co/vxqXXZLQ/20250808-225516.jpg",
+        score: 1.74,
+        teamClass: "team-uae"
+      },
+      {
+        name: "دهروف پراشار",
+        team: "امارات متحده عربی",
+        image: "https://i.ibb.co/vxqXXZLQ/20250808-225516.jpg",
+        score: -6.02,
+        teamClass: "team-uae"
+      },
+      {
+        name: "هارشد کوشیک",
+        team: "امارات متحده عربی",
+        image: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320,q_50/lsci/db/PICTURES/CMS/405400/405475.1.png",
+        score: -14.15,
+        teamClass: "team-uae"
+      }
+    ];
+
+    // مرتب کردن بازیکنان بر اساس امتیاز (نزولی)
+    players.sort((a, b) => b.score - a.score);
+
+    // نمایش بازیکنان
+    const container = document.getElementById('playersContainer');
+    
+    function renderPlayersList(playersToRender) {
+      container.innerHTML = '';
+      
+      playersToRender.forEach((player, index) => {
+        const playerCard = document.createElement('div');
+        playerCard.className = `player-card ${player.teamClass}`;
+        
+        // تعیین کلاس برای امتیاز منفی
+        const scoreClass = player.score < 0 ? 'negative-score' : '';
+        
+        playerCard.innerHTML = `
+          <div class="player-rank">${index + 1}</div>
+          <img src="${player.image}" alt="${player.name}" class="player-image" onerror="this.src='https://i.ibb.co/vxqXXZLQ/20250808-225516.jpg'">
+          <div class="player-info">
+            <div class="player-name">${player.name}</div>
+            <div class="player-team">${player.team}</div>
+          </div>
+          <div class="player-score ${scoreClass}">${player.score}</div>
+        `;
+        
+        container.appendChild(playerCard);
+      });
+    }
+    
+    // فیلتر کردن بازیکنان
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    
+    filterButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+        
+        const team = button.getAttribute('data-team');
+        const sort = button.getAttribute('data-sort');
+        
+        let filteredPlayers = [...players];
+        
+        // فیلتر بر اساس تیم
+        if (team === 'afghanistan') {
+          filteredPlayers = players.filter(player => player.team === 'افغانستان');
+        } else if (team === 'uae') {
+          filteredPlayers = players.filter(player => player.team === 'امارات متحده عربی');
+        }
+        
+        // مرتب‌سازی
+        if (sort === 'high') {
+          filteredPlayers.sort((a, b) => b.score - a.score);
+        } else if (sort === 'low') {
+          filteredPlayers.sort((a, b) => a.score - b.score);
+        }
+        
+        renderPlayersList(filteredPlayers);
+      });
+    });
+    
+    // نمایش اولیه
+    renderPlayersList(players);
+  </script>
+</body>
+</html>
