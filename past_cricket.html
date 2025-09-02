@@ -1,3 +1,4 @@
+<xaiArtifact artifact_id="b1897e73-3610-4d02-882b-1ecb1535c0f2" artifact_version_id="8a760099-5846-45e7-8e7c-9f048e5ddf7d" title="past_matches.html" contentType="text/html">
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -8,6 +9,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
   <style>
     :root {
       --primary: #800000;
@@ -274,6 +278,27 @@
       background-color: var(--primary-light);
     }
 
+    .loading,
+    .empty-state {
+      text-align: center;
+      padding: var(--space-xl);
+      grid-column: 1 / -1;
+    }
+
+    .loading-spinner {
+      width: 3rem;
+      height: 3rem;
+      border: 4px solid rgba(128, 0, 0, 0.1);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto var(--space-md);
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
     @media (max-width: 768px) {
       .header-title {
         font-size: 1.5rem;
@@ -308,133 +333,272 @@
 
   <nav class="tabs-container" aria-label="دسته بندی بازی ها">
     <div class="tabs-scroll">
-      <ul class="tabs" role="tablist">
-        <li class="tab" role="presentation">
-          <button 
-            class="tab-button" 
-            id="afg-pak-uae-tab" 
-            role="tab" 
-            aria-selected="true" 
-            aria-controls="afg-pak-uae-matches"
-            data-category="afg-pak-uae"
-          >
-            AFG vs PAK vs UAE
-          </button>
-        </li>
+      <ul class="tabs" role="tablist" id="categoriesTabList">
+        <!-- تب‌های دسته‌بندی به صورت پویا ایجاد می‌شوند -->
       </ul>
     </div>
   </nav>
 
   <main class="container">
-    <div class="matches-grid" id="matchList" role="tabpanel" aria-labelledby="afg-pak-uae-tab">
-      <article class="match-card" aria-labelledby="match-afg-pak-title">
-        <div class="match-header">
-          <h3 id="match-afg-pak-title" class="match-title"> بازی اول </h3>
-        </div>
-        
-        <div class="match-teams">
-          <div class="team">
-            <img 
-              src="https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_160,q_50/lsci/db/PICTURES/CMS/381800/381892.png" 
-              alt="افغانستان" 
-              class="team-logo" 
-              loading="lazy"
-              width="56"
-              height="56"
-            />
-            <span class="team-name">افغانستان</span>
-          </div>
-          
-          <span class="vs" aria-hidden="true">vs</span>
-          
-          <div class="team">
-            <img 
-              src="https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_160,q_50/lsci/db/PICTURES/CMS/381800/381891.png" 
-              alt="پاکستان" 
-              class="team-logo" 
-              loading="lazy"
-              width="56"
-              height="56"
-            />
-            <span class="team-name">پاکستان</span>
-          </div>
-        </div>
-        
-        <div class="match-details">
-          <div class="match-time">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M12 6V12L16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            7:30pm
-          </div>
-          
-          <div class="match-date">29 آگست 2025</div>
-          <div class="match-type">T20 بین المللی</div>
-        </div>
-        
-        <div class="match-actions">
-          <a href="pcricket_match4.html" class="action-button">
-            جزئیات بیشتر
-            <span class="sr-only">برای بازی افغانستان vs پاکستان</span>
-          </a>
-        </div>
-      </article>
-
-      <article class="match-card" aria-labelledby="match-afg-uae-title">
-        <div class="match-header">
-          <h3 id="match-afg-uae-title" class="match-title"> بازی دوم </h3>
-        </div>
-        
-        <div class="match-teams">
-          <div class="team">
-            <img 
-              src="https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_160,q_50/lsci/db/PICTURES/CMS/381800/381892.png" 
-              alt="افغانستان" 
-              class="team-logo" 
-              loading="lazy"
-              width="56"
-              height="56"
-            />
-            <span class="team-name">افغانستان</span>
-          </div>
-          
-          <span class="vs" aria-hidden="true">vs</span>
-          
-          <div class="team">
-            <img 
-              src="https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_160,q_50/lsci/db/PICTURES/CMS/382100/382186.png" 
-              alt="امارات متحده عربی" 
-              class="team-logo" 
-              loading="lazy"
-              width="56"
-              height="56"
-            />
-            <span class="team-name">امارات متحده عربی</span>
-          </div>
-        </div>
-        
-        <div class="match-details">
-          <div class="match-time">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M12 6V12L16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            7:30pm
-          </div>
-          
-          <div class="match-date">1 سپتامبر 2025</div>
-          <div class="match-type">T20 بین المللی</div>
-        </div>
-        
-        <div class="match-actions">
-          <a href="pcricket_match1.html" class="action-button">
-            جزئیات بیشتر
-            <span class="sr-only">برای بازی افغانستان vs امارات متحده عربی</span>
-          </a>
-        </div>
-      </article>
+    <div class="matches-grid" id="matchList" role="tabpanel">
+      <div class="loading">
+        <div class="loading-spinner" aria-hidden="true"></div>
+        <p>در حال بارگذاری بازی ها...</p>
+      </div>
     </div>
   </main>
+
+  <script>
+    // پیکربندی Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyCxGP77HDOGd6awe2fFhL8CTDWj5CIwdFs",
+      authDomain: "mamoon-e8637.firebaseapp.com",
+      databaseURL: "https://mamoon-e8637-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "mamoon-e8637",
+      storageBucket: "mamoon-e8637.firebasestorage.app",
+      messagingSenderId: "96252428643",
+      appId: "1:96252428643:web:a5021864bb4ba054199356",
+      measurementId: "G-WX1ZPNR7GB"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    // داده های مسابقات و دسته‌بندی‌ها
+    let matchesData = {};
+    let categories = [];
+    let currentCategory = '';
+
+    // عناصر DOM
+    const matchList = document.getElementById('matchList');
+    const categoriesTabList = document.getElementById('categoriesTabList');
+
+    // بارگذاری داده‌ها از Firebase
+    function loadMatches() {
+      showLoading();
+      const matchesRef = database.ref('past_cricket/matches');
+      const categoriesRef = database.ref('past_cricket/categories');
+      
+      // بارگذاری دسته‌بندی‌ها
+      categoriesRef.on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          categories = data;
+          renderCategoryTabs();
+        } else {
+          // اگر داده‌ای وجود ندارد، دسته‌بندی پیش‌فرض ایجاد کنید
+          categories = ['afg-pak-uae'];
+          categoriesRef.set(categories)
+            .then(() => {
+              renderCategoryTabs();
+            });
+        }
+      });
+      
+      // بارگذاری مسابقات
+      matchesRef.on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          matchesData = data;
+        } else {
+          // اگر داده‌ای وجود ندارد، نمونه‌های اولیه را بارگذاری کنید
+          matchesData = {
+            'afg-pak-uae': [
+              { 
+                id: "match1",
+                title: "بازی اول", 
+                date: "29 آگست 2025",
+                time: "7:30pm",
+                type: "T20 بین المللی",
+                link: "pcricket_match4.html", 
+                team1Logo: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_160,q_50/lsci/db/PICTURES/CMS/381800/381892.png", 
+                team2Logo: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_160,q_50/lsci/db/PICTURES/CMS/381800/381891.png",
+                team1Name: "افغانستان",
+                team2Name: "پاکستان"
+              },
+              { 
+                id: "match2",
+                title: "بازی دوم", 
+                date: "1 سپتامبر 2025",
+                time: "7:30pm",
+                type: "T20 بین المللی",
+                link: "pcricket_match5.html",
+                team1Logo: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_160,q_50/lsci/db/PICTURES/CMS/381800/381892.png",
+                team2Logo: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_160,q_50/lsci/db/PICTURES/CMS/382100/382186.png",
+                team1Name: "افغانستان",
+                team2Name: "امارات متحده عربی"
+              }
+            ]
+          };
+          // ذخیره داده‌های اولیه در Firebase
+          matchesRef.set(matchesData);
+        }
+        
+        // نمایش مسابقات دسته‌بندی پیش‌فرض
+        if (categories.length > 0) {
+          currentCategory = categories[0];
+          renderMatches(currentCategory);
+        }
+      }, (error) => {
+        console.error('خطا در بارگذاری داده‌ها:', error);
+        matchList.innerHTML = `
+          <div class="empty-state">
+            <p>خطا در بارگذاری بازی‌ها. لطفا دوباره تلاش کنید.</p>
+          </div>
+        `;
+      });
+    }
+
+    // ایجاد تب‌های دسته‌بندی
+    function renderCategoryTabs() {
+      categoriesTabList.innerHTML = '';
+      
+      categories.forEach((category, index) => {
+        const tab = document.createElement('li');
+        tab.className = 'tab';
+        tab.innerHTML = `
+          <button 
+            class="tab-button" 
+            id="${category}-tab" 
+            role="tab" 
+            aria-selected="${index === 0 ? 'true' : 'false'}" 
+            aria-controls="${category}-matches"
+            data-category="${category}"
+          >
+            ${category}
+          </button>
+        `;
+        categoriesTabList.appendChild(tab);
+      });
+    }
+
+    // نمایش حالت بارگذاری
+    function showLoading() {
+      matchList.innerHTML = `
+        <div class="loading">
+          <div class="loading-spinner" aria-hidden="true"></div>
+          <p>در حال بارگذاری بازی ها...</p>
+        </div>
+      `;
+    }
+
+    // نمایش مسابقات بر اساس دسته بندی
+    function renderMatches(category) {
+      currentCategory = category;
+      
+      // به روزرسانی تب فعال
+      document.querySelectorAll('[role="tab"]').forEach(tab => {
+        const isSelected = tab.dataset.category === category;
+        tab.setAttribute('aria-selected', isSelected);
+        if (isSelected) {
+          tab.classList.add('active');
+        } else {
+          tab.classList.remove('active');
+        }
+      });
+      
+      // پاک کردن لیست فعلی
+      matchList.innerHTML = '';
+      
+      // بررسی وجود مسابقات
+      if (!matchesData[category] || matchesData[category].length === 0) {
+        matchList.innerHTML = `
+          <div class="empty-state">
+            <p>هیچ بازی گذشته‌ای در این دسته وجود ندارد</p>
+          </div>
+        `;
+        return;
+      }
+      
+      // ایجاد کارت‌های مسابقه
+      matchesData[category].forEach(match => {
+        const matchCard = document.createElement('article');
+        matchCard.className = 'match-card';
+        matchCard.setAttribute('aria-labelledby', `match-${match.id}-title`);
+        
+        matchCard.innerHTML = `
+          <div class="match-header">
+            <h3 id="match-${match.id}-title" class="match-title">${match.title}</h3>
+          </div>
+          
+          <div class="match-teams">
+            <div class="team">
+              <img 
+                src="${match.team1Logo}" 
+                alt="${match.team1Name}" 
+                class="team-logo" 
+                loading="lazy"
+                width="56"
+                height="56"
+              />
+              <span class="team-name">${match.team1Name}</span>
+            </div>
+            
+            <span class="vs" aria-hidden="true">vs</span>
+            
+            <div class="team">
+              <img 
+                src="${match.team2Logo}" 
+                alt="${match.team2Name}" 
+                class="team-logo" 
+                loading="lazy"
+                width="56"
+                height="56"
+              />
+              <span class="team-name">${match.team2Name}</span>
+            </div>
+          </div>
+          
+          <div class="match-details">
+            <div class="match-time">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12 6V12L16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              ${match.time}
+            </div>
+            
+            <div class="match-date">${match.date}</div>
+            <div class="match-type">${match.type}</div>
+          </div>
+          
+          <div class="match-actions">
+            <a href="${match.link}" class="action-button">
+              جزئیات بیشتر
+              <span class="sr-only">برای بازی ${match.title}</span>
+            </a>
+          </div>
+        `;
+        
+        matchList.appendChild(matchCard);
+      });
+    }
+
+    // مدیریت رویدادهای تب‌ها
+    document.addEventListener('DOMContentLoaded', () => {
+      // بارگذاری اولیه از Firebase
+      loadMatches();
+      
+      // رویداد کلیک برای تب‌ها
+      document.querySelector('[role="tablist"]').addEventListener('click', (e) => {
+        const tabButton = e.target.closest('[role="tab"]');
+        if (tabButton) {
+          renderMatches(tabButton.dataset.category);
+        }
+      });
+      
+      // پشتیبانی از صفحه کلید برای تب‌ها
+      document.querySelectorAll('[role="tab"]').forEach(tab => {
+        tab.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            renderMatches(e.target.dataset.category);
+          }
+        });
+      });
+    });
+  </script>
 </body>
 </html>
+</xaiArtifact>
