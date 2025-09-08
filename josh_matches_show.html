@@ -1,0 +1,1909 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>انتخاب بازی و تیم</title>
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font/dist/font-face.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <style>
+    :root {
+      --primary-color: #1e40af; /* آبی عمیق مدرن */
+      --primary-light: #3b82f6; /* آبی روشن */
+      --secondary-color: #4b5563; /* خاکستری تیره */
+      --accent-color: #22d3ee; /* سبز نئونی */
+      --text-color: #111827; /* خاکستری تیره برای متن */
+      --text-light: #6b7280; /* خاکستری روشن */
+      --light-gray: #f3f4f6; /* خاکستری بسیار روشن */
+      --border-color: #e5e7eb; /* مرز خاکستری */
+      --white: #ffffff;
+      --card-bg: #ffffff;
+      --header-bg: linear-gradient(135deg, #1e40af, #3b82f6);
+      --cricket-color: #059669; /* سبز کریکت */
+      --football-color: #2563eb; /* آبی فوتبال */
+      --filter-bg: #f1f5f9;
+      --success-color: #22d3ee;
+      --warning-color: #f59e0b;
+      --error-color: #ef4444;
+      --border-radius: 1rem;
+      --border-radius-sm: 0.5rem;
+      --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      --box-shadow-hover: 0 6px 12px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease-in-out;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Vazir, -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--light-gray);
+      color: var(--text-color);
+      line-height: 1.75;
+      padding-bottom: 5rem;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* Header Styles */
+    header {
+      background: var(--header-bg);
+      color: var(--white);
+      padding: 2rem 0;
+      margin-bottom: 2rem;
+      box-shadow: var(--box-shadow);
+      position: relative;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .header-content {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    #countdown {
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .match-details {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      font-size: 0.95rem;
+    }
+
+    .match-detail-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 0.5rem 1rem;
+      border-radius: var(--border-radius-sm);
+    }
+
+    /* Search Container */
+    .search-container {
+      position: relative;
+      margin-bottom: 2rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .search-icon {
+      position: absolute;
+      right: 1.2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--primary-light);
+      font-size: 1.3rem;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.85rem 3rem 0.85rem 1.5rem;
+      border-radius: 2rem;
+      border: 1px solid var(--border-color);
+      font-size: 1rem;
+      background-color: var(--white);
+      box-shadow: var(--box-shadow);
+      transition: var(--transition);
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+    }
+
+    /* Category Filters */
+    .category-filters {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      background-color: var(--filter-bg);
+      padding: 1.25rem;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+    }
+
+    .category-btn {
+      padding: 0.75rem 2rem;
+      border: none;
+      border-radius: var(--border-radius-sm);
+      background-color: var(--white);
+      color: var(--text-color);
+      cursor: pointer;
+      font-family: Vazir;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: var(--transition);
+      box-shadow: var(--box-shadow);
+    }
+
+    .category-btn:hover {
+      background: linear-gradient(135deg, var(--primary-light), var(--primary-color));
+      color: var(--white);
+      transform: translateY(-2px);
+    }
+
+    .category-btn.active {
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+      color: var(--white);
+    }
+
+    .category-btn.cricket.active {
+      background: var(--cricket-color);
+    }
+
+    .category-btn.football.active {
+      background: var(--football-color);
+    }
+
+    /* League Filters */
+    .league-filters {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      background-color: var(--filter-bg);
+      padding: 1.25rem;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+    }
+
+    .league-btn {
+      padding: 0.75rem 2rem;
+      border: none;
+      border-radius: var(--border-radius-sm);
+      background-color: var(--white);
+      color: var(--text-color);
+      cursor: pointer;
+      font-family: Vazir;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: var(--transition);
+      box-shadow: var(--box-shadow);
+    }
+
+    .league-btn:hover {
+      background: linear-gradient(135deg, var(--primary-light), var(--primary-color));
+      color: var(--white);
+      transform: translateY(-2px);
+    }
+
+    .league-btn.active {
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+      color: var(--white);
+    }
+
+    /* Matches Grid */
+    .matches-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .match-card {
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      box-shadow: var(--box-shadow);
+      transition: var(--transition);
+      cursor: pointer;
+    }
+
+    .match-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--box-shadow-hover);
+    }
+
+    .match-card.selected {
+      border: 3px solid var(--primary-color);
+      box-shadow: var(--box-shadow-hover);
+    }
+
+    .match-header {
+      padding: 1.25rem;
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+      color: var(--white);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .match-title {
+      font-weight: 600;
+      font-size: 1.2rem;
+    }
+
+    .match-category {
+      padding: 0.5rem 1rem;
+      border-radius: var(--border-radius-sm);
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--white);
+    }
+
+    .match-category.cricket {
+      background-color: var(--cricket-color);
+    }
+
+    .match-category.football {
+      background-color: var(--football-color);
+    }
+
+    .match-teams {
+      padding: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .team {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+    }
+
+    .team-logo {
+      width: 70px;
+      height: 70px;
+      object-fit: contain;
+      margin-bottom: 1rem;
+      border-radius: 50%;
+      background: var(--white);
+      padding: 10px;
+      box-shadow: var(--box-shadow);
+      transition: var(--transition);
+    }
+
+    .match-card:hover .team-logo {
+      transform: scale(1.1);
+    }
+
+    .team-name {
+      text-align: center;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .vs {
+      padding: 0 1rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      font-size: 1.3rem;
+    }
+
+    .match-date {
+      padding: 1rem;
+      background-color: var(--light-gray);
+      text-align: center;
+      font-size: 0.95rem;
+      color: var(--text-light);
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      justify-content: center;
+      border-bottom: 3px solid var(--border-color);
+      margin-bottom: 2rem;
+    }
+
+    .tab-btn {
+      padding: 1rem 2rem;
+      background: none;
+      border: none;
+      border-bottom: 4px solid transparent;
+      color: var(--text-color);
+      cursor: pointer;
+      font-family: Vazir;
+      font-weight: 600;
+      font-size: 1.1rem;
+      transition: var(--transition);
+    }
+
+    .tab-btn:hover {
+      color: var(--primary-light);
+      border-bottom-color: var(--primary-light);
+    }
+
+    .tab-btn.active {
+      border-bottom-color: var(--primary-color);
+      color: var(--primary-color);
+    }
+
+    .content-section {
+      display: none;
+    }
+
+    /* Teams Container */
+    .teams-container {
+      display: flex;
+      flex-direction: row;
+      gap: 1.5rem;
+      padding: 1rem;
+    }
+
+    .team-section {
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      box-shadow: var(--box-shadow);
+      flex: 0 0 50%;
+    }
+
+    .team-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .team-logo-small {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: contain;
+      margin-left: 1rem;
+      box-shadow: var(--box-shadow);
+    }
+
+    .team-name-header {
+      font-weight: 600;
+      font-size: 1.4rem;
+      color: var(--primary-color);
+    }
+
+    /* Role Filter */
+    .role-filter {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .role-btn {
+      padding: 0.5rem 1.25rem;
+      border: none;
+      border-radius: var(--border-radius-sm);
+      background-color: var(--filter-bg);
+      color: var(--text-color);
+      cursor: pointer;
+      font-family: Vazir;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: var(--transition);
+    }
+
+    .role-btn:hover {
+      background: linear-gradient(135deg, var(--primary-light), var(--primary-color));
+      color: var(--white);
+      transform: translateY(-2px);
+    }
+
+    .role-btn.active {
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+      color: var(--white);
+    }
+
+    .players-list {
+      list-style: none;
+      max-height: 600px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--primary-light) var(--light-gray);
+    }
+
+    .players-list::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .players-list::-webkit-scrollbar-track {
+      background: var(--light-gray);
+      border-radius: 10px;
+    }
+
+    .players-list::-webkit-scrollbar-thumb {
+      background: var(--primary-light);
+      border-radius: 10px;
+    }
+
+    .player-item {
+      display: flex;
+      align-items: center;
+      padding: 1rem;
+      border-radius: var(--border-radius-sm);
+      margin-bottom: 0.75rem;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: var(--box-shadow);
+      background-color: var(--white);
+    }
+
+    .player-item:hover {
+      background-color: var(--light-gray);
+      transform: translateX(5px);
+      box-shadow: var(--box-shadow-hover);
+    }
+
+    .player-item.selected {
+      background-color: rgba(34, 211, 238, 0.1);
+      border-left: 4px solid var(--success-color);
+    }
+
+    .player-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-left: 1rem;
+      box-shadow: var(--box-shadow);
+    }
+
+    .player-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .player-name {
+      font-weight: 600;
+      font-size: 1rem;
+      white-space: normal;
+      overflow-wrap: break-word;
+    }
+
+    .player-role {
+      font-size: 0.9rem;
+      color: var(--text-light);
+      background-color: var(--filter-bg);
+      padding: 0.3rem 0.85rem;
+      border-radius: var(--border-radius-sm);
+      display: inline-block;
+      margin-top: 0.3rem;
+    }
+
+    /* Selection Info */
+    .selection-info {
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 1.75rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--box-shadow);
+    }
+
+    .selection-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+    }
+
+    .selected-count {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .count-badge {
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+      color: var(--white);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background-color: var(--light-gray);
+      border-radius: var(--border-radius-sm);
+      margin-bottom: 1rem;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+      transition: width 0.3s ease-in-out;
+    }
+
+    .team-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .team-badge {
+      padding: 0.5rem 1.25rem;
+      border-radius: var(--border-radius-sm);
+      background-color: var(--light-gray);
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    .team-badge.warning {
+      color: var(--error-color);
+      background-color: rgba(239, 68, 68, 0.1);
+    }
+
+    .captain-selection {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .select-container {
+      margin-bottom: 1.25rem;
+    }
+
+    .select-container label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      font-size: 1.1rem;
+    }
+
+    select {
+      width: 100%;
+      padding: 0.85rem;
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius-sm);
+      background-color: var(--white);
+      color: var(--text-color);
+      font-family: Vazir;
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+
+    select:focus {
+      outline: none;
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+    }
+
+    /* Submit Button */
+    .submit-btn {
+      width: 100%;
+      padding: 1.25rem;
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+      color: var(--white);
+      border: none;
+      border-radius: var(--border-radius);
+      font-size: 1.2rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: var(--box-shadow);
+    }
+
+    .submit-btn:hover:not(:disabled) {
+      background: linear-gradient(135deg, var(--primary-light), var(--primary-color));
+      transform: translateY(-3px);
+      box-shadow: var(--box-shadow-hover);
+    }
+
+    .submit-btn:disabled {
+      background: var(--text-light);
+      cursor: not-allowed;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: var(--white);
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* My Team Container */
+    .my-team-container {
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 1.75rem;
+      box-shadow: var(--box-shadow);
+      margin-bottom: 2rem;
+    }
+
+    .my-team-container h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1.25rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .team-players {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .team-player {
+      display: flex;
+      align-items: center;
+      padding: 1rem;
+      background-color: var(--light-gray);
+      border-radius: var(--border-radius-sm);
+      box-shadow: var(--box-shadow);
+      transition: var(--transition);
+    }
+
+    .team-player:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--box-shadow-hover);
+    }
+
+    /* User Info Section */
+    .user-info-section {
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 1.75rem;
+      box-shadow: var(--box-shadow);
+    }
+
+    .user-info-section h3 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 1.25rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .user-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+      margin: 0 auto 1.25rem;
+      box-shadow: var(--box-shadow);
+    }
+
+    .user-info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .user-info-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem;
+      background-color: var(--light-gray);
+      border-radius: var(--border-radius-sm);
+      box-shadow: var(--box-shadow);
+    }
+
+    .user-info-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    /* Skeleton Loading */
+    .skeleton-card {
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      box-shadow: var(--box-shadow);
+      margin-bottom: 1.5rem;
+      animation: pulse 1.5s infinite ease-in-out;
+    }
+
+    .skeleton-text {
+      background-color: var(--light-gray);
+      height: 18px;
+      border-radius: var(--border-radius-sm);
+      margin-bottom: 0.75rem;
+    }
+
+    .skeleton-circle {
+      background-color: var(--light-gray);
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+
+    .animate-fadeIn {
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* No Results */
+    .no-results {
+      text-align: center;
+      padding: 2.5rem;
+      color: var(--text-light);
+    }
+
+    .no-results i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .matches-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .category-filters, .league-filters {
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .category-btn, .league-btn {
+        width: 100%;
+        padding: 0.85rem;
+      }
+
+      .captain-selection {
+        grid-template-columns: 1fr;
+      }
+
+      .tabs {
+        flex-wrap: wrap;
+      }
+
+      .tab-btn {
+        flex: 1;
+        min-width: 140px;
+        text-align: center;
+      }
+
+      .teams-container {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .team-section {
+        flex: 0 0 100%;
+      }
+
+      .player-name {
+        font-size: 0.95rem;
+      }
+
+      header h1 {
+        font-size: 1.75rem;
+      }
+
+      .team-logo {
+        width: 60px;
+        height: 60px;
+      }
+
+      .player-avatar {
+        width: 48px;
+        height: 48px;
+      }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="header-content">
+    <h1 id="matchTitle">بازی های آینده </h1>
+    <div id="countdown">
+      <i class="fas fa-clock"></i> 
+      <span id="countdownText">لطفاً یک بازی انتخاب کنید</span>
+    </div>
+    <div class="match-details">
+      <div class="match-detail-item">
+        <i class="fas fa-calendar"></i>
+        <span id="matchDate">تاریخ بازی</span>
+      </div>
+      <div class="match-detail-item">
+        <i class="fas fa-tag"></i>
+        <span id="matchCategory">دسته بندی</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div id="appContent" style="display: none;">
+  <div class="container">
+    <div class="search-container">
+      <i class="fas fa-search search-icon"></i>
+      <input type="text" id="searchInput" class="search-input" placeholder="جستجوی بازی ها بر اساس عنوان، تیم یا دسته بندی...">
+    </div>
+
+    <div class="category-filters">
+      <button class="category-btn active" data-category="all">همه</button>
+      <button class="category-btn cricket" data-category="cricket">کریکت</button>
+      <button class="category-btn football" data-category="football">فوتبال</button>
+    </div>
+
+    <div id="leagueFilters" class="league-filters" style="display: none;">
+      <!-- لیگ‌ها اینجا بارگذاری می‌شوند -->
+    </div>
+
+    <div id="matchesContainer" class="matches-grid">
+      <!-- بازی‌ها اینجا بارگذاری می‌شوند -->
+    </div>
+  </div>
+
+  <div id="teamSelection" style="display: none;">
+    <div class="container">
+      <div class="tabs">
+        <button class="tab-btn active" onclick="showTab('select')">
+          <i class="fas fa-users"></i> انتخاب بازیکنان
+        </button>
+        <button class="tab-btn" onclick="showTab('team')">
+          <i class="fas fa-list-check"></i> تیم من
+        </button>
+      </div>
+
+      <div id="select" class="content-section">
+        <div class="teams-container">
+          <div class="team-section">
+            <div class="team-header">
+              <img id="team1Logo" src="https://via.placeholder.com/48" alt="تیم اول" class="team-logo-small">
+              <div class="team-name-header" id="team1Name">تیم اول</div>
+            </div>
+            <div class="role-filter" id="team1RoleFilter">
+              <!-- فیلتر نقش‌ها اینجا اضافه می‌شود -->
+            </div>
+            <ul id="team1List" class="players-list">
+              <!-- بازیکنان تیم اول اینجا بارگذاری می‌شوند -->
+            </ul>
+          </div>
+
+          <div class="team-section">
+            <div class="team-header">
+              <img id="team2Logo" src="https://via.placeholder.com/48" alt="تیم دوم" class="team-logo-small">
+              <div class="team-name-header" id="team2Name">تیم دوم</div>
+            </div>
+            <div class="role-filter" id="team2RoleFilter">
+              <!-- فیلتر نقش‌ها اینجا اضافه می‌شود -->
+            </div>
+            <ul id="team2List" class="players-list">
+              <!-- بازیکنان تیم دوم اینجا بارگذاری می‌شوند -->
+            </ul>
+          </div>
+        </div>
+
+        <div class="selection-info">
+          <div class="selection-header">
+            <div class="selected-count">
+              <span>بازیکنان انتخاب شده:</span>
+              <div class="count-badge" id="selectedCount">0</div>
+              <span>از ۱۱</span>
+            </div>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+          </div>
+          <div class="team-badges">
+            <div class="team-badge" id="team1Badge">تیم اول: 0</div>
+            <div class="team-badge" id="team2Badge">تیم دوم: 0</div>
+          </div>
+
+          <div class="captain-selection">
+            <div class="select-container">
+              <label for="captainSelect">کپتان:</label>
+              <select id="captainSelect">
+                <option value="">انتخاب کپتان</option>
+              </select>
+            </div>
+
+            <div class="select-container">
+              <label for="viceCaptainSelect">معاون کپتان:</label>
+              <select id="viceCaptainSelect">
+                <option value="">انتخاب معاون کپتان</option>
+              </select>
+            </div>
+          </div>
+
+          <button id="submitBtn" class="submit-btn" onclick="submitTeam()" disabled>
+            <span id="btnText">ثبت تیم</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="team" class="content-section">
+        <div class="my-team-container">
+          <h2><i class="fas fa-users"></i> تیم من</h2>
+          <ul id="myTeamList" class="team-players">
+            <!-- تیم کاربر اینجا بارگذاری می‌شود -->
+          </ul>
+        </div>
+
+        <div id="userInfoSection" class="user-info-section">
+          <!-- اطلاعات کاربر اینجا بارگذاری می‌شود -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyDLfUbSG30O474XPAPY8QpMzo19EMfLWFc",
+    authDomain: "josh-7b6a0.firebaseapp.com",
+    databaseURL: "https://josh-7b6a0-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "josh-7b6a0",
+    storageBucket: "josh-7b6a0.appspot.com",
+    messagingSenderId: "639816255525",
+    appId: "1:639816255525:web:71a3e87374c3e7c68e17cc",
+    measurementId: "G-P2ZSBTN8FP"
+  };
+
+  const app = firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
+  const auth = firebase.auth();
+
+  let selectedPlayers = new Set();
+  let userTeamData = null;
+  let matchInfo = null;
+  let playersData = { team1: [], team2: [] };
+  let currentMatchKey = '';
+  let allMatches = [];
+  let allLeagues = {};
+  let currentCategory = 'all';
+  let currentLeague = 'all';
+  let searchQuery = '';
+  let team1CurrentRole = 'all';
+  let team2CurrentRole = 'all';
+
+  function formatTime(isoString) {
+    if (!isoString) return 'ساعت نامشخص';
+    try {
+      const date = new Date(isoString);
+      let hours = date.getHours();
+      const minutes = date.getMinutes();
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12 || 12;
+      const minutesStr = minutes < 10 ? `0${minutes}` : minutes;
+      return `${hours}:${minutesStr} ${ampm}`;
+    } catch (error) {
+      console.error('Error formatting time:', error);
+      return 'ساعت نامعتبر';
+    }
+  }
+
+  function initApp() {
+    checkAuthState();
+    loadAvailableMatches();
+    setupEventListeners();
+  }
+
+  function setupEventListeners() {
+    document.querySelectorAll('.category-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentCategory = btn.dataset.category;
+        currentLeague = 'all';
+        document.querySelectorAll('.category-btn').forEach(b => {
+          b.classList.remove('active');
+          if (b.dataset.category === currentCategory) {
+            b.classList.add('active');
+          }
+        });
+        const leagueFilters = document.getElementById('leagueFilters');
+        if (currentCategory === 'all') {
+          leagueFilters.style.display = 'none';
+        } else {
+          leagueFilters.style.display = 'flex';
+          renderLeagueFilters();
+        }
+        filterAndSearchMatches();
+      });
+    });
+
+    const searchInput = document.getElementById('searchInput');
+    let searchTimeout;
+    searchInput.addEventListener('input', () => {
+      searchQuery = searchInput.value.trim();
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        filterAndSearchMatches();
+      }, 300);
+    });
+  }
+
+  function checkAuthState() {
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        if (user.providerData && user.providerData[0] && user.providerData[0].providerId === 'password' && !user.emailVerified) {
+          showVerifyPrompt();
+        } else {
+          document.getElementById('appContent').style.display = 'block';
+        }
+      } else {
+        Swal.fire({
+          title: 'نیاز به ورود',
+          text: 'برای انتخاب تیم باید وارد حساب کاربری خود شوید.',
+          icon: 'warning',
+          confirmButtonText: 'متوجه شدم',
+          confirmButtonColor: '#1e40af'
+        });
+        document.getElementById('appContent').style.display = 'none';
+      }
+    });
+  }
+
+  function loadAvailableMatches() {
+    const matchesContainer = document.getElementById('matchesContainer');
+    matchesContainer.innerHTML = `
+      <div class="skeleton-card animate-fadeIn">
+        <div class="skeleton-text" style="width: 70%; height: 24px; margin-bottom: 1rem;"></div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <div class="skeleton-circle"></div>
+          <div style="width: 40px; text-align: center;">
+            <div class="skeleton-text" style="width: 30px; height: 20px; margin: 0 auto;"></div>
+          </div>
+          <div class="skeleton-circle"></div>
+        </div>
+        <div class="skeleton-text" style="width: 50%; margin: 0 auto;"></div>
+      </div>
+      <div class="skeleton-card animate-fadeIn">
+        <div class="skeleton-text" style="width: 70%; height: 24px; margin-bottom: 1rem;"></div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <div class="skeleton-circle"></div>
+          <div style="width: 40px; text-align: center;">
+            <div class="skeleton-text" style="width: 30px; height: 20px; margin: 0 auto;"></div>
+          </div>
+          <div class="skeleton-circle"></div>
+        </div>
+        <div class="skeleton-text" style="width: 50%; margin: 0 auto;"></div>
+      </div>
+    `;
+
+    database.ref('joshteams/').once('value').then(snapshot => {
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        allMatches = [];
+        allLeagues = { cricket: new Set(), football: new Set() };
+
+        Object.keys(data).forEach(key => {
+          if (data[key].matchInfo) {
+            const matchData = data[key].matchInfo;
+            const isCricket = key.startsWith('fcricket_');
+            const category = isCricket ? 'cricket' : 'football';
+            const league = matchData.league || matchData.category || 'لیگ ناشناخته';
+
+            const match = {
+              id: key,
+              title: matchData.title || key.replace('_', ' ').replace('fcricket', 'کریکت').replace('ffootball', 'فوتبال'),
+              category: category,
+              categoryName: isCricket ? 'کریکت' : 'فوتبال',
+              league: league,
+              date: matchData.date || 'تاریخ نامشخص',
+              time: matchData.time || '',
+              teams: matchData.teams || {
+                team1: { name: "تیم اول", logo: "https://via.placeholder.com/60?text=لوگو" },
+                team2: { name: "تیم دوم", logo: "https://via.placeholder.com/60?text=لوگو" }
+              }
+            };
+
+            allMatches.push(match);
+
+            if (category === 'cricket') {
+              allLeagues.cricket.add(league);
+            } else if (category === 'football') {
+              allLeagues.football.add(league);
+            }
+          }
+        });
+
+        if (allMatches.length === 0) {
+          matchesContainer.innerHTML = `
+            <div class="no-results animate-fadeIn">
+              <i class="fas fa-exclamation-circle"></i>
+              <p>هیچ بازی ای یافت نشد.</p>
+            </div>
+          `;
+          return;
+        }
+
+        filterAndSearchMatches();
+      } else {
+        matchesContainer.innerHTML = `
+          <div class="no-results animate-fadeIn">
+            <i class="fas fa-exclamation-circle"></i>
+            <p>هیچ بازی ای یافت نشد.</p>
+          </div>
+        `;
+      }
+    }).catch(error => {
+      console.error('Error loading matches:', error);
+      matchesContainer.innerHTML = `
+        <div class="no-results animate-fadeIn">
+          <i class="fas fa-exclamation-triangle"></i>
+          <p>مشکلی در بارگذاری بازی ها به وجود آمد.</p>
+          <button onclick="loadAvailableMatches()" class="tab-btn" style="margin-top: 1rem;">
+            <i class="fas fa-redo"></i> تلاش مجدد
+          </button>
+        </div>
+      `;
+    });
+  }
+
+  function renderLeagueFilters() {
+    const leagueFilters = document.getElementById('leagueFilters');
+    const leagues = currentCategory === 'cricket' ? [...allLeagues.cricket] : [...allLeagues.football];
+
+    leagueFilters.innerHTML = '<button class="league-btn active" data-league="all">همه لیگ ها</button>';
+
+    leagues.forEach(league => {
+      leagueFilters.innerHTML += `<button class="league-btn" data-league="${league}">${league}</button>`;
+    });
+
+    document.querySelectorAll('.league-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentLeague = btn.dataset.league;
+        document.querySelectorAll('.league-btn').forEach(b => {
+          b.classList.remove('active');
+          if (b.dataset.league === currentLeague) {
+            b.classList.add('active');
+          }
+        });
+        filterAndSearchMatches();
+      });
+    });
+  }
+
+  function filterAndSearchMatches() {
+    let filteredMatches = allMatches;
+
+    if (currentCategory !== 'all') {
+      filteredMatches = filteredMatches.filter(match => match.category === currentCategory);
+    }
+
+    if (currentLeague !== 'all') {
+      filteredMatches = filteredMatches.filter(match => match.league === currentLeague);
+    }
+
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filteredMatches = filteredMatches.filter(match => 
+        match.title.toLowerCase().includes(query) ||
+        match.teams.team1.name.toLowerCase().includes(query) ||
+        match.teams.team2.name.toLowerCase().includes(query) ||
+        match.categoryName.toLowerCase().includes(query) ||
+        match.league.toLowerCase().includes(query)
+      );
+    }
+
+    renderMatches(filteredMatches);
+  }
+
+  function renderMatches(matches) {
+    const matchesContainer = document.getElementById('matchesContainer');
+
+    if (matches.length === 0) {
+      matchesContainer.innerHTML = `
+        <div class="no-results animate-fadeIn">
+          <i class="fas fa-search"></i>
+          <p>هیچ بازی ای مطابق با جستجوی شما یافت نشد.</p>
+        </div>
+      `;
+      return;
+    }
+
+    matchesContainer.innerHTML = '';
+
+    matches.forEach(match => {
+      const matchCard = document.createElement('div');
+      matchCard.className = 'match-card animate-fadeIn';
+      matchCard.setAttribute('data-match-id', match.id);
+      matchCard.onclick = () => selectMatch(match.id, match);
+
+      matchCard.innerHTML = `
+        <div class="match-header">
+          <div class="match-title">${match.title}</div>
+          <div class="match-category ${match.category}">
+            ${match.categoryName}
+          </div>
+        </div>
+        <div class="match-teams">
+          <div class="team">
+            <img src="${match.teams.team1.logo || 'https://via.placeholder.com/60?text=لوگو'}" 
+                 alt="${match.teams.team1.name}" 
+                 class="team-logo"
+                 onerror="this.src='https://via.placeholder.com/60?text=لوگو'">
+            <div class="team-name">${match.teams.team1.name}</div>
+          </div>
+          <div class="vs">VS</div>
+          <div class="team">
+            <img src="${match.teams.team2.logo || 'https://via.placeholder.com/60?text=لوگو'}" 
+                 alt="${match.teams.team2.name}" 
+                 class="team-logo"
+                 onerror="this.src='https://via.placeholder.com/60?text=لوگو'">
+            <div class="team-name">${match.teams.team2.name}</div>
+          </div>
+        </div>
+        <div class="match-date">
+          <div>${match.date}</div>
+          <div>${formatTime(match.time)}</div>
+        </div>
+      `;
+
+      matchesContainer.appendChild(matchCard);
+    });
+  }
+
+  function selectMatch(matchKey, matchData) {
+    currentMatchKey = matchKey;
+    matchInfo = matchData;
+
+    const matchCards = document.querySelectorAll('.match-card');
+    matchCards.forEach(card => {
+      card.classList.remove('selected');
+      card.style.opacity = '0.6';
+    });
+
+    const selectedCard = document.querySelector(`.match-card[data-match-id="${matchKey}"]`);
+    if (selectedCard) {
+      selectedCard.classList.add('selected');
+      selectedCard.style.opacity = '1';
+    }
+
+    loadMatchData();
+  }
+
+  function loadMatchData() {
+    document.getElementById('team1List').innerHTML = `
+      ${Array(5).fill().map(() => `
+        <li class="player-item">
+          <div class="skeleton-circle" style="width: 56px; height: 56px;"></div>
+          <div class="player-info">
+            <div class="skeleton-text" style="width: 140px;"></div>
+            <div class="skeleton-text" style="width: 100px;"></div>
+          </div>
+        </li>
+      `).join('')}
+    `;
+    document.getElementById('team2List').innerHTML = document.getElementById('team1List').innerHTML;
+
+    database.ref('joshteams/' + currentMatchKey).once('value').then(snapshot => {
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        matchInfo = data.matchInfo || {};
+
+        if (data.players) {
+          playersData = {
+            team1: Array.isArray(data.players.team1) ? data.players.team1 : [],
+            team2: Array.isArray(data.players.team2) ? data.players.team2 : []
+          };
+        } else if (data.playerList) {
+          playersData = {
+            team1: Array.isArray(data.playerList.team1) ? data.playerList.team1 : [],
+            team2: Array.isArray(data.playerList.team2) ? data.playerList.team2 : []
+          };
+        } else {
+          playersData = { team1: [], team2: [] };
+        }
+
+        if (!matchInfo.teams) {
+          matchInfo.teams = {
+            team1: { name: "تیم اول", logo: "https://via.placeholder.com/60?text=لوگو" },
+            team2: { name: "تیم دوم", logo: "https://via.placeholder.com/60?text=لوگو" }
+          };
+        }
+
+        updateUIWithMatchInfo();
+        renderRoleFilters();
+        renderPlayers();
+        setupCountdown();
+        document.getElementById('matchesContainer').style.display = 'none';
+        document.getElementById('teamSelection').style.display = 'block';
+        showTab('select');
+        loadUserTeam();
+      } else {
+        showError('خطا', 'بازی مورد نظر یافت نشد.');
+      }
+    }).catch(error => {
+      console.error('Error loading match data:', error);
+      showError('خطا', 'مشکلی در بارگذاری اطلاعات بازی به وجود آمد. لطفاً اتصال اینترنت خود را بررسی کنید یا بعداً تلاش کنید.');
+    });
+  }
+
+  function updateUIWithMatchInfo() {
+    if (!matchInfo) return;
+
+    document.getElementById('matchTitle').textContent = `انتخاب بازیکنان - ${matchInfo.title || 'بازی بدون عنوان'}`;
+    document.title = `انتخاب بازیکن - ${matchInfo.title || 'بازی بدون عنوان'}`;
+    document.getElementById('matchDate').textContent = matchInfo.date || 'تاریخ نامشخص';
+    document.getElementById('matchCategory').textContent = matchInfo.league || matchInfo.category || 'دسته بندی نامشخص';
+
+    const team1Logo = document.getElementById('team1Logo');
+    const team2Logo = document.getElementById('team2Logo');
+    const team1Name = document.getElementById('team1Name');
+    const team2Name = document.getElementById('team2Name');
+
+    if (team1Logo && matchInfo.teams?.team1?.logo) {
+      team1Logo.src = matchInfo.teams.team1.logo;
+      team1Logo.onerror = function() { this.src = 'https://via.placeholder.com/48?text=لوگو'; };
+    } else {
+      team1Logo.src = 'https://via.placeholder.com/48?text=لوگو';
+    }
+
+    if (team2Logo && matchInfo.teams?.team2?.logo) {
+      team2Logo.src = matchInfo.teams.team2.logo;
+      team2Logo.onerror = function() { this.src = 'https://via.placeholder.com/48?text=لوگو'; };
+    } else {
+      team2Logo.src = 'https://via.placeholder.com/48?text=لوگو';
+    }
+
+    team1Name.textContent = matchInfo.teams?.team1?.name || 'تیم اول';
+    team2Name.textContent = matchInfo.teams?.team2?.name || 'تیم دوم';
+  }
+
+  function setupCountdown() {
+    if (!matchInfo || !matchInfo.time) {
+      document.getElementById('countdownText').textContent = 'زمان بازی تنظیم نشده است';
+      document.getElementById('submitBtn').disabled = true;
+      return;
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+  }
+
+  function updateCountdown() {
+    const countdownElement = document.getElementById('countdownText');
+
+    if (matchInfo.time) {
+      try {
+        const matchTime = new Date(matchInfo.time);
+        const now = new Date();
+
+        if (matchTime > now) {
+          const diff = matchTime - now;
+          const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+          countdownElement.textContent = `زمان باقی‌مانده: ${days} روز، ${hours} ساعت، ${minutes} دقیقه، ${seconds} ثانیه`;
+          document.getElementById('submitBtn').disabled = false;
+        } else {
+          countdownElement.textContent = 'زمان بازی به پایان رسیده است';
+          document.getElementById('submitBtn').disabled = true;
+        }
+      } catch (error) {
+        console.error('Error parsing match time:', error);
+        countdownElement.textContent = 'زمان بازی نامعتبر است';
+        document.getElementById('submitBtn').disabled = true;
+      }
+    } else {
+      countdownElement.textContent = 'زمان بازی تنظیم نشده است';
+      document.getElementById('submitBtn').disabled = true;
+    }
+  }
+
+  function renderRoleFilters() {
+    const roles = new Set();
+    [...playersData.team1, ...playersData.team2].forEach(player => {
+      if (typeof player !== 'string' && player.role) {
+        roles.add(player.role);
+      }
+    });
+
+    const roleFiltersHTML = `<button class="role-btn active" data-role="all">همه نقش ها</button>` + [...roles].map(role => `
+      <button class="role-btn" data-role="${role}">${role}</button>
+    `).join('');
+
+    document.getElementById('team1RoleFilter').innerHTML = roleFiltersHTML;
+    document.getElementById('team2RoleFilter').innerHTML = roleFiltersHTML;
+
+    document.querySelectorAll('#team1RoleFilter .role-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        team1CurrentRole = btn.dataset.role;
+        document.querySelectorAll('#team1RoleFilter .role-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderPlayers();
+      });
+    });
+
+    document.querySelectorAll('#team2RoleFilter .role-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        team2CurrentRole = btn.dataset.role;
+        document.querySelectorAll('#team2RoleFilter .role-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderPlayers();
+      });
+    });
+  }
+
+  function renderPlayers() {
+    const team1List = document.getElementById('team1List');
+    const team2List = document.getElementById('team2List');
+
+    let filteredTeam1 = playersData.team1;
+    if (team1CurrentRole !== 'all') {
+      filteredTeam1 = filteredTeam1.filter(player => typeof player !== 'string' && player.role === team1CurrentRole);
+    }
+
+    team1List.innerHTML = filteredTeam1.length === 0 ? 
+      '<p class="no-results">هیچ بازیکنی یافت نشد.</p>' : 
+      filteredTeam1.map(player => {
+        const playerName = typeof player === 'string' ? player : (player.name || 'بازیکن ناشناس');
+        const playerImage = typeof player === 'string' ? 'https://via.placeholder.com/56' : 
+                           (player.img || player.image || player.avatar || 'https://via.placeholder.com/56');
+        const playerRole = typeof player === 'string' ? 'بازیکن' : (player.role || 'بازیکن');
+
+        return `
+          <li class="player-item ${selectedPlayers.has(playerName) ? 'selected' : ''}" onclick="togglePlayerSelection(this, '${playerName}', 'team1')">
+            <img src="${playerImage}" alt="${playerName}" class="player-avatar" 
+                 onerror="this.src='https://via.placeholder.com/56'">
+            <div class="player-info">
+              <div class="player-name">${playerName}</div>
+              <span class="player-role">${playerRole}</span>
+            </div>
+          </li>
+        `;
+      }).join('');
+
+    let filteredTeam2 = playersData.team2;
+    if (team2CurrentRole !== 'all') {
+      filteredTeam2 = filteredTeam2.filter(player => typeof player !== 'string' && player.role === team2CurrentRole);
+    }
+
+    team2List.innerHTML = filteredTeam2.length === 0 ? 
+      '<p class="no-results">هیچ بازیکنی یافت نشد.</p>' : 
+      filteredTeam2.map(player => {
+        const playerName = typeof player === 'string' ? player : (player.name || 'بازیکن ناشناس');
+        const playerImage = typeof player === 'string' ? 'https://via.placeholder.com/56' : 
+                           (player.img || player.image || player.avatar || 'https://via.placeholder.com/56');
+        const playerRole = typeof player === 'string' ? 'بازیکن' : (player.role || 'بازیکن');
+
+        return `
+          <li class="player-item ${selectedPlayers.has(playerName) ? 'selected' : ''}" onclick="togglePlayerSelection(this, '${playerName}', 'team2')">
+            <img src="${playerImage}" alt="${playerName}" class="player-avatar" 
+                 onerror="this.src='https://via.placeholder.com/56'">
+            <div class="player-info">
+              <div class="player-name">${playerName}</div>
+              <span class="player-role">${playerRole}</span>
+            </div>
+          </li>
+        `;
+      }).join('');
+
+    updateSelectionBadges();
+  }
+
+  function togglePlayerSelection(element, playerName, team) {
+    const isSelected = element.classList.contains('selected');
+    const teamCount = [...selectedPlayers].filter(p => 
+      playersData[team]?.some(x => 
+        (typeof x === 'string' && x === p) || (x.name === p)
+      )
+    ).length;
+
+    if (!isSelected) {
+      if (selectedPlayers.size >= 11) {
+        showError('حداکثر تعداد', 'شما نمیتوانید بیش از ۱۱ بازیکن انتخاب کنید');
+        return;
+      }
+
+      if (teamCount >= 7) {
+        const teamName = team === 'team1' ? matchInfo.teams.team1.name : matchInfo.teams.team2.name;
+        showError('حداکثر از یک تیم', `شما نمیتوانید بیش از ۷ بازیکن از ${teamName} انتخاب کنید`);
+        return;
+      }
+
+      selectedPlayers.add(playerName);
+      element.classList.add('selected');
+    } else {
+      selectedPlayers.delete(playerName);
+      element.classList.remove('selected');
+    }
+
+    updateDropdowns();
+    updateSelectionBadges();
+    document.getElementById('submitBtn').disabled = selectedPlayers.size !== 11;
+  }
+
+  function updateSelectionBadges() {
+    const selectedCount = document.getElementById('selectedCount');
+    const team1Badge = document.getElementById('team1Badge');
+    const team2Badge = document.getElementById('team2Badge');
+    const progressFill = document.getElementById('progressFill');
+
+    const team1Count = [...selectedPlayers].filter(p => 
+      playersData.team1?.some(x => 
+        (typeof x === 'string' && x === p) || (x.name === p)
+      )
+    ).length;
+
+    const team2Count = [...selectedPlayers].filter(p => 
+      playersData.team2?.some(x => 
+        (typeof x === 'string' && x === p) || (x.name === p)
+      )
+    ).length;
+
+    selectedCount.textContent = selectedPlayers.size;
+    team1Badge.textContent = `${matchInfo.teams?.team1?.name || 'تیم اول'}: ${team1Count}`;
+    team2Badge.textContent = `${matchInfo.teams?.team2?.name || 'تیم دوم'}: ${team2Count}`;
+    progressFill.style.width = `${(selectedPlayers.size / 11) * 100}%`;
+
+    team1Badge.classList.toggle('warning', team1Count >= 7);
+    team2Badge.classList.toggle('warning', team2Count >= 7);
+  }
+
+  function updateDropdowns() {
+    const captainSelect = document.getElementById('captainSelect');
+    const viceCaptainSelect = document.getElementById('viceCaptainSelect');
+
+    captainSelect.innerHTML = '<option value="">انتخاب کپتان</option>';
+    viceCaptainSelect.innerHTML = '<option value="">انتخاب معاون کپتان</option>';
+
+    [...selectedPlayers].forEach(player => {
+      captainSelect.innerHTML += `<option value="${player}">${player}</option>`;
+      viceCaptainSelect.innerHTML += `<option value="${player}">${player}</option>`;
+    });
+  }
+
+  async function submitTeam() {
+    try {
+      const user = auth.currentUser;
+
+      if (!user) {
+        Swal.fire({
+          title: 'نیاز به ورود',
+          text: 'برای ثبت تیم باید وارد حساب کاربری خود شوید.',
+          icon: 'warning',
+          confirmButtonText: 'متوجه شدم',
+          confirmButtonColor: '#1e40af'
+        });
+        return;
+      }
+
+      if (user.providerData && user.providerData[0] && user.providerData[0].providerId === 'password' && !user.emailVerified) {
+        showVerifyPrompt();
+        return;
+      }
+
+      const captain = document.getElementById('captainSelect').value;
+      const viceCaptain = document.getElementById('viceCaptainSelect').value;
+
+      if (!captain || !viceCaptain) {
+        showError('انتخاب ناقص', 'لطفاً هم کپتان و هم معاون کپتان را انتخاب کنید');
+        return;
+      }
+
+      if (captain === viceCaptain) {
+        showError('انتخاب نامعتبر', 'کپتان و معاون کپتان نمیتوانند یک نفر باشند');
+        return;
+      }
+
+      const btn = document.getElementById('submitBtn');
+      const btnText = document.getElementById('btnText');
+      const originalText = btnText.innerHTML;
+      btn.disabled = true;
+      btnText.innerHTML = '<div class="loading"></div> در حال ثبت...';
+
+      let userData = {};
+      try {
+        const userSnapshot = await database.ref('users/' + user.uid).once('value');
+        userData = userSnapshot.val() || {};
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+
+      const teamData = {
+        players: Array.from(selectedPlayers),
+        captain,
+        viceCaptain,
+        userInfo: {
+          uid: user.uid,
+          email: user.email,
+          fullName: userData.fullname || user.displayName || 'کاربر ناشناس',
+          phone: userData.phone || 'ثبت نشده',
+          profilePhoto: userData.profilePhoto || user.photoURL || 'https://via.placeholder.com/100',
+          displayName: user.displayName || userData.fullname || 'کاربر'
+        },
+        createdAt: firebase.database.ServerValue.TIMESTAMP,
+        lastUpdated: firebase.database.ServerValue.TIMESTAMP
+      };
+
+      const storagePath = matchInfo.storagePath || currentMatchKey;
+
+      await database.ref(storagePath + '/' + user.uid).set(teamData);
+
+      userTeamData = teamData;
+      btnText.innerHTML = originalText;
+      btn.disabled = false;
+
+      Swal.fire({
+        title: 'ثبت موفق!',
+        text: 'تیم شما با موفقیت ثبت شد.',
+        icon: 'success',
+        confirmButtonText: 'متوجه شدم',
+        confirmButtonColor: '#1e40af',
+        timer: 3000
+      }).then(() => {
+        showTab('team');
+        renderMyTeam();
+      });
+
+    } catch (error) {
+      console.error('Error submitting team:', error);
+      const btn = document.getElementById('submitBtn');
+      const btnText = document.getElementById('btnText');
+      btn.disabled = false;
+      btnText.textContent = 'ثبت تیم';
+
+      let errorMessage = 'مشکلی در ثبت تیم به وجود آمد. لطفاً دوباره تلاش کنید.';
+
+      if (error.code === 'PERMISSION_DENIED') {
+        errorMessage = 'شما مجوز ثبت تیم را ندارید. لطفاً با پشتیبانی تماس بگیرید.';
+      } else if (error.code === 'DATABASE_ERROR') {
+        errorMessage = 'خطای ارتباط با پایگاه داده. لطفاً اتصال اینترنت خود را بررسی کنید.';
+      }
+
+      showError('خطا در ثبت', errorMessage);
+    }
+  }
+
+  async function loadUserTeam() {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    try {
+      const storagePath = matchInfo.storagePath || currentMatchKey;
+
+      const teamSnapshot = await database.ref(storagePath + '/' + user.uid).once('value');
+
+      if (teamSnapshot.exists()) {
+        userTeamData = teamSnapshot.val();
+        renderMyTeam();
+
+        if (userTeamData.players) {
+          userTeamData.players.forEach(playerName => {
+            selectedPlayers.add(playerName);
+
+            const playerItems = document.querySelectorAll('.player-item');
+            playerItems.forEach(item => {
+              if (item.textContent.includes(playerName)) {
+                item.classList.add('selected');
+              }
+            });
+          });
+
+          updateDropdowns();
+          updateSelectionBadges();
+        }
+      }
+    } catch (error) {
+      console.error('Error loading user team:', error);
+    }
+  }
+
+  function renderMyTeam() {
+    if (!userTeamData) {
+      document.getElementById('myTeamList').innerHTML = '<p class="no-results">شما هنوز تیمی ثبت نکرده اید.</p>';
+      return;
+    }
+
+    const { players, captain, viceCaptain, userInfo } = userTeamData;
+
+    const playersList = players.map(player => {
+      const isCaptain = player === captain;
+      const isViceCaptain = player === viceCaptain;
+      const role = isCaptain ? 'کپتان' : isViceCaptain ? 'معاون' : '';
+
+      return `
+        <li class="team-player">
+          <img src="${getPlayerImage(player)}" 
+               alt="${player}" class="player-avatar" 
+               onerror="this.src='https://via.placeholder.com/56'">
+          <div class="player-info">
+            <div class="player-name">${player}</div>
+            ${role ? `<span class="player-role">${role}</span>` : ''}
+          </div>
+        </li>
+      `;
+    }).join('');
+
+    document.getElementById('myTeamList').innerHTML = playersList;
+
+    const userInfoSection = document.getElementById('userInfoSection');
+    userInfoSection.innerHTML = `
+      <h3><i class="fas fa-user"></i> اطلاعات ثبت کننده</h3>
+      <img src="${userInfo.profilePhoto}" alt="عکس پروفایل" class="user-avatar" 
+           onerror="this.src='https://via.placeholder.com/100'">
+      <div class="user-info-grid">
+        <div class="user-info-item">
+          <div class="user-info-icon">
+            <i class="fas fa-user-circle"></i>
+          </div>
+          <div>
+            <div>نام کامل</div>
+            <div><strong>${userInfo.fullName}</strong></div>
+          </div>
+        </div>
+        <div class="user-info-item">
+          <div class="user-info-icon">
+            <i class="fas fa-envelope"></i>
+          </div>
+          <div>
+            <div>ایمیل</div>
+            <div><strong>${userInfo.email}</strong></div>
+          </div>
+        </div>
+        <div class="user-info-item">
+          <div class="user-info-icon">
+            <i class="fas fa-phone"></i>
+          </div>
+          <div>
+            <div>تلفن</div>
+            <div><strong>${userInfo.phone}</strong></div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function getPlayerImage(playerName) {
+    for (const team of ['team1', 'team2']) {
+      const player = playersData[team]?.find(p => {
+        if (typeof p === 'string') {
+          return p === playerName;
+        } else {
+          return p.name === playerName;
+        }
+      });
+
+      if (player) {
+        if (typeof player === 'string') {
+          return 'https://via.placeholder.com/56';
+        } else {
+          return player.img || player.image || player.avatar || 'https://via.placeholder.com/56';
+        }
+      }
+    }
+    return 'https://via.placeholder.com/56';
+  }
+
+  function showTab(tabName) {
+    document.querySelectorAll('.content-section').forEach(tab => {
+      tab.style.display = 'none';
+    });
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.classList.remove('active');
+    });
+
+    document.getElementById(tabName).style.display = 'block';
+    document.querySelector(`.tab-btn[onclick="showTab('${tabName}')"]`).classList.add('active');
+
+    if (tabName === 'team') {
+      renderMyTeam();
+    } else if (tabName === 'select') {
+      renderPlayers();
+    }
+  }
+
+  function showError(title, message) {
+    Swal.fire({
+      title: title,
+      text: message,
+      icon: 'error',
+      confirmButtonText: 'متوجه شدم',
+      confirmButtonColor: '#1e40af'
+    });
+  }
+
+  function showVerifyPrompt() {
+    Swal.fire({
+      title: 'تأیید ایمیل نیاز است',
+      html: 'لطفاً ابتدا ایمیل خود را تأیید کنید. اگر ایمیل تأیید را دریافت نکرده اید، میتوانید دوباره آن را ارسال کنید.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'ارسال دوباره ایمیل تأیید',
+      cancelButtonText: 'بعداً',
+      confirmButtonColor: '#1e40af'
+    }).then(result => {
+      if (result.isConfirmed) {
+        auth.currentUser.sendEmailVerification()
+          .then(() => {
+            Swal.fire({
+              title: 'ایمیل ارسال شد',
+              text: 'لینک تأیید به ایمیل شما ارسال شد. لطفاً صندوق ورودی خود را بررسی کنید.',
+              icon: 'success',
+              confirmButtonText: 'متوجه شدم',
+              confirmButtonColor: '#1e40af'
+            });
+          })
+          .catch(error => {
+            console.error('Error sending verification email:', error);
+            showError('خطا', 'مشکلی در ارسال ایمیل تأیید به وجود آمد.');
+          });
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    initApp();
+  });
+</script>
+</body>
+</html>

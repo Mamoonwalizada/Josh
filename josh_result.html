@@ -1,0 +1,1825 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>رده بندی فانتزی | انتخاب بازی</title>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font/dist/font-face.css" rel="stylesheet" />
+  <style>
+    :root {
+      --primary-color: #1e3a8a; /* آبی تیره مدرن */
+      --primary-light: #3b82f6; /* آبی روشن */
+      --secondary-color: #4b5563; /* خاکستری تیره */
+      --accent-color: #10b981; /* سبز زمردی */
+      --text-color: #1f2937; /* خاکستری تیره برای متن */
+      --text-light: #6b7280; /* خاکستری روشن */
+      --light-gray: #f9fafb; /* خاکستری بسیار روشن */
+      --border-color: #e5e7eb; /* مرز خاکستری */
+      --white: #ffffff;
+      --card-bg: #ffffff;
+      --header-bg: linear-gradient(135deg, #1e3a8a, #3b82f6);
+      --team-card-bg: #f8fafc;
+      --cricket-color: #059669; /* سبز کریکت */
+      --cricket-light: #ecfdf5;
+      --football-color: #2563eb; /* آبی فوتبال */
+      --football-light: #eff6ff;
+      --filter-bg: #f1f5f9;
+      --gold: #facc15; /* طلایی مدرن */
+      --silver: #9ca3af; /* نقره‌ای */
+      --bronze: #f97316; /* برنزی */
+      --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
+      --radius-sm: 0.5rem;
+      --radius-md: 0.75rem;
+      --radius-lg: 1rem;
+      --transition: all 0.2s ease-in-out;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+      background-color: var(--light-gray);
+      font-family: Vazir, -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text-color);
+      line-height: 1.75;
+    }
+
+    /* Header Styles */
+    header {
+      background: var(--header-bg);
+      color: var(--white);
+      padding: 2rem;
+      text-align: center;
+      box-shadow: var(--shadow-md);
+      position: relative;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, rgba(255,255,255,0.1), transparent);
+      opacity: 0.2;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 0;
+      position: relative;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 2.5rem auto;
+      padding: 0 1.5rem;
+    }
+
+    /* Section Headers */
+    .section-header {
+      text-align: center;
+      color: var(--primary-color);
+      margin-bottom: 2rem;
+      font-size: 1.5rem;
+      font-weight: 600;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--border-color);
+      position: relative;
+    }
+
+    .section-header::before,
+    .section-header::after {
+      content: none;
+    }
+
+    /* Card Styles */
+    .card {
+      background-color: var(--card-bg);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+    }
+
+    /* Subscribers Section */
+    .subscribers-section {
+      margin-bottom: 2.5rem;
+    }
+
+    .subscribers-container {
+      display: flex;
+      flex-direction: row; /* همیشه افقی */
+      overflow-x: auto;
+      gap: 1rem; /* کاهش فاصله برای فضای بهتر */
+      padding: 1.5rem;
+      scrollbar-width: thin;
+      scrollbar-color: var(--primary-light) var(--light-gray);
+    }
+
+    .subscribers-container::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    .subscribers-container::-webkit-scrollbar-track {
+      background: var(--light-gray);
+      border-radius: 10px;
+    }
+
+    .subscribers-container::-webkit-scrollbar-thumb {
+      background: var(--primary-light);
+      border-radius: 10px;
+    }
+
+    .subscriber-card {
+      flex: 0 0 auto;
+      width: 240px; /* عرض کمی کوچکتر برای رسپانسیو بهتر */
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .subscriber-header {
+      padding: 1.5rem;
+      text-align: center;
+      background: var(--primary-color);
+      color: var(--white);
+    }
+
+    .subscriber-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    .subscriber-image {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--white);
+      margin: 0 auto 0.75rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .subscriber-card:hover .subscriber-image {
+      transform: scale(1.1);
+    }
+
+    .subscriber-name {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .subscriber-details {
+      padding: 1.5rem;
+      background: var(--white);
+    }
+
+    .subscriber-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .info-label {
+      font-weight: 500;
+      color: var(--text-light);
+      font-size: 0.9rem;
+    }
+
+    .info-value {
+      font-weight: 600;
+    }
+
+    .category-badge {
+      padding: 0.4rem 1rem;
+      border-radius: 1.5rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--white);
+    }
+
+    .cricket-badge {
+      background-color: var(--cricket-color);
+    }
+
+    .football-badge {
+      background-color: var(--football-color);
+    }
+
+    .score-badge {
+      padding: 0.4rem 1rem;
+      border-radius: 1.5rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #facc15, #f97316);
+      color: var(--white);
+    }
+
+    /* Category Filter */
+    .category-filter {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      background-color: var(--filter-bg);
+      padding: 1rem;
+      border-radius: var(--radius-md);
+      gap: 0.75rem;
+    }
+
+    .filter-btn {
+      padding: 0.75rem 1.75rem;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-family: Vazir;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: var(--transition);
+      background-color: var(--white);
+      color: var(--text-color);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .filter-btn:hover {
+      background-color: var(--primary-light);
+      color: var(--white);
+    }
+
+    .filter-btn.active {
+      background-color: var(--primary-color);
+      color: var(--white);
+    }
+
+    .filter-btn.cricket.active {
+      background-color: var(--cricket-color);
+    }
+
+    .filter-btn.football.active {
+      background-color: var(--football-color);
+    }
+
+    /* League Filter */
+    .league-filter {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      background-color: var(--filter-bg);
+      padding: 1rem;
+      border-radius: var(--radius-md);
+      gap: 0.75rem;
+    }
+
+    .league-btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: var(--radius-sm);
+      background-color: var(--white);
+      color: var(--text-color);
+      cursor: pointer;
+      font-family: Vazir;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .league-btn:hover {
+      background-color: var(--primary-light);
+      color: var(--white);
+    }
+
+    .league-btn.active {
+      background-color: var(--primary-color);
+      color: var(--white);
+    }
+
+    /* Search */
+    .search-container {
+      margin-bottom: 2rem;
+      position: relative;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.75rem 3rem 0.75rem 1.5rem;
+      border-radius: 2rem;
+      border: 1px solid var(--border-color);
+      font-size: 1rem;
+      background-color: var(--white);
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--primary-light);
+      font-size: 1.2rem;
+    }
+
+    /* Matches */
+    .matches-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .match-card {
+      background-color: var(--team-card-bg);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+      cursor: pointer;
+    }
+
+    .match-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .match-header {
+      padding: 1.5rem;
+      text-align: center;
+      background: var(--primary-color);
+      color: var(--white);
+    }
+
+    .match-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .match-category {
+      padding: 0.4rem 1rem;
+      border-radius: 1.5rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--white);
+    }
+
+    .cricket {
+      background-color: var(--cricket-color);
+    }
+
+    .football {
+      background-color: var(--football-color);
+    }
+
+    .match-teams {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem;
+    }
+
+    .team {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      flex: 1;
+    }
+
+    .team-logo {
+      width: 70px;
+      height: 70px;
+      object-fit: contain;
+      margin-bottom: 0.75rem;
+      border-radius: 50%;
+      background: var(--white);
+      padding: 8px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .match-card:hover .team-logo {
+      transform: scale(1.15);
+    }
+
+    .team-name {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .vs {
+      font-weight: 700;
+      margin: 0 1.5rem;
+      color: var(--primary-color);
+      font-size: 1.3rem;
+    }
+
+    .match-date {
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+      color: var(--text-light);
+      background-color: var(--white);
+      border-top: 1px solid var(--border-color);
+    }
+
+    /* Ranking Section */
+    .ranking-section {
+      display: none;
+      margin-top: 2.5rem;
+    }
+
+    .back-button {
+      background-color: var(--primary-color);
+      color: var(--white);
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius-sm);
+      margin-bottom: 2rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: Vazir;
+      font-weight: 600;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .back-button:hover {
+      background-color: var(--primary-light);
+      box-shadow: var(--shadow-md);
+    }
+
+    /* Podium Styles */
+    .podium-container {
+      background: var(--white);
+      padding: 2rem;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 2rem;
+    }
+
+    .podium-title {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: var(--primary-color);
+      font-weight: 600;
+      font-size: 1.4rem;
+    }
+
+    .podium {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      height: 240px;
+      gap: 1rem;
+      padding: 0 1rem;
+    }
+
+    .podium-step {
+      flex: 1;
+      max-width: 160px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: var(--transition);
+    }
+
+    .podium-step:hover {
+      transform: translateY(-6px);
+    }
+
+    .podium-rank {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--white);
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .podium-1 {
+      height: 200px;
+      background: linear-gradient(135deg, var(--gold), #fefcbf);
+    }
+
+    .podium-2 {
+      height: 160px;
+      background: linear-gradient(135deg, var(--silver), #e2e8f0);
+    }
+
+    .podium-3 {
+      height: 120px;
+      background: linear-gradient(135deg, var(--bronze), #fed7aa);
+    }
+
+    .podium-badge {
+      position: absolute;
+      top: -1.5rem;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      font-size: 1.2rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .podium-1 .podium-badge { background: var(--gold); }
+    .podium-2 .podium-badge { background: var(--silver); }
+    .podium-3 .podium-badge { background: var(--bronze); }
+
+    .podium-info {
+      width: 100%;
+      background: var(--white);
+      padding: 1rem;
+      text-align: center;
+      border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .podium-name {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .podium-score {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+
+    /* Ranking Table */
+    .ranking-table-container {
+      overflow-x: auto;
+      margin-bottom: 2.5rem;
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      padding: 1.5rem;
+    }
+
+    .ranking-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .ranking-table thead th {
+      background-color: var(--primary-color);
+      color: var(--white);
+      font-weight: 600;
+      padding: 1rem;
+      text-align: center;
+      position: sticky;
+      top: 0;
+    }
+
+    .ranking-table tbody tr {
+      transition: var(--transition);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .ranking-table tbody tr:hover {
+      background-color: var(--light-gray);
+    }
+
+    .ranking-table td {
+      padding: 1rem;
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    .rank-cell {
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .gold-rank { color: var(--gold); }
+    .silver-rank { color: var(--silver); }
+    .bronze-rank { color: var(--bronze); }
+
+    .user-cell {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      justify-content: flex-start;
+    }
+
+    .profile-pic {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--primary-light);
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+    }
+
+    .profile-pic:hover {
+      transform: scale(1.1);
+      box-shadow: var(--shadow-md);
+    }
+
+    .user-info {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .user-name {
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+
+    .user-phone {
+      font-size: 0.85rem;
+      color: var(--text-light);
+    }
+
+    .score-cell {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--primary-color);
+    }
+
+    /* Status Containers */
+    .status-container {
+      padding: 3rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .status-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .loading-icon {
+      animation: spin 1s linear infinite;
+      color: var(--primary-light);
+    }
+
+    .error-icon {
+      color: #dc2626;
+    }
+
+    .empty-icon {
+      color: var(--primary-light);
+    }
+
+    .status-message {
+      font-size: 1.1rem;
+      color: var(--text-light);
+    }
+
+    .retry-btn {
+      margin-top: 1rem;
+      padding: 0.75rem 1.5rem;
+      background: var(--primary-color);
+      color: var(--white);
+      border: none;
+      border-radius: 2rem;
+      cursor: pointer;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .retry-btn:hover {
+      background: var(--primary-light);
+      box-shadow: var(--shadow-md);
+    }
+
+    /* Auth Container */
+    .auth-container {
+      padding: 3rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .auth-icon {
+      font-size: 2.5rem;
+      color: var(--gold);
+    }
+
+    .auth-message {
+      font-size: 1.1rem;
+      color: var(--text-light);
+    }
+
+    .login-btn {
+      margin-top: 1rem;
+      padding: 0.75rem 1.5rem;
+      background: var(--primary-color);
+      color: var(--white);
+      border: none;
+      border-radius: 2rem;
+      cursor: pointer;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .login-btn:hover {
+      background: var(--primary-light);
+      box-shadow: var(--shadow-md);
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.85);
+      overflow: auto;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal.show {
+      display: flex;
+      opacity: 1;
+    }
+
+    .modal-content {
+      max-width: 90%;
+      max-height: 80%;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      object-fit: contain;
+      transform: scale(0.95);
+      transition: transform 0.3s ease;
+    }
+
+    .modal.show .modal-content {
+      transform: scale(1);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1.5rem;
+      right: 2rem;
+      color: var(--white);
+      font-size: 2rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .modal-close:hover {
+      color: var(--primary-light);
+    }
+
+    /* Animations */
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.5s ease-out forwards;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .matches-container {
+        grid-template-columns: 1fr;
+      }
+
+      .category-filter, .league-filter {
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .filter-btn, .league-btn {
+        width: 100%;
+        padding: 0.75rem;
+      }
+
+      .podium {
+        height: 200px;
+        gap: 0.5rem;
+      }
+
+      .podium-1 { height: 160px; }
+      .podium-2 { height: 130px; }
+      .podium-3 { height: 100px; }
+
+      .podium-step {
+        max-width: 120px;
+      }
+
+      .ranking-table thead {
+        display: none;
+      }
+
+      .ranking-table tbody tr {
+        display: block;
+        margin-bottom: 1rem;
+        border-radius: var(--radius-sm);
+        box-shadow: var(--shadow-sm);
+      }
+
+      .ranking-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-align: left;
+        padding: 0.75rem;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .ranking-table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--primary-color);
+      }
+
+      .user-cell {
+        justify-content: space-between;
+      }
+
+      .subscribers-container {
+        gap: 0.75rem; /* فاصله کمتر در موبایل */
+      }
+
+      .subscriber-card {
+        width: 200px; /* عرض کوچکتر برای موبایل */
+      }
+
+      h1 {
+        font-size: 1.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<!-- Image Modal -->
+<div id="imageModal" class="modal">
+  <span class="modal-close" id="modalClose">&times;</span>
+  <img class="modal-content" id="modalImage">
+</div>
+
+<header>
+  <h1>رده بندی فانتزی - انتخاب بازی</h1>
+</header>
+
+<div class="container">
+  <!-- Subscribers Section -->
+  <div class="subscribers-section" id="subscribersSection">
+    <div class="section-header">اشتراک کنندگان</div>
+    <div class="subscribers-container" id="subscribersContainer">
+      <div class="status-container">
+        <div class="status-icon loading-icon">
+          <i class="fas fa-spinner"></i>
+        </div>
+        <div class="status-message">در حال دریافت لیست اشتراک کنندگان...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Category Filter -->
+  <div class="category-filter">
+    <button class="filter-btn all active" data-category="all">همه بازی ها</button>
+    <button class="filter-btn cricket" data-category="cricket">کریکت</button>
+    <button class="filter-btn football" data-category="football">فوتبال</button>
+  </div>
+
+  <!-- League Filter -->
+  <div id="leagueFilter" class="league-filter" style="display: none;">
+    <!-- League filters will be loaded here -->
+  </div>
+
+  <!-- Game Search -->
+  <div class="search-container">
+    <input type="text" class="search-input" id="gameSearchInput" placeholder="جستجوی بازی ها...">
+    <i class="fas fa-search search-icon"></i>
+  </div>
+
+  <!-- Matches Section -->
+  <div class="matches-container" id="matchesContainer">
+    <div class="status-container">
+      <div class="status-icon loading-icon">
+        <i class="fas fa-spinner"></i>
+      </div>
+      <div class="status-message">در حال دریافت لیست بازی ها...</div>
+    </div>
+  </div>
+
+  <!-- Ranking Section -->
+  <div class="ranking-section" id="rankingSection">
+    <button class="back-button" id="backButton">
+      <i class="fas fa-arrow-right"></i>
+      بازگشت به لیست بازی ها
+    </button>
+
+    <h2 class="section-header" id="selectedGameTitle">عنوان بازی</h2>
+
+    <!-- Search Container for Participants -->
+    <div class="search-container" id="searchContainer">
+      <input type="text" class="search-input" id="searchInput" placeholder="جستجوی اشتراک کننده ها...">
+      <i class="fas fa-search search-icon"></i>
+    </div>
+
+    <!-- Podium Section -->
+    <div id="podiumContainer">
+      <div class="podium-container">
+        <div class="podium-title">اشتراک کننده های برتر</div>
+        <div class="podium">
+          <div class="podium-step">
+            <div class="podium-rank podium-1">1</div>
+            <div class="podium-badge"><i class="fas fa-trophy"></i></div>
+            <div class="podium-info">
+              <div class="podium-name" id="firstPlaceName"></div>
+              <div class="podium-score" id="firstPlaceScore"></div>
+            </div>
+          </div>
+          <div class="podium-step">
+            <div class="podium-rank podium-2">2</div>
+            <div class="podium-badge"><i class="fas fa-medal"></i></div>
+            <div class="podium-info">
+              <div class="podium-name" id="secondPlaceName"></div>
+              <div class="podium-score" id="secondPlaceScore"></div>
+            </div>
+          </div>
+          <div class="podium-step">
+            <div class="podium-rank podium-3">3</div>
+            <div class="podium-badge"><i class="fas fa-award"></i></div>
+            <div class="podium-info">
+              <div class="podium-name" id="thirdPlaceName"></div>
+              <div class="podium-score" id="thirdPlaceScore"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ranking Table -->
+    <div class="ranking-table-container">
+      <table class="ranking-table" id="rankingTable">
+        <thead>
+          <tr>
+            <th width="10%">رتبه</th>
+            <th width="70%">نام اشتراک کننده</th>
+            <th width="20%">امتیاز</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td colspan="3">
+              <div class="status-container">
+                <div class="status-icon loading-icon">
+                  <i class="fas fa-spinner"></i>
+                </div>
+                <div class="status-message">در حال بارگذاری اطلاعات...</div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Auth Message -->
+  <div id="authMessage" class="auth-container" style="display: none;">
+    <div class="auth-icon">
+      <i class="fas fa-lock"></i>
+    </div>
+    <div class="auth-message">برای مشاهده جدول امتیازات، لطفاً وارد حساب کاربری خود شوید</div>
+    <button class="login-btn" id="loginBtn">
+      <i class="fas fa-sign-in-alt"></i>
+      ورود به سیستم
+    </button>
+  </div>
+</div>
+
+<script>
+  // Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyDLfUbSG30O474XPAPY8QpMzo19EMfLWFc",
+    authDomain: "josh-7b6a0.firebaseapp.com",
+    databaseURL: "https://josh-7b6a0-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "josh-7b6a0",
+    storageBucket: "josh-7b6a0.appspot.com",
+    messagingSenderId: "639816255525",
+    appId: "1:639816255525:web:71a3e87374c3e7c68e17cc",
+    measurementId: "G-P2ZSBTN8FP"
+  };
+
+  // Initialize Firebase
+  const app = firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
+  const auth = firebase.auth();
+
+  // Store all teams data
+  let allTeams = [];
+  let lastUpdateTime = null;
+  let availableGames = [];
+  let selectedGame = null;
+  let currentCategory = 'all';
+  let currentLeague = 'all';
+  let filteredGames = [];
+  let allSubscribers = [];
+  let allLeagues = { cricket: new Set(), football: new Set() };
+
+  // Check Firebase connection
+  function checkFirebaseConnection() {
+    return new Promise((resolve, reject) => {
+      const connectionRef = database.ref(".info/connected");
+      const timeout = setTimeout(() => {
+        connectionRef.off();
+        reject(new Error("اتصال به سرور زمان گذر کرد. لطفاً اتصال اینترنت خود را بررسی نمایید."));
+      }, 5000);
+
+      connectionRef.on("value", (snapshot) => {
+        if (snapshot.val() === true) {
+          clearTimeout(timeout);
+          connectionRef.off();
+          resolve();
+        }
+      });
+    });
+  }
+
+  // Show loading state
+  function showLoading() {
+    const tbody = document.querySelector("#rankingTable tbody");
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="3">
+          <div class="status-container">
+            <div class="status-icon loading-icon">
+              <i class="fas fa-spinner"></i>
+            </div>
+            <div class="status-message">در حال بارگذاری اطلاعات...</div>
+          </div>
+        </td>
+      </tr>
+    `;
+  }
+
+  // Show error message
+  function showError(message) {
+    const tbody = document.querySelector("#rankingTable tbody");
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="3">
+          <div class="status-container">
+            <div class="status-icon error-icon">
+              <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="status-message">${message}</div>
+            <button class="retry-btn" onclick="loadAvailableGames()">
+              <i class="fas fa-sync-alt"></i>
+              تلاش مجدد
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }
+
+  // Show empty state
+  function showEmptyState() {
+    const tbody = document.querySelector("#rankingTable tbody");
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="3">
+          <div class="status-container">
+            <div class="status-icon empty-icon">
+              <i class="fas fa-info-circle"></i>
+            </div>
+            <div class="status-message">هیچ اشتراک کننده یافت نشد</div>
+          </div>
+        </td>
+      </tr>
+    `;
+  }
+
+  // Format score with commas
+  function formatScore(score) {
+    return score.toFixed(1).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
+  // Load subscribers from database
+  async function loadSubscribers() {
+    try {
+      const subscribersSnapshot = await database.ref('mamoon/subscribers').once("value");
+      const subscribersData = subscribersSnapshot.val();
+      
+      if (!subscribersData) {
+        document.getElementById('subscribersContainer').innerHTML = `
+          <div class="status-container">
+            <div class="status-icon empty-icon">
+              <i class="fas fa-info-circle"></i>
+            </div>
+            <div class="status-message">هیچ اشتراک کننده ای یافت نشد</div>
+          </div>
+        `;
+        return;
+      }
+      
+      // Convert object to array
+      allSubscribers = Object.keys(subscribersData).map(key => {
+        return {
+          id: key,
+          ...subscribersData[key]
+        };
+      });
+      
+      // Render subscribers based on current category
+      renderSubscribers(allSubscribers, currentCategory);
+      
+    } catch (error) {
+      console.error("Error loading subscribers:", error);
+      document.getElementById('subscribersContainer').innerHTML = `
+        <div class="status-container">
+          <div class="status-icon error-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+          </div>
+          <div class="status-message">خطا در دریافت اطلاعات اشتراک کنندگان</div>
+        </div>
+      `;
+    }
+  }
+
+  // Render subscribers based on category
+  function renderSubscribers(subscribers, category) {
+    const container = document.getElementById("subscribersContainer");
+    
+    // Filter subscribers by category
+    let filteredSubscribers = subscribers;
+    if (category !== 'all') {
+      const persianCategory = category === 'cricket' ? 'کرکت' : 'فوتبال';
+      filteredSubscribers = subscribers.filter(sub => sub.category === persianCategory);
+    }
+    
+    if (filteredSubscribers.length === 0) {
+      container.innerHTML = `
+        <div class="status-container">
+          <div class="status-icon empty-icon">
+            <i class="fas fa-info-circle"></i>
+          </div>
+          <div class="status-message">هیچ اشتراک کننده ای برای این دسته بندی یافت نشد</div>
+        </div>
+      `;
+      return;
+    }
+    
+    container.innerHTML = '';
+    
+    filteredSubscribers.forEach(subscriber => {
+      const subscriberCard = document.createElement('div');
+      subscriberCard.className = 'subscriber-card card fade-in';
+      
+      const categoryClass = subscriber.category === 'کرکت' ? 'cricket-badge' : 'football-badge';
+      
+      subscriberCard.innerHTML = `
+        <div class="subscriber-header">
+          <div class="subscriber-title">${subscriber.title}</div>
+          <img src="${subscriber.imageBase64}" alt="${subscriber.name}" class="subscriber-image"
+               onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(subscriber.name)}&background=6c5ce7'">
+          <div class="subscriber-name">${subscriber.name}</div>
+        </div>
+        <div class="subscriber-details">
+          <div class="subscriber-info">
+            <span class="info-label">دسته بندی:</span>
+            <span class="category-badge ${categoryClass}">${subscriber.category}</span>
+          </div>
+          <div class="subscriber-info">
+            <span class="info-label">امتیاز:</span>
+            <span class="score-badge">${subscriber.score}</span>
+          </div>
+        </div>
+      `;
+      
+      container.appendChild(subscriberCard);
+    });
+  }
+
+  // Load available games from database
+  async function loadAvailableGames() {
+    try {
+      await checkFirebaseConnection();
+      
+      const gamesSnapshot = await database.ref().once("value");
+      const gamesData = gamesSnapshot.val();
+      
+      if (!gamesData) {
+        document.getElementById('matchesContainer').innerHTML = `
+          <div class="status-container">
+            <div class="status-icon error-icon">
+              <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="status-message">هیچ بازی ای در دیتابیس یافت نشد</div>
+          </div>
+        `;
+        return;
+      }
+      
+      // Extract game names (keys that contain player_scores)
+      availableGames = [];
+      allLeagues = { cricket: new Set(), football: new Set() };
+      
+      Object.keys(gamesData).forEach(key => {
+        if (gamesData[key] && gamesData[key].player_scores) {
+          // Get match info for each game
+          const matchInfo = gamesData[key].matchInfo || {};
+          
+          // تعیین نوع ورزش
+          const isCricket = key.startsWith('fcricket_');
+          const category = isCricket ? 'cricket' : 'football';
+          const categoryName = isCricket ? 'کریکت' : 'فوتبال';
+          
+          // دریافت لیگ از اطلاعات بازی
+          const league = matchInfo.league || matchInfo.category || 'لیگ ناشناخته';
+          
+          // اطلاعات تیم‌ها - با استفاده از ساختار جدید
+          let team1 = { name: "تیم ۱", logo: "" };
+          let team2 = { name: "تیم ۲", logo: "" };
+          
+          // بررسی ساختارهای مختلف برای اطلاعات تیم‌ها
+          if (matchInfo.teams) {
+            if (matchInfo.teams.team1) {
+              team1 = matchInfo.teams.team1;
+            } else if (matchInfo.teams.afg) {
+              team1 = matchInfo.teams.afg;
+            }
+            
+            if (matchInfo.teams.team2) {
+              team2 = matchInfo.teams.team2;
+            } else if (matchInfo.teams.pak) {
+              team2 = matchInfo.teams.pak;
+            }
+          }
+          
+          availableGames.push({
+            id: key,
+            title: matchInfo.title || key.replace('_', ' ').replace('fcricket', 'کریکت').replace('ffootball', 'فوتبال'),
+            category: category,
+            categoryName: categoryName,
+            league: league,
+            date: matchInfo.date || "تاریخ نامعلوم",
+            team1: team1,
+            team2: team2,
+            status: matchInfo.status || "پایان یافته"
+          });
+          
+          // جمع‌آوری لیگ‌های موجود
+          if (category === 'cricket') {
+            allLeagues.cricket.add(league);
+          } else if (category === 'football') {
+            allLeagues.football.add(league);
+          }
+        }
+      });
+      
+      if (availableGames.length === 0) {
+        document.getElementById('matchesContainer').innerHTML = `
+          <div class="status-container">
+            <div class="status-icon error-icon">
+              <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="status-message">هیچ بازی ای با اطلاعات امتیازات یافت نشد</div>
+          </div>
+        `;
+        return;
+      }
+      
+      // Sort games by date if available
+      availableGames.sort((a, b) => {
+        if (a.date && b.date) {
+          return new Date(b.date) - new Date(a.date);
+        }
+        return 0;
+      });
+      
+      // Filter games initially
+      filterGamesByCategoryAndSearch();
+      
+    } catch (error) {
+      console.error("Error loading games:", error);
+      document.getElementById('matchesContainer').innerHTML = `
+        <div class="status-container">
+          <div class="status-icon error-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+          </div>
+          <div class="status-message">${error.message || "خطا در دریافت اطلاعات از سرور"}</div>
+          <button class="retry-btn" onclick="loadAvailableGames()">
+            <i class="fas fa-sync-alt"></i>
+            تلاش مجدد
+          </button>
+        </div>
+      `;
+    }
+  }
+
+  // نمایش فیلترهای لیگ
+  function renderLeagueFilters() {
+    const leagueFilter = document.getElementById('leagueFilter');
+    const leagues = currentCategory === 'cricket' ? [...allLeagues.cricket] : [...allLeagues.football];
+    
+    if (leagues.length === 0) {
+      leagueFilter.style.display = 'none';
+      return;
+    }
+    
+    leagueFilter.style.display = 'flex';
+    leagueFilter.innerHTML = '<button class="league-btn active" data-league="all">همه لیگ ها</button>';
+    
+    leagues.forEach(league => {
+      leagueFilter.innerHTML += `<button class="league-btn" data-league="${league}">${league}</button>`;
+    });
+    
+    // اضافه کردن رویداد برای دکمه‌های فیلتر لیگ
+    document.querySelectorAll('.league-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentLeague = btn.dataset.league;
+        
+        // به‌روزرسانی وضعیت دکمه‌های فیلتر
+        document.querySelectorAll('.league-btn').forEach(b => {
+          b.classList.remove('active');
+          if (b.dataset.league === currentLeague) {
+            b.classList.add('active');
+          }
+        });
+        
+        filterGamesByCategoryAndSearch();
+      });
+    });
+  }
+
+  // Filter games by category and search term
+  function filterGamesByCategoryAndSearch() {
+    const searchTerm = document.getElementById('gameSearchInput').value.trim().toLowerCase();
+    
+    // First filter by category
+    if (currentCategory !== 'all') {
+      filteredGames = availableGames.filter(game => game.category === currentCategory);
+    } else {
+      filteredGames = [...availableGames];
+    }
+    
+    // Then filter by league
+    if (currentLeague !== 'all') {
+      filteredGames = filteredGames.filter(game => game.league === currentLeague);
+    }
+    
+    // Then filter by search term if provided
+    if (searchTerm) {
+      filteredGames = filteredGames.filter(game => 
+        game.title.toLowerCase().includes(searchTerm) || 
+        game.team1.name.toLowerCase().includes(searchTerm) ||
+        game.team2.name.toLowerCase().includes(searchTerm) ||
+        game.categoryName.toLowerCase().includes(searchTerm) ||
+        game.league.toLowerCase().includes(searchTerm)
+      );
+    }
+    
+    // Render filtered games
+    renderGameSelection(filteredGames);
+    
+    // Also update subscribers based on category
+    renderSubscribers(allSubscribers, currentCategory);
+  }
+
+  // Render game selection cards
+  function renderGameSelection(games) {
+    const container = document.getElementById("matchesContainer");
+    
+    if (games.length === 0) {
+      container.innerHTML = `
+        <div class="status-container">
+          <div class="status-icon empty-icon">
+            <i class="fas fa-info-circle"></i>
+          </div>
+          <div class="status-message">هیچ بازی ای یافت نشد</div>
+        </div>
+      `;
+      return;
+    }
+    
+    container.innerHTML = '';
+    
+    games.forEach(game => {
+      const matchCard = document.createElement('div');
+      matchCard.className = 'match-card card fade-in';
+      matchCard.setAttribute('data-match-id', game.id);
+      
+      matchCard.innerHTML = `
+        <div class="match-header">
+          <div class="match-title">${game.title}</div>
+          <div class="match-category ${game.category === 'cricket' ? 'cricket' : 'football'}">
+            ${game.categoryName}
+          </div>
+        </div>
+        <div class="match-teams">
+          <div class="team">
+            <img src="${game.team1.logo || 'https://via.placeholder.com/60?text=لوگو'}" 
+                 alt="${game.team1.name}" class="team-logo" 
+                 onerror="this.src='https://via.placeholder.com/60?text=لوگو'">
+            <div class="team-name">${game.team1.name}</div>
+          </div>
+          <div class="vs">VS</div>
+          <div class="team">
+            <img src="${game.team2.logo || 'https://via.placeholder.com/60?text=لوگو'}" 
+                 alt="${game.team2.name}" class="team-logo"
+                 onerror="this.src='https://via.placeholder.com/60?text=لوگو'">
+            <div class="team-name">${game.team2.name}</div>
+          </div>
+        </div>
+        <div class="match-date">
+          <div>${game.date}</div>
+          <div>وضعیت: ${game.status}</div>
+          <div>لیگ: ${game.league}</div>
+        </div>
+      `;
+      
+      matchCard.addEventListener('click', () => {
+        selectGame(game);
+      });
+      
+      container.appendChild(matchCard);
+    });
+  }
+
+  // Select a game and load its data
+  async function selectGame(game) {
+    selectedGame = game;
+    
+    // Show ranking section, hide matches section
+    document.getElementById('matchesContainer').style.display = 'none';
+    document.getElementById('rankingSection').style.display = 'block';
+    document.getElementById('selectedGameTitle').textContent = game.title;
+    
+    // Load ranking data for the selected game
+    loadRankingData(game.id);
+  }
+
+  // Load ranking data for a specific game
+  async function loadRankingData(gameId) {
+    try {
+      showLoading();
+      await checkFirebaseConnection();
+      
+      // Get player scores and teams data from database for the selected game
+      const [playersSnapshot, teamsSnapshot] = await Promise.all([
+        database.ref(`${gameId}/player_scores`).once("value"),
+        database.ref(gameId).once("value")
+      ]);
+
+      const playersScores = playersSnapshot.val() || {};
+      const allData = teamsSnapshot.val();
+
+      if (!allData) {
+        showEmptyState();
+        return;
+      }
+
+      // Process team data
+      allTeams = [];
+      
+      Object.keys(allData).forEach(key => {
+        if (key === "player_scores" || key === "matchInfo") return;
+        
+        const teamData = allData[key];
+        
+        if (!teamData.players || !Array.isArray(teamData.players)) return;
+        
+        let totalScore = 0;
+        
+        // Calculate each player's score
+        teamData.players.forEach(playerName => {
+          const playerKey = Object.keys(playersScores).find(
+            k => decodeURIComponent(k) === playerName
+          );
+          
+          if (playerKey) {
+            // Check if player score is stored as object with 'score' property
+            if (typeof playersScores[playerKey] === 'object' && playersScores[playerKey] !== null) {
+              totalScore += playersScores[playerKey].score || 0;
+            } else {
+              // Fallback to direct number value
+              totalScore += playersScores[playerKey] || 0;
+            }
+          }
+        });
+        
+        // Add captain score (double points)
+        if (teamData.captain) {
+          const captainKey = Object.keys(playersScores).find(
+            k => decodeURIComponent(k) === teamData.captain
+          );
+          if (captainKey) {
+            if (typeof playersScores[captainKey] === 'object' && playersScores[captainKey] !== null) {
+              totalScore += playersScores[captainKey].score || 0;
+            } else {
+              totalScore += playersScores[captainKey] || 0;
+            }
+          }
+        }
+        
+        // Add vice-captain score (half points)
+        if (teamData.viceCaptain) {
+          const viceCaptainKey = Object.keys(playersScores).find(
+            k => decodeURIComponent(k) === teamData.viceCaptain
+          );
+          if (viceCaptainKey) {
+            if (typeof playersScores[viceCaptainKey] === 'object' && playersScores[viceCaptainKey] !== null) {
+              totalScore += (playersScores[viceCaptainKey].score || 0) * 0.5;
+            } else {
+              totalScore += (playersScores[viceCaptainKey] || 0) * 0.5;
+            }
+          }
+        }
+        
+        // Store team information
+        allTeams.push({
+          key: key,
+          name: teamData.userInfo?.fullName || teamData.userInfo?.displayName || "اشتراک کننده ناشناس",
+          phone: teamData.userInfo?.phone || "",
+          photo: teamData.userInfo?.profilePhoto || `https://ui-avatars.com/api/?name=${encodeURIComponent(teamData.userInfo?.fullName || teamData.userInfo?.displayName || "تیم")}&background=${getRandomColor()}`,
+          score: totalScore
+        });
+      });
+
+      // Sort teams by score (descending)
+      allTeams.sort((a, b) => b.score - a.score);
+
+      // Update last update time
+      lastUpdateTime = new Date();
+      
+      // Render the ranking table
+      renderRankingTable(allTeams);
+      
+    } catch (error) {
+      console.error("Error loading data:", error);
+      showError(error.message || "خطا در دریافت اطلاعات از سرور");
+    }
+  }
+
+  // Generate random color for avatar background
+  function getRandomColor() {
+    const colors = ['6c5ce7', '00b894', '0984e3', 'fd79a8', 'e17055', '00cec9'];
+    return colors[Math.floor(Math.random() * colors.length)];
+  }
+
+  // Image Modal functionality
+  function setupImageModal() {
+    const modal = document.getElementById("imageModal");
+    const modalImg = document.getElementById("modalImage");
+    const closeBtn = document.getElementById("modalClose");
+    
+    // Close modal when clicking on close button
+    closeBtn.onclick = function() {
+      modal.classList.remove('show');
+    }
+    
+    // Close modal when clicking outside the image
+    modal.onclick = function(event) {
+      if (event.target === modal) {
+        modal.classList.remove('show');
+      }
+    }
+    
+    // Function to open modal with image
+    window.openImageModal = function(imgSrc, userName) {
+      // Check if image source is valid
+      if (!imgSrc || imgSrc.includes('ui-avatars.com')) {
+        // Don't open modal for auto-generated avatars
+        return;
+      }
+      
+      modal.classList.add('show');
+      modalImg.src = imgSrc;
+      modalImg.alt = `عکس پروفایل ${userName}`;
+    }
+  }
+
+  // Render ranking table
+  function renderRankingTable(teams) {
+    const tbody = document.querySelector("#rankingTable tbody");
+    const podiumContainer = document.getElementById("podiumContainer");
+    
+    // Update podium for top 3 teams
+    if (teams.length >= 3) {
+      podiumContainer.style.display = "block";
+      
+      document.getElementById("firstPlaceName").textContent = teams[0].name;
+      document.getElementById("firstPlaceScore").textContent = formatScore(teams[0].score);
+      
+      document.getElementById("secondPlaceName").textContent = teams[1].name;
+      document.getElementById("secondPlaceScore").textContent = formatScore(teams[1].score);
+      
+      document.getElementById("thirdPlaceName").textContent = teams[2].name;
+      document.getElementById("thirdPlaceScore").textContent = formatScore(teams[2].score);
+    } else {
+      podiumContainer.style.display = "none";
+    }
+    
+    // Render table rows
+    tbody.innerHTML = "";
+    
+    if (teams.length === 0) {
+      showEmptyState();
+      return;
+    }
+    
+    teams.forEach((team, index) => {
+      const row = document.createElement("tr");
+      row.className = "fade-in";
+      
+      let rankClass = "";
+      if (index === 0) rankClass = "gold-rank";
+      else if (index === 1) rankClass = "silver-rank";
+      else if (index === 2) rankClass = "bronze-rank";
+      
+      // Check if the photo is a real image or auto-generated avatar
+      const isRealImage = team.photo && !team.photo.includes('ui-avatars.com');
+      
+      row.innerHTML = `
+        <td class="rank-cell ${rankClass}" data-label="رتبه">
+          ${index + 1}
+          ${index < 3 ? '<i class="fas fa-trophy"></i>' : ''}
+        </td>
+        <td data-label="نام اشتراک کننده">
+          <div class="user-cell">
+            <img src="${team.photo}" class="profile-pic" alt="${team.name}" 
+                 onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(team.name)}&background=${getRandomColor()}'"
+                 ${isRealImage ? `onclick="openImageModal('${team.photo}', '${team.name.replace(/'/g, "\\'")}')"` : 'style="cursor: default;"'}>
+            <div class="user-info">
+              <span class="user-name">${team.name}</span>
+              ${team.phone ? `<span class="user-phone">${team.phone}</span>` : ''}
+            </div>
+          </div>
+        </td>
+        <td class="score-cell" data-label="امتیاز">${formatScore(team.score)}</td>
+      `;
+      
+      tbody.appendChild(row);
+    });
+  }
+
+  // Setup search functionality for participants
+  function setupSearch() {
+    const searchInput = document.getElementById("searchInput");
+    
+    searchInput.addEventListener("input", (e) => {
+      const searchTerm = e.target.value.trim().toLowerCase();
+      
+      if (searchTerm === "") {
+        renderRankingTable(allTeams);
+        return;
+      }
+      
+      const filteredTeams = allTeams.filter(team => 
+        team.name.toLowerCase().includes(searchTerm) || 
+        (team.phone && team.phone.includes(searchTerm))
+      );
+      
+      if (filteredTeams.length > 0) {
+        renderRankingTable(filteredTeams);
+      } else {
+        showEmptyState();
+      }
+    });
+  }
+
+  // Setup game search functionality
+  function setupGameSearch() {
+    const gameSearchInput = document.getElementById("gameSearchInput");
+    
+    gameSearchInput.addEventListener("input", () => {
+      filterGamesByCategoryAndSearch();
+    });
+  }
+
+  // Setup category filter functionality
+  function setupCategoryFilter() {
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Remove active class from all buttons
+        document.querySelectorAll('.filter-btn').forEach(b => {
+          b.classList.remove('active');
+        });
+        
+        // Add active class to clicked button
+        btn.classList.add('active');
+        
+        currentCategory = btn.dataset.category;
+        currentLeague = 'all'; // Reset league filter when category changes
+        
+        // Show/hide league filters based on category
+        if (currentCategory === 'all') {
+          document.getElementById('leagueFilter').style.display = 'none';
+        } else {
+          renderLeagueFilters();
+        }
+        
+        filterGamesByCategoryAndSearch();
+      });
+    });
+  }
+
+  // Back to matches list
+  function backToMatches() {
+    document.getElementById('rankingSection').style.display = 'none';
+    document.getElementById('matchesContainer').style.display = 'grid';
+    document.getElementById('searchInput').value = '';
+  }
+
+  // Initialize the application
+  function initApp() {
+    // Set up auth state listener
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        // User is signed in
+        document.getElementById('authMessage').style.display = 'none';
+        document.getElementById('matchesContainer').style.display = 'grid';
+        loadAvailableGames();
+        loadSubscribers();
+      } else {
+        // User is signed out
+        document.getElementById('authMessage').style.display = 'flex';
+        document.getElementById('matchesContainer').style.display = 'none';
+        document.getElementById('rankingSection').style.display = 'none';
+      }
+    });
+
+    // Set up login button - redirect to Google sign-in
+    document.getElementById('loginBtn').addEventListener('click', () => {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithRedirect(provider);
+    });
+
+    // Set up back button
+    document.getElementById('backButton').addEventListener('click', backToMatches);
+    
+    setupSearch();
+    setupGameSearch();
+    setupCategoryFilter();
+    setupImageModal();
+  }
+
+  // Initialize when page loads
+  window.addEventListener('DOMContentLoaded', initApp);
+</script>
+</body>
+</html>
