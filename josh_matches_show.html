@@ -1441,7 +1441,7 @@
           const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
           const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-          countdownElement.textContent = `زمان باقی‌مانده: ${days} روز، ${hours} ساعت، ${minutes} دقیقه، ${seconds} ثانیه`;
+          countdownElement.textContent = `زمان باقیمانده: ${days} روز، ${hours} ساعت، ${minutes} دقیقه، ${seconds} ثانیه`;
           document.getElementById('submitBtn').disabled = false;
         } else {
           countdownElement.textContent = 'زمان بازی به پایان رسیده است';
