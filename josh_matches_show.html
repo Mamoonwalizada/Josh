@@ -806,6 +806,163 @@
       display: block;
     }
 
+    /* Teams List Styles */
+    .teams-list-container {
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 1.75rem;
+      box-shadow: var(--box-shadow);
+      margin-bottom: 2rem;
+    }
+
+    .teams-list-container h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1.25rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .user-teams-list {
+      list-style: none;
+    }
+
+    .user-team-item {
+      display: flex;
+      align-items: center;
+      padding: 1rem;
+      background-color: var(--light-gray);
+      border-radius: var(--border-radius-sm);
+      margin-bottom: 1rem;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: var(--box-shadow);
+    }
+
+    .user-team-item:hover {
+      background-color: var(--white);
+      transform: translateY(-3px);
+      box-shadow: var(--box-shadow-hover);
+    }
+
+    .user-team-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-left: 1rem;
+      box-shadow: var(--box-shadow);
+    }
+
+    .user-team-info {
+      flex: 1;
+    }
+
+    .user-team-name {
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .user-team-email {
+      font-size: 0.9rem;
+      color: var(--text-light);
+    }
+
+    .user-team-arrow {
+      color: var(--primary-color);
+      font-size: 1.2rem;
+    }
+
+    /* Team Details Modal */
+    .team-details-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      padding: 1rem;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .team-details-modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .team-details-content {
+      background-color: var(--white);
+      border-radius: var(--border-radius);
+      width: 100%;
+      max-width: 800px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 2rem;
+      position: relative;
+      box-shadow: var(--box-shadow-hover);
+    }
+
+    .team-details-close {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-light);
+    }
+
+    .team-details-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .team-details-user-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-left: 1rem;
+      box-shadow: var(--box-shadow);
+    }
+
+    .team-details-user-info {
+      flex: 1;
+    }
+
+    .team-details-user-name {
+      font-weight: 600;
+      font-size: 1.3rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .team-details-user-email {
+      font-size: 1rem;
+      color: var(--text-light);
+    }
+
+    .team-details-players {
+      margin-top: 1.5rem;
+    }
+
+    .team-details-players h3 {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
       .matches-grid {
@@ -862,6 +1019,20 @@
         width: 48px;
         height: 48px;
       }
+
+      .team-details-content {
+        padding: 1.5rem;
+      }
+
+      .team-details-header {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .team-details-user-avatar {
+        margin-left: 0;
+        margin-bottom: 1rem;
+      }
     }
   </style>
 </head>
@@ -916,6 +1087,9 @@
         </button>
         <button class="tab-btn" onclick="showTab('team')">
           <i class="fas fa-list-check"></i> تیم من
+        </button>
+        <button class="tab-btn" onclick="showTab('teamsList')">
+          <i class="fas fa-users"></i> تیم‌های ثبت شده
         </button>
       </div>
 
@@ -998,6 +1172,41 @@
           <!-- اطلاعات کاربر اینجا بارگذاری می‌شود -->
         </div>
       </div>
+
+      <div id="teamsList" class="content-section">
+        <div class="teams-list-container">
+          <h2><i class="fas fa-users"></i> تیم های ثبت شده</h2>
+          <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="teamsSearchInput" class="search-input" placeholder="جستجوی کاربران بر اساس نام...">
+          </div>
+          <ul id="userTeamsList" class="user-teams-list">
+            <!-- لیست کاربران و تیم‌هایشان اینجا بارگذاری می‌شود -->
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for Team Details -->
+<div id="teamDetailsModal" class="team-details-modal">
+  <div class="team-details-content">
+    <button class="team-details-close" onclick="closeTeamDetails()">
+      <i class="fas fa-times"></i>
+    </button>
+    <div class="team-details-header">
+      <img id="teamDetailsAvatar" src="https://via.placeholder.com/80" alt="User Avatar" class="team-details-user-avatar">
+      <div class="team-details-user-info">
+        <div id="teamDetailsUserName" class="team-details-user-name">نام کاربر</div>
+        <div id="teamDetailsUserEmail" class="team-details-user-email">ایمیل کاربر</div>
+      </div>
+    </div>
+    <div class="team-details-players">
+      <h3>تیم انتخابی</h3>
+      <ul id="teamDetailsPlayersList" class="team-players">
+        <!-- بازیکنان تیم اینجا بارگذاری می‌شوند -->
+      </ul>
     </div>
   </div>
 </div>
@@ -1030,6 +1239,7 @@
   let searchQuery = '';
   let team1CurrentRole = 'all';
   let team2CurrentRole = 'all';
+  let allUserTeams = [];
 
   function formatTime(isoString) {
     if (!isoString) return 'ساعت نامشخص';
@@ -1082,6 +1292,16 @@
       clearTimeout(searchTimeout);
       searchTimeout = setTimeout(() => {
         filterAndSearchMatches();
+      }, 300);
+    });
+
+    const teamsSearchInput = document.getElementById('teamsSearchInput');
+    let teamsSearchTimeout;
+    teamsSearchInput.addEventListener('input', () => {
+      const query = teamsSearchInput.value.trim();
+      clearTimeout(teamsSearchTimeout);
+      teamsSearchTimeout = setTimeout(() => {
+        renderUserTeamsList(query);
       }, 300);
     });
   }
@@ -1375,6 +1595,7 @@
         document.getElementById('teamSelection').style.display = 'block';
         showTab('select');
         loadUserTeam();
+        loadAllUserTeams();
       } else {
         showError('خطا', 'بازی مورد نظر یافت نشد.');
       }
@@ -1441,7 +1662,7 @@
           const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
           const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-          countdownElement.textContent = `زمان باقیمانده: ${days} روز، ${hours} ساعت، ${minutes} دقیقه، ${seconds} ثانیه`;
+          countdownElement.textContent = `زمان باقی‌مانده: ${days} روز، ${hours} ساعت، ${minutes} دقیقه، ${seconds} ثانیه`;
           document.getElementById('submitBtn').disabled = false;
         } else {
           countdownElement.textContent = 'زمان بازی به پایان رسیده است';
@@ -1702,6 +1923,7 @@
       }).then(() => {
         showTab('team');
         renderMyTeam();
+        loadAllUserTeams();
       });
 
     } catch (error) {
@@ -1755,6 +1977,143 @@
     } catch (error) {
       console.error('Error loading user team:', error);
     }
+  }
+
+  async function loadAllUserTeams() {
+    try {
+      const storagePath = matchInfo.storagePath || currentMatchKey;
+      const teamsSnapshot = await database.ref(storagePath).once('value');
+      
+      if (!teamsSnapshot.exists()) {
+        document.getElementById('userTeamsList').innerHTML = '<p class="no-results">هیچ تیمی ثبت نشده است.</p>';
+        return;
+      }
+
+      allUserTeams = [];
+      const teamsData = teamsSnapshot.val();
+      
+      // Get user data for all users who have submitted teams
+      const userIds = Object.keys(teamsData);
+      const userPromises = userIds.map(uid => database.ref('users/' + uid).once('value'));
+      const userSnapshots = await Promise.all(userPromises);
+      
+      const usersData = {};
+      userSnapshots.forEach((snapshot, index) => {
+        if (snapshot.exists()) {
+          usersData[userIds[index]] = snapshot.val();
+        }
+      });
+
+      // Process each team
+      for (const uid of userIds) {
+        const teamData = teamsData[uid];
+        const userData = usersData[uid] || {};
+        
+        allUserTeams.push({
+          uid,
+          teamData,
+          userData: {
+            fullName: userData.fullname || 'کاربر ناشناس',
+            email: userData.email || 'ایمیل نامشخص',
+            profilePhoto: userData.profilePhoto || 'https://via.placeholder.com/60',
+            phone: userData.phone || 'ثبت نشده'
+          }
+        });
+      }
+
+      renderUserTeamsList();
+    } catch (error) {
+      console.error('Error loading all user teams:', error);
+      document.getElementById('userTeamsList').innerHTML = '<p class="no-results">مشکلی در بارگذاری تیم‌ها به وجود آمد.</p>';
+    }
+  }
+
+  function renderUserTeamsList(query = '') {
+    const userTeamsList = document.getElementById('userTeamsList');
+    
+    let filteredTeams = allUserTeams;
+    if (query) {
+      filteredTeams = filteredTeams.filter(team => team.userData.fullName.toLowerCase().includes(query.toLowerCase()));
+    }
+
+    if (filteredTeams.length === 0) {
+      userTeamsList.innerHTML = '<p class="no-results">هیچ تیمی یافت نشد.</p>';
+      return;
+    }
+
+    userTeamsList.innerHTML = filteredTeams.map(team => `
+      <li class="user-team-item" onclick="showTeamDetails('${team.uid}')">
+        <img src="${team.userData.profilePhoto}" alt="عکس پروفایل" class="user-team-avatar" 
+             onerror="this.src='https://via.placeholder.com/60'">
+        <div class="user-team-info">
+          <div class="user-team-name">${team.userData.fullName}</div>
+        </div>
+        <i class="fas fa-chevron-left user-team-arrow"></i>
+      </li>
+    `).join('');
+  }
+
+  function showTeamDetails(userId) {
+    const team = allUserTeams.find(t => t.uid === userId);
+    if (!team) return;
+
+    const modal = document.getElementById('teamDetailsModal');
+    const avatar = document.getElementById('teamDetailsAvatar');
+    const userName = document.getElementById('teamDetailsUserName');
+    const userEmail = document.getElementById('teamDetailsUserEmail');
+    const playersList = document.getElementById('teamDetailsPlayersList');
+
+    avatar.src = team.userData.profilePhoto;
+    avatar.onerror = function() { this.src = 'https://via.placeholder.com/80'; };
+    userName.textContent = team.userData.fullName;
+    userEmail.textContent = team.userData.email;
+
+    // Render team players
+    playersList.innerHTML = team.teamData.players.map(player => {
+      const isCaptain = player === team.teamData.captain;
+      const isViceCaptain = player === team.teamData.viceCaptain;
+      const role = isCaptain ? 'کپتان' : isViceCaptain ? 'معاون' : '';
+
+      return `
+        <li class="team-player">
+          <img src="${getPlayerImage(player)}" 
+               alt="${player}" class="player-avatar" 
+               onerror="this.src='https://via.placeholder.com/56'">
+          <div class="player-info">
+            <div class="player-name">${player}</div>
+            ${role ? `<span class="player-role">${role}</span>` : ''}
+          </div>
+        </li>
+      `;
+    }).join('');
+
+    modal.classList.add('active');
+  }
+
+  function closeTeamDetails() {
+    const modal = document.getElementById('teamDetailsModal');
+    modal.classList.remove('active');
+  }
+
+  function getPlayerImage(playerName) {
+    for (const team of ['team1', 'team2']) {
+      const player = playersData[team]?.find(p => {
+        if (typeof p === 'string') {
+          return p === playerName;
+        } else {
+          return p.name === playerName;
+        }
+      });
+
+      if (player) {
+        if (typeof player === 'string') {
+          return 'https://via.placeholder.com/56';
+        } else {
+          return player.img || player.image || player.avatar || 'https://via.placeholder.com/56';
+        }
+      }
+    }
+    return 'https://via.placeholder.com/56';
   }
 
   function renderMyTeam() {
@@ -1822,27 +2181,6 @@
     `;
   }
 
-  function getPlayerImage(playerName) {
-    for (const team of ['team1', 'team2']) {
-      const player = playersData[team]?.find(p => {
-        if (typeof p === 'string') {
-          return p === playerName;
-        } else {
-          return p.name === playerName;
-        }
-      });
-
-      if (player) {
-        if (typeof player === 'string') {
-          return 'https://via.placeholder.com/56';
-        } else {
-          return player.img || player.image || player.avatar || 'https://via.placeholder.com/56';
-        }
-      }
-    }
-    return 'https://via.placeholder.com/56';
-  }
-
   function showTab(tabName) {
     document.querySelectorAll('.content-section').forEach(tab => {
       tab.style.display = 'none';
@@ -1859,6 +2197,8 @@
       renderMyTeam();
     } else if (tabName === 'select') {
       renderPlayers();
+    } else if (tabName === 'teamsList') {
+      loadAllUserTeams();
     }
   }
 
