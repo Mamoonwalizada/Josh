@@ -11,160 +11,116 @@
   <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font/dist/font-face.css" rel="stylesheet" />
   <style>
     :root {
-      --primary-color: #1e3a8a; /* آبی تیره مدرن */
-      --primary-light: #3b82f6; /* آبی روشن */
-      --secondary-color: #4b5563; /* خاکستری تیره */
-      --accent-color: #10b981; /* سبز زمردی */
-      --text-color: #1f2937; /* خاکستری تیره برای متن */
-      --text-light: #6b7280; /* خاکستری روشن */
-      --light-gray: #f9fafb; /* خاکستری بسیار روشن */
-      --border-color: #e5e7eb; /* مرز خاکستری */
-      --white: #ffffff;
-      --card-bg: #ffffff;
-      --header-bg: linear-gradient(135deg, #1e3a8a, #3b82f6);
-      --team-card-bg: #f8fafc;
-      --cricket-color: #059669; /* سبز کریکت */
-      --cricket-light: #ecfdf5;
-      --football-color: #2563eb; /* آبی فوتبال */
-      --football-light: #eff6ff;
-      --filter-bg: #f1f5f9;
-      --gold: #facc15; /* طلایی مدرن */
-      --silver: #9ca3af; /* نقره‌ای */
-      --bronze: #f97316; /* برنزی */
-      --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
-      --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
-      --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
-      --radius-sm: 0.5rem;
-      --radius-md: 0.75rem;
-      --radius-lg: 1rem;
-      --transition: all 0.2s ease-in-out;
+      --primary-color: #6c5ce7;
+      --secondary-color: #a29bfe;
+      --accent-color: #fd79a8;
+      --background-color: #f8f9fa;
+      --card-background: #ffffff;
+      --text-color: #2d3436;
+      --text-light: #636e72;
+      --border-color: #dfe6e9;
+      --success-color: #00b894;
+      --warning-color: #fdcb6e;
+      --error-color: #d63031;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
     }
 
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+      font-family: Vazir, sans-serif;
     }
 
-    html, body {
-      height: 100%;
-      background-color: var(--light-gray);
-      font-family: Vazir, -apple-system, BlinkMacSystemFont, sans-serif;
+    body {
+      background-color: var(--background-color);
       color: var(--text-color);
-      line-height: 1.75;
+      line-height: 1.6;
+      padding-bottom: 2rem;
     }
 
-    /* Header Styles */
     header {
-      background: var(--header-bg);
-      color: var(--white);
-      padding: 2rem;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
       text-align: center;
-      box-shadow: var(--shadow-md);
-      position: relative;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow);
     }
 
-    header::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(45deg, rgba(255,255,255,0.1), transparent);
-      opacity: 0.2;
-    }
-
-    h1 {
-      font-size: 2rem;
-      font-weight: 700;
-      margin: 0;
-      position: relative;
+    header h1 {
+      font-size: 1.5rem;
     }
 
     .container {
-      max-width: 1280px;
-      margin: 2.5rem auto;
-      padding: 0 1.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
     }
 
-    /* Section Headers */
-    .section-header {
-      text-align: center;
-      color: var(--primary-color);
-      margin-bottom: 2rem;
-      font-size: 1.5rem;
-      font-weight: 600;
-      padding-bottom: 0.75rem;
-      border-bottom: 2px solid var(--border-color);
-      position: relative;
-    }
-
-    .section-header::before,
-    .section-header::after {
-      content: none;
-    }
-
-    /* Card Styles */
     .card {
-      background-color: var(--card-bg);
-      border-radius: var(--radius-md);
-      box-shadow: var(--shadow-sm);
+      background-color: var(--card-background);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      padding: 1.5rem;
       transition: var(--transition);
     }
 
     .card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-md);
+      transform: translateY(-5px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .fade-in {
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     /* Subscribers Section */
     .subscribers-section {
-      margin-bottom: 2.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .section-header {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      color: var(--primary-color);
+      display: flex;
+      align-items: center;
+    }
+
+    .section-header i {
+      margin-left: 0.5rem;
     }
 
     .subscribers-container {
-      display: flex;
-      flex-direction: row; /* همیشه افقی */
-      overflow-x: auto;
-      gap: 1rem; /* کاهش فاصله برای فضای بهتر */
-      padding: 1.5rem;
-      scrollbar-width: thin;
-      scrollbar-color: var(--primary-light) var(--light-gray);
-    }
-
-    .subscribers-container::-webkit-scrollbar {
-      height: 6px;
-    }
-
-    .subscribers-container::-webkit-scrollbar-track {
-      background: var(--light-gray);
-      border-radius: 10px;
-    }
-
-    .subscribers-container::-webkit-scrollbar-thumb {
-      background: var(--primary-light);
-      border-radius: 10px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1rem;
     }
 
     .subscriber-card {
-      flex: 0 0 auto;
-      width: 240px; /* عرض کمی کوچکتر برای رسپانسیو بهتر */
-      border-radius: var(--radius-lg);
-      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      cursor: pointer;
     }
 
     .subscriber-header {
-      padding: 1.5rem;
-      text-align: center;
-      background: var(--primary-color);
-      color: var(--white);
+      margin-bottom: 1rem;
     }
 
     .subscriber-title {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 0.75rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      color: var(--primary-color);
     }
 
     .subscriber-image {
@@ -172,65 +128,48 @@
       height: 80px;
       border-radius: 50%;
       object-fit: cover;
-      border: 3px solid var(--white);
-      margin: 0 auto 0.75rem;
-      box-shadow: var(--shadow-sm);
-    }
-
-    .subscriber-card:hover .subscriber-image {
-      transform: scale(1.1);
+      border: 3px solid var(--secondary-color);
+      margin-bottom: 0.5rem;
     }
 
     .subscriber-name {
-      font-weight: 600;
-      font-size: 1rem;
+      font-weight: bold;
     }
 
     .subscriber-details {
-      padding: 1.5rem;
-      background: var(--white);
+      width: 100%;
     }
 
     .subscriber-info {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
+      margin-bottom: 0.5rem;
     }
 
     .info-label {
-      font-weight: 500;
       color: var(--text-light);
-      font-size: 0.9rem;
-    }
-
-    .info-value {
-      font-weight: 600;
     }
 
     .category-badge {
-      padding: 0.4rem 1rem;
-      border-radius: 1.5rem;
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: var(--white);
+      padding: 0.25rem 0.5rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: bold;
     }
 
     .cricket-badge {
-      background-color: var(--cricket-color);
+      background-color: rgba(108, 92, 231, 0.1);
+      color: var(--primary-color);
     }
 
     .football-badge {
-      background-color: var(--football-color);
+      background-color: rgba(0, 184, 148, 0.1);
+      color: var(--success-color);
     }
 
     .score-badge {
-      padding: 0.4rem 1rem;
-      border-radius: 1.5rem;
-      font-size: 0.9rem;
-      font-weight: 600;
-      background: linear-gradient(135deg, #facc15, #f97316);
-      color: var(--white);
+      font-weight: bold;
+      color: var(--primary-color);
     }
 
     /* Category Filter */
@@ -238,83 +177,60 @@
       display: flex;
       justify-content: center;
       margin-bottom: 1.5rem;
-      background-color: var(--filter-bg);
-      padding: 1rem;
-      border-radius: var(--radius-md);
-      gap: 0.75rem;
+      gap: 0.5rem;
     }
 
     .filter-btn {
-      padding: 0.75rem 1.75rem;
+      padding: 0.5rem 1rem;
       border: none;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      font-family: Vazir;
-      font-weight: 600;
-      font-size: 0.95rem;
-      transition: var(--transition);
-      background-color: var(--white);
+      border-radius: 20px;
+      background-color: var(--card-background);
       color: var(--text-color);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .filter-btn:hover {
-      background-color: var(--primary-light);
-      color: var(--white);
+      cursor: pointer;
+      transition: var(--transition);
+      font-weight: bold;
+      box-shadow: var(--shadow);
     }
 
     .filter-btn.active {
       background-color: var(--primary-color);
-      color: var(--white);
+      color: white;
     }
 
-    .filter-btn.cricket.active {
-      background-color: var(--cricket-color);
-    }
-
-    .filter-btn.football.active {
-      background-color: var(--football-color);
+    .filter-btn:hover {
+      transform: translateY(-2px);
     }
 
     /* League Filter */
     .league-filter {
       display: flex;
+      flex-wrap: wrap;
       justify-content: center;
       margin-bottom: 1.5rem;
-      background-color: var(--filter-bg);
-      padding: 1rem;
-      border-radius: var(--radius-md);
-      gap: 0.75rem;
+      gap: 0.5rem;
     }
 
     .league-btn {
-      padding: 0.75rem 1.5rem;
+      padding: 0.4rem 0.8rem;
       border: none;
-      border-radius: var(--radius-sm);
-      background-color: var(--white);
+      border-radius: 16px;
+      background-color: var(--card-background);
       color: var(--text-color);
       cursor: pointer;
-      font-family: Vazir;
-      font-weight: 600;
-      font-size: 0.9rem;
       transition: var(--transition);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .league-btn:hover {
-      background-color: var(--primary-light);
-      color: var(--white);
+      font-size: 0.9rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     }
 
     .league-btn.active {
-      background-color: var(--primary-color);
-      color: var(--white);
+      background-color: var(--secondary-color);
+      color: white;
     }
 
-    /* Search */
+    /* Search Container */
     .search-container {
-      margin-bottom: 2rem;
       position: relative;
+      margin-bottom: 1.5rem;
       max-width: 500px;
       margin-left: auto;
       margin-right: auto;
@@ -322,453 +238,378 @@
 
     .search-input {
       width: 100%;
-      padding: 0.75rem 3rem 0.75rem 1.5rem;
-      border-radius: 2rem;
+      padding: 0.75rem 1rem 0.75rem 3rem;
       border: 1px solid var(--border-color);
+      border-radius: 24px;
       font-size: 1rem;
-      background-color: var(--white);
-      box-shadow: var(--shadow-sm);
       transition: var(--transition);
     }
 
     .search-input:focus {
       outline: none;
-      border-color: var(--primary-light);
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.2);
     }
 
     .search-icon {
       position: absolute;
-      left: 1rem;
+      right: 1rem;
       top: 50%;
       transform: translateY(-50%);
-      color: var(--primary-light);
-      font-size: 1.2rem;
+      color: var(--text-light);
     }
 
-    /* Matches */
+    /* Matches Container */
     .matches-container {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 2rem;
-      margin-bottom: 2.5rem;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
     }
 
     .match-card {
-      background-color: var(--team-card-bg);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      box-shadow: var(--shadow-sm);
-      transition: var(--transition);
       cursor: pointer;
-    }
-
-    .match-card:hover {
-      transform: translateY(-6px);
-      box-shadow: var(--shadow-md);
+      transition: var(--transition);
     }
 
     .match-header {
-      padding: 1.5rem;
-      text-align: center;
-      background: var(--primary-color);
-      color: var(--white);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
     }
 
     .match-title {
-      font-size: 1.3rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
+      font-weight: bold;
+      font-size: 1.1rem;
     }
 
     .match-category {
-      padding: 0.4rem 1rem;
-      border-radius: 1.5rem;
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: var(--white);
+      padding: 0.25rem 0.5rem;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: bold;
     }
 
-    .cricket {
-      background-color: var(--cricket-color);
+    .match-category.cricket {
+      background-color: rgba(108, 92, 231, 0.1);
+      color: var(--primary-color);
     }
 
-    .football {
-      background-color: var(--football-color);
+    .match-category.football {
+      background-color: rgba(0, 184, 148, 0.1);
+      color: var(--success-color);
     }
 
     .match-teams {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1.5rem;
+      margin-bottom: 1rem;
     }
 
     .team {
       display: flex;
       flex-direction: column;
       align-items: center;
-      text-align: center;
       flex: 1;
     }
 
     .team-logo {
-      width: 70px;
-      height: 70px;
+      width: 60px;
+      height: 60px;
       object-fit: contain;
-      margin-bottom: 0.75rem;
-      border-radius: 50%;
-      background: var(--white);
-      padding: 8px;
-      box-shadow: var(--shadow-sm);
-    }
-
-    .match-card:hover .team-logo {
-      transform: scale(1.15);
+      margin-bottom: 0.5rem;
     }
 
     .team-name {
-      font-weight: 600;
-      font-size: 1rem;
+      text-align: center;
+      font-weight: bold;
+      font-size: 0.9rem;
     }
 
     .vs {
-      font-weight: 700;
-      margin: 0 1.5rem;
-      color: var(--primary-color);
-      font-size: 1.3rem;
+      font-weight: bold;
+      margin: 0 1rem;
+      color: var(--text-light);
     }
 
     .match-date {
       text-align: center;
-      padding: 1rem;
-      font-size: 0.9rem;
       color: var(--text-light);
-      background-color: var(--white);
-      border-top: 1px solid var(--border-color);
+      font-size: 0.9rem;
     }
 
     /* Ranking Section */
     .ranking-section {
       display: none;
-      margin-top: 2.5rem;
+      margin-top: 2rem;
     }
 
     .back-button {
-      background-color: var(--primary-color);
-      color: var(--white);
-      border: none;
-      padding: 0.75rem 1.5rem;
-      border-radius: var(--radius-sm);
-      margin-bottom: 2rem;
-      cursor: pointer;
-      display: inline-flex;
+      display: flex;
       align-items: center;
-      gap: 0.5rem;
-      font-family: Vazir;
-      font-weight: 600;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      cursor: pointer;
+      margin-bottom: 1.5rem;
       transition: var(--transition);
-      box-shadow: var(--shadow-sm);
     }
 
     .back-button:hover {
-      background-color: var(--primary-light);
-      box-shadow: var(--shadow-md);
+      background-color: var(--secondary-color);
     }
 
-    /* Podium Styles */
+    .back-button i {
+      margin-right: 0.5rem;
+    }
+
+    /* Podium */
     .podium-container {
-      background: var(--white);
-      padding: 2rem;
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-sm);
       margin-bottom: 2rem;
     }
 
     .podium-title {
       text-align: center;
-      margin-bottom: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
       color: var(--primary-color);
-      font-weight: 600;
-      font-size: 1.4rem;
     }
 
     .podium {
       display: flex;
       justify-content: center;
       align-items: flex-end;
-      height: 240px;
       gap: 1rem;
-      padding: 0 1rem;
+      height: 200px;
     }
 
     .podium-step {
-      flex: 1;
-      max-width: 160px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      transition: var(--transition);
-    }
-
-    .podium-step:hover {
-      transform: translateY(-6px);
+      position: relative;
     }
 
     .podium-rank {
-      width: 100%;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--white);
-      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
-      box-shadow: var(--shadow-sm);
+      font-weight: bold;
+      color: white;
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
     }
 
     .podium-1 {
-      height: 200px;
-      background: linear-gradient(135deg, var(--gold), #fefcbf);
+      background-color: #ffd700;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+      height: 160px;
     }
 
     .podium-2 {
-      height: 160px;
-      background: linear-gradient(135deg, var(--silver), #e2e8f0);
+      background-color: #c0c0c0;
+      box-shadow: 0 0 15px rgba(192, 192, 192, 0.5);
+      height: 130px;
     }
 
     .podium-3 {
-      height: 120px;
-      background: linear-gradient(135deg, var(--bronze), #fed7aa);
+      background-color: #cd7f32;
+      box-shadow: 0 0 15px rgba(205, 127, 50, 0.5);
+      height: 110px;
     }
 
     .podium-badge {
-      position: absolute;
-      top: -1.5rem;
-      width: 2.5rem;
-      height: 2.5rem;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--white);
-      font-size: 1.2rem;
-      box-shadow: var(--shadow-sm);
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
     }
 
-    .podium-1 .podium-badge { background: var(--gold); }
-    .podium-2 .podium-badge { background: var(--silver); }
-    .podium-3 .podium-badge { background: var(--bronze); }
-
     .podium-info {
-      width: 100%;
-      background: var(--white);
-      padding: 1rem;
       text-align: center;
-      border-radius: 0 0 var(--radius-sm) var(--radius-sm);
-      box-shadow: var(--shadow-sm);
     }
 
     .podium-name {
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-weight: bold;
+      margin-bottom: 0.25rem;
+      font-size: 0.9rem;
     }
 
     .podium-score {
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: var(--primary-color);
+      color: var(--text-light);
+      font-size: 0.9rem;
     }
 
     /* Ranking Table */
     .ranking-table-container {
       overflow-x: auto;
-      margin-bottom: 2.5rem;
-      background: var(--white);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-sm);
-      padding: 1.5rem;
     }
 
     .ranking-table {
       width: 100%;
       border-collapse: collapse;
+      margin-top: 1rem;
     }
 
-    .ranking-table thead th {
+    .ranking-table th {
       background-color: var(--primary-color);
-      color: var(--white);
-      font-weight: 600;
+      color: white;
       padding: 1rem;
-      text-align: center;
-      position: sticky;
-      top: 0;
-    }
-
-    .ranking-table tbody tr {
-      transition: var(--transition);
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    .ranking-table tbody tr:hover {
-      background-color: var(--light-gray);
+      text-align: right;
     }
 
     .ranking-table td {
       padding: 1rem;
-      text-align: center;
-      vertical-align: middle;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .ranking-table tr:hover {
+      background-color: rgba(108, 92, 231, 0.05);
     }
 
     .rank-cell {
-      font-weight: 700;
-      font-size: 1.1rem;
+      text-align: center;
+      font-weight: bold;
     }
 
-    .gold-rank { color: var(--gold); }
-    .silver-rank { color: var(--silver); }
-    .bronze-rank { color: var(--bronze); }
+    .gold-rank {
+      color: #ffd700;
+    }
+
+    .silver-rank {
+      color: #c0c0c0;
+    }
+
+    .bronze-rank {
+      color: #cd7f32;
+    }
 
     .user-cell {
       display: flex;
       align-items: center;
-      gap: 1rem;
-      justify-content: flex-start;
     }
 
     .profile-pic {
-      width: 48px;
-      height: 48px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       object-fit: cover;
-      border: 2px solid var(--primary-light);
-      box-shadow: var(--shadow-sm);
+      margin-left: 1rem;
       cursor: pointer;
-    }
-
-    .profile-pic:hover {
-      transform: scale(1.1);
-      box-shadow: var(--shadow-md);
+      border: 2px solid var(--secondary-color);
     }
 
     .user-info {
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
     }
 
     .user-name {
-      font-weight: 600;
-      color: var(--primary-color);
+      font-weight: bold;
     }
 
     .user-phone {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: var(--text-light);
     }
 
     .score-cell {
-      font-weight: 700;
-      font-size: 1.1rem;
+      text-align: center;
+      font-weight: bold;
       color: var(--primary-color);
     }
 
-    /* Status Containers */
+    /* Status Container */
     .status-container {
-      padding: 3rem;
-      text-align: center;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 1rem;
+      justify-content: center;
+      padding: 2rem;
+      text-align: center;
     }
 
     .status-icon {
-      font-size: 2.5rem;
-      margin-bottom: 0.5rem;
+      font-size: 2rem;
+      margin-bottom: 1rem;
     }
 
     .loading-icon {
+      color: var(--primary-color);
       animation: spin 1s linear infinite;
-      color: var(--primary-light);
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
 
     .error-icon {
-      color: #dc2626;
+      color: var(--error-color);
     }
 
     .empty-icon {
-      color: var(--primary-light);
+      color: var(--text-light);
     }
 
     .status-message {
-      font-size: 1.1rem;
+      margin-bottom: 1rem;
       color: var(--text-light);
     }
 
     .retry-btn {
-      margin-top: 1rem;
-      padding: 0.75rem 1.5rem;
-      background: var(--primary-color);
-      color: var(--white);
+      background-color: var(--primary-color);
+      color: white;
       border: none;
-      border-radius: 2rem;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
       cursor: pointer;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
       transition: var(--transition);
-      box-shadow: var(--shadow-sm);
     }
 
     .retry-btn:hover {
-      background: var(--primary-light);
-      box-shadow: var(--shadow-md);
+      background-color: var(--secondary-color);
     }
 
     /* Auth Container */
     .auth-container {
-      padding: 3rem;
-      text-align: center;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 1rem;
+      justify-content: center;
+      padding: 3rem;
+      text-align: center;
     }
 
     .auth-icon {
-      font-size: 2.5rem;
-      color: var(--gold);
+      font-size: 3rem;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
     }
 
     .auth-message {
-      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
       color: var(--text-light);
     }
 
     .login-btn {
-      margin-top: 1rem;
-      padding: 0.75rem 1.5rem;
-      background: var(--primary-color);
-      color: var(--white);
+      background-color: var(--primary-color);
+      color: white;
       border: none;
-      border-radius: 2rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 24px;
       cursor: pointer;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+      font-size: 1rem;
       transition: var(--transition);
-      box-shadow: var(--shadow-sm);
     }
 
     .login-btn:hover {
-      background: var(--primary-light);
-      box-shadow: var(--shadow-md);
+      background-color: var(--secondary-color);
     }
 
     /* Modal */
@@ -780,1046 +621,1117 @@
       top: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.85);
-      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.8);
       justify-content: center;
       align-items: center;
-      opacity: 0;
-      transition: opacity 0.3s ease;
     }
 
     .modal.show {
       display: flex;
-      opacity: 1;
     }
 
     .modal-content {
       max-width: 90%;
-      max-height: 80%;
-      border-radius: var(--radius-md);
-      box-shadow: var(--shadow-lg);
-      object-fit: contain;
-      transform: scale(0.95);
-      transition: transform 0.3s ease;
-    }
-
-    .modal.show .modal-content {
-      transform: scale(1);
+      max-height: 90%;
+      border-radius: 8px;
     }
 
     .modal-close {
       position: absolute;
-      top: 1.5rem;
-      right: 2rem;
-      color: var(--white);
-      font-size: 2rem;
+      top: 20px;
+      right: 30px;
+      color: white;
+      font-size: 40px;
       font-weight: bold;
       cursor: pointer;
       transition: var(--transition);
     }
 
     .modal-close:hover {
-      color: var(--primary-light);
+      color: var(--accent-color);
     }
 
-    /* Animations */
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+    /* Team Details Modal */
+    .team-details-modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+    .team-details-modal.show {
+      display: flex;
     }
 
-    .fade-in {
-      animation: fadeIn 0.5s ease-out forwards;
+    .team-details-content {
+      background-color: var(--card-background);
+      border-radius: 12px;
+      width: 90%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 2rem;
+      position: relative;
     }
 
-    /* Responsive */
+    .team-details-close {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--text-light);
+      cursor: pointer;
+    }
+
+    .team-details-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .team-details-user-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-left: 1rem;
+      border: 3px solid var(--secondary-color);
+    }
+
+    .team-details-user-name {
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    .team-details-user-email {
+      color: var(--text-light);
+      font-size: 0.9rem;
+    }
+
+    .team-details-players h3 {
+      margin-bottom: 1rem;
+      color: var(--primary-color);
+    }
+
+    .team-player-list {
+      list-style: none;
+      margin-bottom: 1.5rem;
+    }
+
+    .team-player-item {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .team-player-item:last-child {
+      border-bottom: none;
+    }
+
+    .team-player-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-left: 1rem;
+      border: 2px solid var(--secondary-color);
+    }
+
+    .team-player-info {
+      flex: 1;
+    }
+
+    .team-player-name {
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 0.25rem;
+    }
+
+    .team-player-role {
+      font-size: 0.7rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 12px;
+      margin-right: 0.5rem;
+    }
+
+    .team-player-role.captain {
+      background-color: rgba(255, 215, 0, 0.2);
+      color: #b8860b;
+    }
+
+    .team-player-role.vice-captain {
+      background-color: rgba(192, 192, 192, 0.2);
+      color: #696969;
+    }
+
+    .team-player-details {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .team-player-score {
+      font-size: 0.9rem;
+      color: var(--text-light);
+    }
+
+    .team-player-team {
+      font-size: 0.8rem;
+      color: var(--text-light);
+    }
+
+    .team-total-score {
+      text-align: center;
+      font-weight: bold;
+      color: var(--primary-color);
+      padding: 1rem;
+      background-color: rgba(108, 92, 231, 0.1);
+      border-radius: 8px;
+    }
+
+    /* Responsive Design */
     @media (max-width: 768px) {
+      .subscribers-container {
+        grid-template-columns: 1fr;
+      }
+      
       .matches-container {
         grid-template-columns: 1fr;
       }
-
-      .category-filter, .league-filter {
-        flex-direction: column;
-        gap: 0.75rem;
-      }
-
-      .filter-btn, .league-btn {
-        width: 100%;
-        padding: 0.75rem;
-      }
-
+      
       .podium {
-        height: 200px;
-        gap: 0.5rem;
+        height: 150px;
       }
-
-      .podium-1 { height: 160px; }
-      .podium-2 { height: 130px; }
-      .podium-3 { height: 100px; }
-
-      .podium-step {
-        max-width: 120px;
+      
+      .podium-1 {
+        height: 120px;
       }
-
-      .ranking-table thead {
-        display: none;
+      
+      .podium-2 {
+        height: 100px;
       }
-
-      .ranking-table tbody tr {
-        display: block;
-        margin-bottom: 1rem;
-        border-radius: var(--radius-sm);
-        box-shadow: var(--shadow-sm);
+      
+      .podium-3 {
+        height: 80px;
       }
-
+      
+      .podium-rank {
+        width: 50px;
+        height: 50px;
+        font-size: 1rem;
+      }
+      
+      .ranking-table th,
       .ranking-table td {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        text-align: left;
-        padding: 0.75rem;
-        border-bottom: 1px solid var(--border-color);
+        padding: 0.5rem;
       }
-
-      .ranking-table td::before {
-        content: attr(data-label);
-        font-weight: 600;
-        color: var(--primary-color);
-      }
-
+      
       .user-cell {
-        justify-content: space-between;
+        flex-direction: column;
+        align-items: flex-start;
       }
-
-      .subscribers-container {
-        gap: 0.75rem; /* فاصله کمتر در موبایل */
+      
+      .profile-pic {
+        margin-left: 0;
+        margin-bottom: 0.5rem;
       }
-
-      .subscriber-card {
-        width: 200px; /* عرض کوچکتر برای موبایل */
+      
+      .team-player-item {
+        flex-direction: column;
+        align-items: flex-start;
       }
-
-      h1 {
-        font-size: 1.75rem;
+      
+      .team-player-avatar {
+        margin-left: 0;
+        margin-bottom: 0.5rem;
       }
     }
   </style>
 </head>
 <body>
-<!-- Image Modal -->
-<div id="imageModal" class="modal">
-  <span class="modal-close" id="modalClose">&times;</span>
-  <img class="modal-content" id="modalImage">
-</div>
+  <!-- Image Modal -->
+  <div id="imageModal" class="modal">
+    <span class="modal-close" id="modalClose">&times;</span>
+    <img class="modal-content" id="modalImage">
+  </div>
 
-<header>
-  <h1>رده بندی فانتزی - انتخاب بازی</h1>
-</header>
+  <!-- Team Details Modal -->
+  <div id="teamDetailsModal" class="team-details-modal">
+    <div class="team-details-content">
+      <button class="team-details-close" id="teamDetailsClose">
+        <i class="fas fa-times"></i>
+      </button>
+      <div class="team-details-header">
+        <img id="teamDetailsAvatar" src="https://via.placeholder.com/80" alt="User Avatar" class="team-details-user-avatar">
+        <div class="team-details-user-info">
+          <div id="teamDetailsUserName" class="team-details-user-name">نام کاربر</div>
+          <div id="teamDetailsUserEmail" class="team-details-user-email">ایمیل کاربر</div>
+        </div>
+      </div>
+      <div class="team-details-players">
+        <h3>تیم انتخابی</h3>
+        <ul id="teamDetailsPlayersList" class="team-player-list">
+          <!-- بازیکنان تیم اینجا بارگذاری می‌شوند -->
+        </ul>
+        <div class="team-total-score" id="teamTotalScore">
+          امتیاز کل: 0
+        </div>
+      </div>
+    </div>
+  </div>
 
-<div class="container">
-  <!-- Subscribers Section -->
-  <div class="subscribers-section" id="subscribersSection">
-    <div class="section-header">اشتراک کنندگان</div>
-    <div class="subscribers-container" id="subscribersContainer">
+  <header>
+    <h1>رده بندی فانتزی - انتخاب بازی</h1>
+  </header>
+
+  <div class="container">
+    <!-- Subscribers Section -->
+    <div class="subscribers-section" id="subscribersSection">
+      <div class="section-header">اشتراک کنندگان</div>
+      <div class="subscribers-container" id="subscribersContainer">
+        <div class="status-container">
+          <div class="status-icon loading-icon">
+            <i class="fas fa-spinner"></i>
+          </div>
+          <div class="status-message">در حال دریافت لیست اشتراک کنندگان...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category Filter -->
+    <div class="category-filter">
+      <button class="filter-btn all active" data-category="all">همه بازی ها</button>
+      <button class="filter-btn cricket" data-category="cricket">کریکت</button>
+      <button class="filter-btn football" data-category="football">فوتبال</button>
+    </div>
+
+    <!-- League Filter -->
+    <div id="leagueFilter" class="league-filter" style="display: none;">
+      <!-- League filters will be loaded here -->
+    </div>
+
+    <!-- Game Search -->
+    <div class="search-container">
+      <input type="text" class="search-input" id="gameSearchInput" placeholder="جستجوی بازی ها...">
+      <i class="fas fa-search search-icon"></i>
+    </div>
+
+    <!-- Matches Section -->
+    <div class="matches-container" id="matchesContainer">
       <div class="status-container">
         <div class="status-icon loading-icon">
           <i class="fas fa-spinner"></i>
         </div>
-        <div class="status-message">در حال دریافت لیست اشتراک کنندگان...</div>
+        <div class="status-message">در حال دریافت لیست بازی ها...</div>
       </div>
     </div>
-  </div>
 
-  <!-- Category Filter -->
-  <div class="category-filter">
-    <button class="filter-btn all active" data-category="all">همه بازی ها</button>
-    <button class="filter-btn cricket" data-category="cricket">کریکت</button>
-    <button class="filter-btn football" data-category="football">فوتبال</button>
-  </div>
+    <!-- Ranking Section -->
+    <div class="ranking-section" id="rankingSection">
+      <button class="back-button" id="backButton">
+        <i class="fas fa-arrow-right"></i>
+        بازگشت به لیست بازی ها
+      </button>
 
-  <!-- League Filter -->
-  <div id="leagueFilter" class="league-filter" style="display: none;">
-    <!-- League filters will be loaded here -->
-  </div>
+      <h2 class="section-header" id="selectedGameTitle">عنوان بازی</h2>
 
-  <!-- Game Search -->
-  <div class="search-container">
-    <input type="text" class="search-input" id="gameSearchInput" placeholder="جستجوی بازی ها...">
-    <i class="fas fa-search search-icon"></i>
-  </div>
-
-  <!-- Matches Section -->
-  <div class="matches-container" id="matchesContainer">
-    <div class="status-container">
-      <div class="status-icon loading-icon">
-        <i class="fas fa-spinner"></i>
+      <!-- Search Container for Participants -->
+      <div class="search-container" id="searchContainer">
+        <input type="text" class="search-input" id="searchInput" placeholder="جستجوی اشتراک کننده ها...">
       </div>
-      <div class="status-message">در حال دریافت لیست بازی ها...</div>
-    </div>
-  </div>
 
-  <!-- Ranking Section -->
-  <div class="ranking-section" id="rankingSection">
-    <button class="back-button" id="backButton">
-      <i class="fas fa-arrow-right"></i>
-      بازگشت به لیست بازی ها
-    </button>
-
-    <h2 class="section-header" id="selectedGameTitle">عنوان بازی</h2>
-
-    <!-- Search Container for Participants -->
-    <div class="search-container" id="searchContainer">
-      <input type="text" class="search-input" id="searchInput" placeholder="جستجوی اشتراک کننده ها...">
-      <i class="fas fa-search search-icon"></i>
-    </div>
-
-    <!-- Podium Section -->
-    <div id="podiumContainer">
-      <div class="podium-container">
-        <div class="podium-title">اشتراک کننده های برتر</div>
-        <div class="podium">
-          <div class="podium-step">
-            <div class="podium-rank podium-1">1</div>
-            <div class="podium-badge"><i class="fas fa-trophy"></i></div>
-            <div class="podium-info">
-              <div class="podium-name" id="firstPlaceName"></div>
-              <div class="podium-score" id="firstPlaceScore"></div>
+      <!-- Podium Section -->
+      <div id="podiumContainer">
+        <div class="podium-container">
+          <div class="podium-title">اشتراک کننده های برتر</div>
+          <div class="podium">
+            <div class="podium-step">
+              <div class="podium-rank podium-1">1</div>
+              <div class="podium-badge"><i class="fas fa-trophy"></i></div>
+              <div class="podium-info">
+                <div class="podium-name" id="firstPlaceName"></div>
+                <div class="podium-score" id="firstPlaceScore"></div>
+              </div>
+            </div>
+            <div class="podium-step">
+              <div class="podium-rank podium-2">2</div>
+              <div class="podium-badge"><i class="fas fa-medal"></i></div>
+              <div class="podium-info">
+                <div class="podium-name" id="secondPlaceName"></div>
+                <div class="podium-score" id="secondPlaceScore"></div>
+              </div>
+            </div>
+            <div class="podium-step">
+              <div class="podium-rank podium-3">3</div>
+              <div class="podium-badge"><i class="fas fa-award"></i></div>
+              <div class="podium-info">
+                <div class="podium-name" id="thirdPlaceName"></div>
+                <div class="podium-score" id="thirdPlaceScore"></div>
+              </div>
             </div>
           </div>
-          <div class="podium-step">
-            <div class="podium-rank podium-2">2</div>
-            <div class="podium-badge"><i class="fas fa-medal"></i></div>
-            <div class="podium-info">
-              <div class="podium-name" id="secondPlaceName"></div>
-              <div class="podium-score" id="secondPlaceScore"></div>
-            </div>
-          </div>
-          <div class="podium-step">
-            <div class="podium-rank podium-3">3</div>
-            <div class="podium-badge"><i class="fas fa-award"></i></div>
-            <div class="podium-info">
-              <div class="podium-name" id="thirdPlaceName"></div>
-              <div class="podium-score" id="thirdPlaceScore"></div>
-            </div>
+          <div class="last-update" style="text-align: center; margin-top: 1rem; color: var(--text-light); font-size: 0.9rem;">
+            آخرین بروزرسانی: <span id="lastUpdateTime">-</span>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Ranking Table -->
-    <div class="ranking-table-container">
-      <table class="ranking-table" id="rankingTable">
-        <thead>
-          <tr>
-            <th width="10%">رتبه</th>
-            <th width="70%">نام اشتراک کننده</th>
-            <th width="20%">امتیاز</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td colspan="3">
-              <div class="status-container">
-                <div class="status-icon loading-icon">
-                  <i class="fas fa-spinner"></i>
+      <!-- Ranking Table -->
+      <div class="ranking-table-container">
+        <table class="ranking-table" id="rankingTable">
+          <thead>
+            <tr>
+              <th width="10%">رتبه</th>
+              <th width="70%">نام اشتراک کننده</th>
+              <th width="20%">امتیاز</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colspan="3">
+                <div class="status-container">
+                  <div class="status-icon loading-icon">
+                    <i class="fas fa-spinner"></i>
+                  </div>
+                  <div class="status-message">در حال بارگذاری اطلاعات...</div>
                 </div>
-                <div class="status-message">در حال بارگذاری اطلاعات...</div>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Auth Message -->
+    <div id="authMessage" class="auth-container" style="display: none;">
+      <div class="auth-icon">
+        <i class="fas fa-lock"></i>
+      </div>
+      <div class="auth-message">برای مشاهده جدول امتیازات، لطفاً وارد حساب کاربری خود شوید</div>
+      <button class="login-btn" id="loginBtn">
+        <i class="fas fa-sign-in-alt"></i>
+        ورود به سیستم
+      </button>
     </div>
   </div>
 
-  <!-- Auth Message -->
-  <div id="authMessage" class="auth-container" style="display: none;">
-    <div class="auth-icon">
-      <i class="fas fa-lock"></i>
-    </div>
-    <div class="auth-message">برای مشاهده جدول امتیازات، لطفاً وارد حساب کاربری خود شوید</div>
-    <button class="login-btn" id="loginBtn">
-      <i class="fas fa-sign-in-alt"></i>
-      ورود به سیستم
-    </button>
-  </div>
-</div>
+  <script>
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDLfUbSG30O474XPAPY8QpMzo19EMfLWFc",
+      authDomain: "josh-7b6a0.firebaseapp.com",
+      databaseURL: "https://josh-7b6a0-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "josh-7b6a0",
+      storageBucket: "josh-7b6a0.appspot.com",
+      messagingSenderId: "639816255525",
+      appId: "1:639816255525:web:71a3e87374c3e7c68e17cc",
+      measurementId: "G-P2ZSBTN8FP"
+    };
 
-<script>
-  // Firebase configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyDLfUbSG30O474XPAPY8QpMzo19EMfLWFc",
-    authDomain: "josh-7b6a0.firebaseapp.com",
-    databaseURL: "https://josh-7b6a0-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "josh-7b6a0",
-    storageBucket: "josh-7b6a0.appspot.com",
-    messagingSenderId: "639816255525",
-    appId: "1:639816255525:web:71a3e87374c3e7c68e17cc",
-    measurementId: "G-P2ZSBTN8FP"
-  };
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+    const auth = firebase.auth();
 
-  // Initialize Firebase
-  const app = firebase.initializeApp(firebaseConfig);
-  const database = firebase.database();
-  const auth = firebase.auth();
+    // Store all teams data
+    let allTeams = [];
+    let lastUpdateTime = null;
+    let availableGames = [];
+    let selectedGame = null;
+    let currentCategory = 'all';
+    let currentLeague = 'all';
+    let filteredGames = [];
+    let allSubscribers = [];
+    let allLeagues = { cricket: new Set(), football: new Set() };
+    let playerScoresData = {};
+    let teamDetailsData = {};
+    let playersInfo = {}; // Global variable to store players' data including images
 
-  // Store all teams data
-  let allTeams = [];
-  let lastUpdateTime = null;
-  let availableGames = [];
-  let selectedGame = null;
-  let currentCategory = 'all';
-  let currentLeague = 'all';
-  let filteredGames = [];
-  let allSubscribers = [];
-  let allLeagues = { cricket: new Set(), football: new Set() };
-
-  // Check Firebase connection
-  function checkFirebaseConnection() {
-    return new Promise((resolve, reject) => {
-      const connectionRef = database.ref(".info/connected");
-      const timeout = setTimeout(() => {
-        connectionRef.off();
-        reject(new Error("اتصال به سرور زمان گذر کرد. لطفاً اتصال اینترنت خود را بررسی نمایید."));
-      }, 5000);
-
-      connectionRef.on("value", (snapshot) => {
-        if (snapshot.val() === true) {
-          clearTimeout(timeout);
+    // Check Firebase connection
+    function checkFirebaseConnection() {
+      return new Promise((resolve, reject) => {
+        const connectionRef = database.ref(".info/connected");
+        const timeout = setTimeout(() => {
           connectionRef.off();
-          resolve();
-        }
+          reject(new Error("اتصال به سرور زمان گذر کرد. لطفاً اتصال اینترنت خود را بررسی نمایید."));
+        }, 5000);
+
+        connectionRef.on("value", (snapshot) => {
+          if (snapshot.val() === true) {
+            clearTimeout(timeout);
+            connectionRef.off();
+            resolve();
+          }
+        });
       });
-    });
-  }
+    }
 
-  // Show loading state
-  function showLoading() {
-    const tbody = document.querySelector("#rankingTable tbody");
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="3">
-          <div class="status-container">
-            <div class="status-icon loading-icon">
-              <i class="fas fa-spinner"></i>
+    // Show loading state
+    function showLoading() {
+      const tbody = document.querySelector("#rankingTable tbody");
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="3">
+            <div class="status-container">
+              <div class="status-icon loading-icon">
+                <i class="fas fa-spinner"></i>
+              </div>
+              <div class="status-message">در حال بارگذاری اطلاعات...</div>
             </div>
-            <div class="status-message">در حال بارگذاری اطلاعات...</div>
-          </div>
-        </td>
-      </tr>
-    `;
-  }
+          </td>
+        </tr>
+      `;
+    }
 
-  // Show error message
-  function showError(message) {
-    const tbody = document.querySelector("#rankingTable tbody");
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="3">
+    // Show error message
+    function showError(message) {
+      const tbody = document.querySelector("#rankingTable tbody");
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="3">
+            <div class="status-container">
+              <div class="status-icon error-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+              </div>
+              <div class="status-message">${message}</div>
+              <button class="retry-btn" onclick="loadAvailableGames()">
+                <i class="fas fa-sync-alt"></i>
+                تلاش مجدد
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }
+
+    // Show empty state
+    function showEmptyState() {
+      const tbody = document.querySelector("#rankingTable tbody");
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="3">
+            <div class="status-container">
+              <div class="status-icon empty-icon">
+                <i class="fas fa-info-circle"></i>
+              </div>
+              <div class="status-message">هیچ اشتراک کننده یافت نشد</div>
+            </div>
+          </td>
+        </tr>
+      `;
+    }
+
+    // Format score with commas
+    function formatScore(score) {
+      return score.toFixed(1).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    // Decode URI component safely
+    function safeDecodeURIComponent(encodedStr) {
+      try {
+        return decodeURIComponent(encodedStr);
+      } catch (e) {
+        return encodedStr;
+      }
+    }
+
+    // Load subscribers from database
+    async function loadSubscribers() {
+      try {
+        const subscribersSnapshot = await database.ref('mamoon/subscribers').once("value");
+        const subscribersData = subscribersSnapshot.val();
+        
+        if (!subscribersData) {
+          document.getElementById('subscribersContainer').innerHTML = `
+            <div class="status-container">
+              <div class="status-icon empty-icon">
+                <i class="fas fa-info-circle"></i>
+              </div>
+              <div class="status-message">هیچ اشتراک کننده ای یافت نشد</div>
+            </div>
+          `;
+          return;
+        }
+        
+        allSubscribers = Object.keys(subscribersData).map(key => ({
+          id: key,
+          ...subscribersData[key]
+        }));
+        
+        renderSubscribers(allSubscribers, currentCategory);
+      } catch (error) {
+        console.error("Error loading subscribers:", error);
+        document.getElementById('subscribersContainer').innerHTML = `
           <div class="status-container">
             <div class="status-icon error-icon">
               <i class="fas fa-exclamation-triangle"></i>
             </div>
-            <div class="status-message">${message}</div>
+            <div class="status-message">خطا در دریافت اطلاعات اشتراک کنندگان</div>
+          </div>
+        `;
+      }
+    }
+
+    // Render subscribers based on category
+    function renderSubscribers(subscribers, category) {
+      const container = document.getElementById("subscribersContainer");
+      let filteredSubscribers = subscribers;
+      if (category !== 'all') {
+        const persianCategory = category === 'cricket' ? 'کرکت' : 'فوتبال';
+        filteredSubscribers = subscribers.filter(sub => sub.category === persianCategory);
+      }
+      
+      if (filteredSubscribers.length === 0) {
+        container.innerHTML = `
+          <div class="status-container">
+            <div class="status-icon empty-icon">
+              <i class="fas fa-info-circle"></i>
+            </div>
+            <div class="status-message">هیچ اشتراک کننده ای برای این دسته بندی یافت نشد</div>
+          </div>
+        `;
+        return;
+      }
+      
+      container.innerHTML = '';
+      filteredSubscribers.forEach(subscriber => {
+        const subscriberCard = document.createElement('div');
+        subscriberCard.className = 'subscriber-card card fade-in';
+        const categoryClass = subscriber.category === 'کرکت' ? 'cricket-badge' : 'football-badge';
+        
+        subscriberCard.innerHTML = `
+          <div class="subscriber-header">
+            <div class="subscriber-title">${subscriber.title}</div>
+            <img src="${subscriber.imageBase64}" alt="${subscriber.name}" class="subscriber-image"
+                 onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(subscriber.name)}&background=6c5ce7'">
+            <div class="subscriber-name">${subscriber.name}</div>
+          </div>
+          <div class="subscriber-details">
+            <div class="subscriber-info">
+              <span class="info-label">دسته بندی:</span>
+              <span class="category-badge ${categoryClass}">${subscriber.category}</span>
+            </div>
+            <div class="subscriber-info">
+              <span class="info-label">امتیاز:</span>
+              <span class="score-badge">${subscriber.score}</span>
+            </div>
+          </div>
+        `;
+        container.appendChild(subscriberCard);
+      });
+    }
+
+    // Load available games from database
+    async function loadAvailableGames() {
+      try {
+        await checkFirebaseConnection();
+        const gamesSnapshot = await database.ref().once("value");
+        const gamesData = gamesSnapshot.val();
+        
+        if (!gamesData) {
+          document.getElementById('matchesContainer').innerHTML = `
+            <div class="status-container">
+              <div class="status-icon error-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+              </div>
+              <div class="status-message">هیچ بازی ای در دیتابیس یافت نشد</div>
+            </div>
+          `;
+          return;
+        }
+        
+        availableGames = [];
+        allLeagues = { cricket: new Set(), football: new Set() };
+        Object.keys(gamesData).forEach(key => {
+          if (gamesData[key] && gamesData[key].player_scores) {
+            const matchInfo = gamesData[key].matchInfo || {};
+            const isCricket = key.startsWith('fcricket_') || key.startsWith('foricket_');
+            const category = isCricket ? 'cricket' : 'football';
+            const categoryName = isCricket ? 'کریکت' : 'فوتبال';
+            const league = matchInfo.league || matchInfo.category || 'لیگ ناشناخته';
+            
+            let team1 = { name: "تیم ۱", logo: "" };
+            let team2 = { name: "تیم ۲", logo: "" };
+            if (matchInfo.teams) {
+              if (matchInfo.teams.team1) team1 = matchInfo.teams.team1;
+              if (matchInfo.teams.team2) team2 = matchInfo.teams.team2;
+            }
+            
+            availableGames.push({
+              id: key,
+              title: matchInfo.title || key.replace('_', ' ').replace('fcricket', 'کریکت').replace('ffootball', 'فوتبال').replace('foricket', 'کریکت'),
+              category: category,
+              categoryName: categoryName,
+              league: league,
+              date: matchInfo.date || "تاریخ نامعلوم",
+              team1: team1,
+              team2: team2,
+              status: matchInfo.status || "پایان یافته"
+            });
+            if (category === 'cricket') allLeagues.cricket.add(league);
+            else if (category === 'football') allLeagues.football.add(league);
+          }
+        });
+        
+        if (availableGames.length === 0) {
+          document.getElementById('matchesContainer').innerHTML = `
+            <div class="status-container">
+              <div class="status-icon error-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+              </div>
+              <div class="status-message">هیچ بازی ای با اطلاعات امتیازات یافت نشد</div>
+            </div>
+          `;
+          return;
+        }
+        
+        availableGames.sort((a, b) => (a.date && b.date) ? new Date(b.date) - new Date(a.date) : 0);
+        filterGamesByCategoryAndSearch();
+      } catch (error) {
+        console.error("Error loading games:", error);
+        document.getElementById('matchesContainer').innerHTML = `
+          <div class="status-container">
+            <div class="status-icon error-icon">
+              <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="status-message">${error.message || "خطا در دریافت اطلاعات از سرور"}</div>
             <button class="retry-btn" onclick="loadAvailableGames()">
               <i class="fas fa-sync-alt"></i>
               تلاش مجدد
             </button>
           </div>
-        </td>
-      </tr>
-    `;
-  }
-
-  // Show empty state
-  function showEmptyState() {
-    const tbody = document.querySelector("#rankingTable tbody");
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="3">
-          <div class="status-container">
-            <div class="status-icon empty-icon">
-              <i class="fas fa-info-circle"></i>
-            </div>
-            <div class="status-message">هیچ اشتراک کننده یافت نشد</div>
-          </div>
-        </td>
-      </tr>
-    `;
-  }
-
-  // Format score with commas
-  function formatScore(score) {
-    return score.toFixed(1).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  }
-
-  // Load subscribers from database
-  async function loadSubscribers() {
-    try {
-      const subscribersSnapshot = await database.ref('mamoon/subscribers').once("value");
-      const subscribersData = subscribersSnapshot.val();
-      
-      if (!subscribersData) {
-        document.getElementById('subscribersContainer').innerHTML = `
-          <div class="status-container">
-            <div class="status-icon empty-icon">
-              <i class="fas fa-info-circle"></i>
-            </div>
-            <div class="status-message">هیچ اشتراک کننده ای یافت نشد</div>
-          </div>
         `;
+      }
+    }
+
+    // Display league filters
+    function renderLeagueFilters() {
+      const leagueFilter = document.getElementById('leagueFilter');
+      const leagues = currentCategory === 'cricket' ? [...allLeagues.cricket] : [...allLeagues.football];
+      if (leagues.length === 0) {
+        leagueFilter.style.display = 'none';
         return;
       }
-      
-      // Convert object to array
-      allSubscribers = Object.keys(subscribersData).map(key => {
-        return {
-          id: key,
-          ...subscribersData[key]
-        };
+      leagueFilter.style.display = 'flex';
+      leagueFilter.innerHTML = '<button class="league-btn active" data-league="all">همه لیگ ها</button>';
+      leagues.forEach(league => {
+        leagueFilter.innerHTML += `<button class="league-btn" data-league="${league}">${league}</button>`;
       });
-      
-      // Render subscribers based on current category
-      renderSubscribers(allSubscribers, currentCategory);
-      
-    } catch (error) {
-      console.error("Error loading subscribers:", error);
-      document.getElementById('subscribersContainer').innerHTML = `
-        <div class="status-container">
-          <div class="status-icon error-icon">
-            <i class="fas fa-exclamation-triangle"></i>
-          </div>
-          <div class="status-message">خطا در دریافت اطلاعات اشتراک کنندگان</div>
-        </div>
-      `;
-    }
-  }
-
-  // Render subscribers based on category
-  function renderSubscribers(subscribers, category) {
-    const container = document.getElementById("subscribersContainer");
-    
-    // Filter subscribers by category
-    let filteredSubscribers = subscribers;
-    if (category !== 'all') {
-      const persianCategory = category === 'cricket' ? 'کرکت' : 'فوتبال';
-      filteredSubscribers = subscribers.filter(sub => sub.category === persianCategory);
-    }
-    
-    if (filteredSubscribers.length === 0) {
-      container.innerHTML = `
-        <div class="status-container">
-          <div class="status-icon empty-icon">
-            <i class="fas fa-info-circle"></i>
-          </div>
-          <div class="status-message">هیچ اشتراک کننده ای برای این دسته بندی یافت نشد</div>
-        </div>
-      `;
-      return;
-    }
-    
-    container.innerHTML = '';
-    
-    filteredSubscribers.forEach(subscriber => {
-      const subscriberCard = document.createElement('div');
-      subscriberCard.className = 'subscriber-card card fade-in';
-      
-      const categoryClass = subscriber.category === 'کرکت' ? 'cricket-badge' : 'football-badge';
-      
-      subscriberCard.innerHTML = `
-        <div class="subscriber-header">
-          <div class="subscriber-title">${subscriber.title}</div>
-          <img src="${subscriber.imageBase64}" alt="${subscriber.name}" class="subscriber-image"
-               onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(subscriber.name)}&background=6c5ce7'">
-          <div class="subscriber-name">${subscriber.name}</div>
-        </div>
-        <div class="subscriber-details">
-          <div class="subscriber-info">
-            <span class="info-label">دسته بندی:</span>
-            <span class="category-badge ${categoryClass}">${subscriber.category}</span>
-          </div>
-          <div class="subscriber-info">
-            <span class="info-label">امتیاز:</span>
-            <span class="score-badge">${subscriber.score}</span>
-          </div>
-        </div>
-      `;
-      
-      container.appendChild(subscriberCard);
-    });
-  }
-
-  // Load available games from database
-  async function loadAvailableGames() {
-    try {
-      await checkFirebaseConnection();
-      
-      const gamesSnapshot = await database.ref().once("value");
-      const gamesData = gamesSnapshot.val();
-      
-      if (!gamesData) {
-        document.getElementById('matchesContainer').innerHTML = `
-          <div class="status-container">
-            <div class="status-icon error-icon">
-              <i class="fas fa-exclamation-triangle"></i>
-            </div>
-            <div class="status-message">هیچ بازی ای در دیتابیس یافت نشد</div>
-          </div>
-        `;
-        return;
-      }
-      
-      // Extract game names (keys that contain player_scores)
-      availableGames = [];
-      allLeagues = { cricket: new Set(), football: new Set() };
-      
-      Object.keys(gamesData).forEach(key => {
-        if (gamesData[key] && gamesData[key].player_scores) {
-          // Get match info for each game
-          const matchInfo = gamesData[key].matchInfo || {};
-          
-          // تعیین نوع ورزش
-          const isCricket = key.startsWith('fcricket_');
-          const category = isCricket ? 'cricket' : 'football';
-          const categoryName = isCricket ? 'کریکت' : 'فوتبال';
-          
-          // دریافت لیگ از اطلاعات بازی
-          const league = matchInfo.league || matchInfo.category || 'لیگ ناشناخته';
-          
-          // اطلاعات تیم‌ها - با استفاده از ساختار جدید
-          let team1 = { name: "تیم ۱", logo: "" };
-          let team2 = { name: "تیم ۲", logo: "" };
-          
-          // بررسی ساختارهای مختلف برای اطلاعات تیم‌ها
-          if (matchInfo.teams) {
-            if (matchInfo.teams.team1) {
-              team1 = matchInfo.teams.team1;
-            } else if (matchInfo.teams.afg) {
-              team1 = matchInfo.teams.afg;
-            }
-            
-            if (matchInfo.teams.team2) {
-              team2 = matchInfo.teams.team2;
-            } else if (matchInfo.teams.pak) {
-              team2 = matchInfo.teams.pak;
-            }
-          }
-          
-          availableGames.push({
-            id: key,
-            title: matchInfo.title || key.replace('_', ' ').replace('fcricket', 'کریکت').replace('ffootball', 'فوتبال'),
-            category: category,
-            categoryName: categoryName,
-            league: league,
-            date: matchInfo.date || "تاریخ نامعلوم",
-            team1: team1,
-            team2: team2,
-            status: matchInfo.status || "پایان یافته"
-          });
-          
-          // جمع‌آوری لیگ‌های موجود
-          if (category === 'cricket') {
-            allLeagues.cricket.add(league);
-          } else if (category === 'football') {
-            allLeagues.football.add(league);
-          }
-        }
-      });
-      
-      if (availableGames.length === 0) {
-        document.getElementById('matchesContainer').innerHTML = `
-          <div class="status-container">
-            <div class="status-icon error-icon">
-              <i class="fas fa-exclamation-triangle"></i>
-            </div>
-            <div class="status-message">هیچ بازی ای با اطلاعات امتیازات یافت نشد</div>
-          </div>
-        `;
-        return;
-      }
-      
-      // Sort games by date if available
-      availableGames.sort((a, b) => {
-        if (a.date && b.date) {
-          return new Date(b.date) - new Date(a.date);
-        }
-        return 0;
-      });
-      
-      // Filter games initially
-      filterGamesByCategoryAndSearch();
-      
-    } catch (error) {
-      console.error("Error loading games:", error);
-      document.getElementById('matchesContainer').innerHTML = `
-        <div class="status-container">
-          <div class="status-icon error-icon">
-            <i class="fas fa-exclamation-triangle"></i>
-          </div>
-          <div class="status-message">${error.message || "خطا در دریافت اطلاعات از سرور"}</div>
-          <button class="retry-btn" onclick="loadAvailableGames()">
-            <i class="fas fa-sync-alt"></i>
-            تلاش مجدد
-          </button>
-        </div>
-      `;
-    }
-  }
-
-  // نمایش فیلترهای لیگ
-  function renderLeagueFilters() {
-    const leagueFilter = document.getElementById('leagueFilter');
-    const leagues = currentCategory === 'cricket' ? [...allLeagues.cricket] : [...allLeagues.football];
-    
-    if (leagues.length === 0) {
-      leagueFilter.style.display = 'none';
-      return;
-    }
-    
-    leagueFilter.style.display = 'flex';
-    leagueFilter.innerHTML = '<button class="league-btn active" data-league="all">همه لیگ ها</button>';
-    
-    leagues.forEach(league => {
-      leagueFilter.innerHTML += `<button class="league-btn" data-league="${league}">${league}</button>`;
-    });
-    
-    // اضافه کردن رویداد برای دکمه‌های فیلتر لیگ
-    document.querySelectorAll('.league-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        currentLeague = btn.dataset.league;
-        
-        // به‌روزرسانی وضعیت دکمه‌های فیلتر
-        document.querySelectorAll('.league-btn').forEach(b => {
-          b.classList.remove('active');
-          if (b.dataset.league === currentLeague) {
-            b.classList.add('active');
-          }
+      document.querySelectorAll('.league-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          currentLeague = btn.dataset.league;
+          document.querySelectorAll('.league-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          filterGamesByCategoryAndSearch();
         });
-        
-        filterGamesByCategoryAndSearch();
       });
-    });
-  }
+    }
 
-  // Filter games by category and search term
-  function filterGamesByCategoryAndSearch() {
-    const searchTerm = document.getElementById('gameSearchInput').value.trim().toLowerCase();
-    
-    // First filter by category
-    if (currentCategory !== 'all') {
-      filteredGames = availableGames.filter(game => game.category === currentCategory);
-    } else {
-      filteredGames = [...availableGames];
-    }
-    
-    // Then filter by league
-    if (currentLeague !== 'all') {
-      filteredGames = filteredGames.filter(game => game.league === currentLeague);
-    }
-    
-    // Then filter by search term if provided
-    if (searchTerm) {
-      filteredGames = filteredGames.filter(game => 
+    // Filter games by category and search term
+    function filterGamesByCategoryAndSearch() {
+      const searchTerm = document.getElementById('gameSearchInput').value.trim().toLowerCase();
+      filteredGames = currentCategory !== 'all' ? availableGames.filter(game => game.category === currentCategory) : [...availableGames];
+      if (currentLeague !== 'all') filteredGames = filteredGames.filter(game => game.league === currentLeague);
+      if (searchTerm) filteredGames = filteredGames.filter(game => 
         game.title.toLowerCase().includes(searchTerm) || 
         game.team1.name.toLowerCase().includes(searchTerm) ||
         game.team2.name.toLowerCase().includes(searchTerm) ||
         game.categoryName.toLowerCase().includes(searchTerm) ||
         game.league.toLowerCase().includes(searchTerm)
       );
+      renderGameSelection(filteredGames);
+      renderSubscribers(allSubscribers, currentCategory);
     }
-    
-    // Render filtered games
-    renderGameSelection(filteredGames);
-    
-    // Also update subscribers based on category
-    renderSubscribers(allSubscribers, currentCategory);
-  }
 
-  // Render game selection cards
-  function renderGameSelection(games) {
-    const container = document.getElementById("matchesContainer");
-    
-    if (games.length === 0) {
-      container.innerHTML = `
-        <div class="status-container">
-          <div class="status-icon empty-icon">
-            <i class="fas fa-info-circle"></i>
+    // Render game selection cards
+    function renderGameSelection(games) {
+      const container = document.getElementById("matchesContainer");
+      if (games.length === 0) {
+        container.innerHTML = `
+          <div class="status-container">
+            <div class="status-icon empty-icon">
+              <i class="fas fa-info-circle"></i>
+            </div>
+            <div class="status-message">هیچ بازی ای یافت نشد</div>
           </div>
-          <div class="status-message">هیچ بازی ای یافت نشد</div>
-        </div>
-      `;
-      return;
-    }
-    
-    container.innerHTML = '';
-    
-    games.forEach(game => {
-      const matchCard = document.createElement('div');
-      matchCard.className = 'match-card card fade-in';
-      matchCard.setAttribute('data-match-id', game.id);
-      
-      matchCard.innerHTML = `
-        <div class="match-header">
-          <div class="match-title">${game.title}</div>
-          <div class="match-category ${game.category === 'cricket' ? 'cricket' : 'football'}">
-            ${game.categoryName}
-          </div>
-        </div>
-        <div class="match-teams">
-          <div class="team">
-            <img src="${game.team1.logo || 'https://via.placeholder.com/60?text=لوگو'}" 
-                 alt="${game.team1.name}" class="team-logo" 
-                 onerror="this.src='https://via.placeholder.com/60?text=لوگو'">
-            <div class="team-name">${game.team1.name}</div>
-          </div>
-          <div class="vs">VS</div>
-          <div class="team">
-            <img src="${game.team2.logo || 'https://via.placeholder.com/60?text=لوگو'}" 
-                 alt="${game.team2.name}" class="team-logo"
-                 onerror="this.src='https://via.placeholder.com/60?text=لوگو'">
-            <div class="team-name">${game.team2.name}</div>
-          </div>
-        </div>
-        <div class="match-date">
-          <div>${game.date}</div>
-          <div>وضعیت: ${game.status}</div>
-          <div>لیگ: ${game.league}</div>
-        </div>
-      `;
-      
-      matchCard.addEventListener('click', () => {
-        selectGame(game);
-      });
-      
-      container.appendChild(matchCard);
-    });
-  }
-
-  // Select a game and load its data
-  async function selectGame(game) {
-    selectedGame = game;
-    
-    // Show ranking section, hide matches section
-    document.getElementById('matchesContainer').style.display = 'none';
-    document.getElementById('rankingSection').style.display = 'block';
-    document.getElementById('selectedGameTitle').textContent = game.title;
-    
-    // Load ranking data for the selected game
-    loadRankingData(game.id);
-  }
-
-  // Load ranking data for a specific game
-  async function loadRankingData(gameId) {
-    try {
-      showLoading();
-      await checkFirebaseConnection();
-      
-      // Get player scores and teams data from database for the selected game
-      const [playersSnapshot, teamsSnapshot] = await Promise.all([
-        database.ref(`${gameId}/player_scores`).once("value"),
-        database.ref(gameId).once("value")
-      ]);
-
-      const playersScores = playersSnapshot.val() || {};
-      const allData = teamsSnapshot.val();
-
-      if (!allData) {
-        showEmptyState();
+        `;
         return;
       }
-
-      // Process team data
-      allTeams = [];
-      
-      Object.keys(allData).forEach(key => {
-        if (key === "player_scores" || key === "matchInfo") return;
-        
-        const teamData = allData[key];
-        
-        if (!teamData.players || !Array.isArray(teamData.players)) return;
-        
-        let totalScore = 0;
-        
-        // Calculate each player's score
-        teamData.players.forEach(playerName => {
-          const playerKey = Object.keys(playersScores).find(
-            k => decodeURIComponent(k) === playerName
-          );
-          
-          if (playerKey) {
-            // Check if player score is stored as object with 'score' property
-            if (typeof playersScores[playerKey] === 'object' && playersScores[playerKey] !== null) {
-              totalScore += playersScores[playerKey].score || 0;
-            } else {
-              // Fallback to direct number value
-              totalScore += playersScores[playerKey] || 0;
-            }
-          }
-        });
-        
-        // Add captain score (double points)
-        if (teamData.captain) {
-          const captainKey = Object.keys(playersScores).find(
-            k => decodeURIComponent(k) === teamData.captain
-          );
-          if (captainKey) {
-            if (typeof playersScores[captainKey] === 'object' && playersScores[captainKey] !== null) {
-              totalScore += playersScores[captainKey].score || 0;
-            } else {
-              totalScore += playersScores[captainKey] || 0;
-            }
-          }
-        }
-        
-        // Add vice-captain score (half points)
-        if (teamData.viceCaptain) {
-          const viceCaptainKey = Object.keys(playersScores).find(
-            k => decodeURIComponent(k) === teamData.viceCaptain
-          );
-          if (viceCaptainKey) {
-            if (typeof playersScores[viceCaptainKey] === 'object' && playersScores[viceCaptainKey] !== null) {
-              totalScore += (playersScores[viceCaptainKey].score || 0) * 0.5;
-            } else {
-              totalScore += (playersScores[viceCaptainKey] || 0) * 0.5;
-            }
-          }
-        }
-        
-        // Store team information
-        allTeams.push({
-          key: key,
-          name: teamData.userInfo?.fullName || teamData.userInfo?.displayName || "اشتراک کننده ناشناس",
-          phone: teamData.userInfo?.phone || "",
-          photo: teamData.userInfo?.profilePhoto || `https://ui-avatars.com/api/?name=${encodeURIComponent(teamData.userInfo?.fullName || teamData.userInfo?.displayName || "تیم")}&background=${getRandomColor()}`,
-          score: totalScore
-        });
-      });
-
-      // Sort teams by score (descending)
-      allTeams.sort((a, b) => b.score - a.score);
-
-      // Update last update time
-      lastUpdateTime = new Date();
-      
-      // Render the ranking table
-      renderRankingTable(allTeams);
-      
-    } catch (error) {
-      console.error("Error loading data:", error);
-      showError(error.message || "خطا در دریافت اطلاعات از سرور");
-    }
-  }
-
-  // Generate random color for avatar background
-  function getRandomColor() {
-    const colors = ['6c5ce7', '00b894', '0984e3', 'fd79a8', 'e17055', '00cec9'];
-    return colors[Math.floor(Math.random() * colors.length)];
-  }
-
-  // Image Modal functionality
-  function setupImageModal() {
-    const modal = document.getElementById("imageModal");
-    const modalImg = document.getElementById("modalImage");
-    const closeBtn = document.getElementById("modalClose");
-    
-    // Close modal when clicking on close button
-    closeBtn.onclick = function() {
-      modal.classList.remove('show');
-    }
-    
-    // Close modal when clicking outside the image
-    modal.onclick = function(event) {
-      if (event.target === modal) {
-        modal.classList.remove('show');
-      }
-    }
-    
-    // Function to open modal with image
-    window.openImageModal = function(imgSrc, userName) {
-      // Check if image source is valid
-      if (!imgSrc || imgSrc.includes('ui-avatars.com')) {
-        // Don't open modal for auto-generated avatars
-        return;
-      }
-      
-      modal.classList.add('show');
-      modalImg.src = imgSrc;
-      modalImg.alt = `عکس پروفایل ${userName}`;
-    }
-  }
-
-  // Render ranking table
-  function renderRankingTable(teams) {
-    const tbody = document.querySelector("#rankingTable tbody");
-    const podiumContainer = document.getElementById("podiumContainer");
-    
-    // Update podium for top 3 teams
-    if (teams.length >= 3) {
-      podiumContainer.style.display = "block";
-      
-      document.getElementById("firstPlaceName").textContent = teams[0].name;
-      document.getElementById("firstPlaceScore").textContent = formatScore(teams[0].score);
-      
-      document.getElementById("secondPlaceName").textContent = teams[1].name;
-      document.getElementById("secondPlaceScore").textContent = formatScore(teams[1].score);
-      
-      document.getElementById("thirdPlaceName").textContent = teams[2].name;
-      document.getElementById("thirdPlaceScore").textContent = formatScore(teams[2].score);
-    } else {
-      podiumContainer.style.display = "none";
-    }
-    
-    // Render table rows
-    tbody.innerHTML = "";
-    
-    if (teams.length === 0) {
-      showEmptyState();
-      return;
-    }
-    
-    teams.forEach((team, index) => {
-      const row = document.createElement("tr");
-      row.className = "fade-in";
-      
-      let rankClass = "";
-      if (index === 0) rankClass = "gold-rank";
-      else if (index === 1) rankClass = "silver-rank";
-      else if (index === 2) rankClass = "bronze-rank";
-      
-      // Check if the photo is a real image or auto-generated avatar
-      const isRealImage = team.photo && !team.photo.includes('ui-avatars.com');
-      
-      row.innerHTML = `
-        <td class="rank-cell ${rankClass}" data-label="رتبه">
-          ${index + 1}
-          ${index < 3 ? '<i class="fas fa-trophy"></i>' : ''}
-        </td>
-        <td data-label="نام اشتراک کننده">
-          <div class="user-cell">
-            <img src="${team.photo}" class="profile-pic" alt="${team.name}" 
-                 onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(team.name)}&background=${getRandomColor()}'"
-                 ${isRealImage ? `onclick="openImageModal('${team.photo}', '${team.name.replace(/'/g, "\\'")}')"` : 'style="cursor: default;"'}>
-            <div class="user-info">
-              <span class="user-name">${team.name}</span>
-              ${team.phone ? `<span class="user-phone">${team.phone}</span>` : ''}
+      container.innerHTML = '';
+      games.forEach(game => {
+        const matchCard = document.createElement('div');
+        matchCard.className = 'match-card card fade-in';
+        matchCard.setAttribute('data-match-id', game.id);
+        matchCard.innerHTML = `
+          <div class="match-header">
+            <div class="match-title">${game.title}</div>
+            <div class="match-category ${game.category === 'cricket' ? 'cricket' : 'football'}">
+              ${game.categoryName}
             </div>
           </div>
-        </td>
-        <td class="score-cell" data-label="امتیاز">${formatScore(team.score)}</td>
-      `;
-      
-      tbody.appendChild(row);
-    });
-  }
+          <div class="match-teams">
+            <div class="team">
+              <img src="${game.team1.logo || 'https://via.placeholder.com/60?text=لوگو'}" alt="${game.team1.name}" class="team-logo" onerror="this.src='https://via.placeholder.com/60?text=لوگو'">
+              <div class="team-name">${game.team1.name}</div>
+            </div>
+            <div class="vs">VS</div>
+            <div class="team">
+              <img src="${game.team2.logo || 'https://via.placeholder.com/60?text=لوگو'}" alt="${game.team2.name}" class="team-logo" onerror="this.src='https://via.placeholder.com/60?text=لوگو'">
+              <div class="team-name">${game.team2.name}</div>
+            </div>
+          </div>
+          <div class="match-date">
+            <div>${game.date}</div>
+            <div>وضعیت: ${game.status}</div>
+            <div>لیگ: ${game.league}</div>
+          </div>
+        `;
+        matchCard.addEventListener('click', () => selectGame(game));
+        container.appendChild(matchCard);
+      });
+    }
 
-  // Setup search functionality for participants
-  function setupSearch() {
-    const searchInput = document.getElementById("searchInput");
-    
-    searchInput.addEventListener("input", (e) => {
-      const searchTerm = e.target.value.trim().toLowerCase();
-      
-      if (searchTerm === "") {
+    // Select a game and load its data
+    async function selectGame(game) {
+      selectedGame = game;
+      document.getElementById('matchesContainer').style.display = 'none';
+      document.getElementById('rankingSection').style.display = 'block';
+      document.getElementById('selectedGameTitle').textContent = game.title;
+      loadRankingData(game.id);
+    }
+
+    // Load ranking data for a specific game
+    async function loadRankingData(gameId) {
+      try {
+        showLoading();
+        await checkFirebaseConnection();
+        const [playersSnapshot, teamsSnapshot] = await Promise.all([
+          database.ref(`${gameId}/player_scores`).once("value"),
+          database.ref(gameId).once("value")
+        ]);
+
+        const playersScores = playersSnapshot.val() || {};
+        const allData = teamsSnapshot.val();
+
+        if (!allData) {
+          showEmptyState();
+          return;
+        }
+
+        playerScoresData = playersScores;
+        teamDetailsData = allData;
+
+        // Extract player info from player_scores
+        playersInfo = {};
+        Object.keys(playersScores).forEach(playerKey => {
+          const playerData = playersScores[playerKey];
+          if (typeof playerData === 'object' && playerData !== null) {
+            playersInfo[playerKey] = {
+              name: safeDecodeURIComponent(playerKey),
+              image: playerData.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(safeDecodeURIComponent(playerKey))}&background=6c5ce7`,
+              team: playerData.team || "تیم نامشخص",
+              score: playerData.score || 0
+            };
+          }
+        });
+
+        allTeams = [];
+        Object.keys(allData).forEach(key => {
+          if (key === "player_scores" || key === "matchInfo") return;
+          const teamData = allData[key];
+          if (!teamData.players || !Array.isArray(teamData.players)) return;
+
+          let totalScore = 0;
+          teamData.players.forEach(playerName => {
+            const playerKey = Object.keys(playersScores).find(k => safeDecodeURIComponent(k) === playerName);
+            if (playerKey) {
+              const playerScore = (typeof playersScores[playerKey] === 'object' && playersScores[playerKey] !== null) 
+                ? (playersScores[playerKey].score || 0) 
+                : (playersScores[playerKey] || 0);
+              totalScore += playerScore;
+            }
+          });
+
+          if (teamData.captain) {
+            const captainKey = Object.keys(playersScores).find(k => safeDecodeURIComponent(k) === teamData.captain);
+            if (captainKey) {
+              const captainScore = (typeof playersScores[captainKey] === 'object' && playersScores[captainKey] !== null) 
+                ? (playersScores[captainKey].score || 0) 
+                : (playersScores[captainKey] || 0);
+              totalScore += captainScore; // Double points for captain
+            }
+          }
+
+          if (teamData.viceCaptain) {
+            const viceCaptainKey = Object.keys(playersScores).find(k => safeDecodeURIComponent(k) === teamData.viceCaptain);
+            if (viceCaptainKey) {
+              const viceCaptainScore = (typeof playersScores[viceCaptainKey] === 'object' && playersScores[viceCaptainKey] !== null) 
+                ? (playersScores[viceCaptainKey].score || 0) 
+                : (playersScores[viceCaptainKey] || 0);
+              totalScore += viceCaptainScore * 0.5; // Half points for vice-captain
+            }
+          }
+
+          allTeams.push({
+            key: key,
+            name: teamData.userInfo?.fullName || teamData.userInfo?.displayName || "اشتراک کننده ناشناس",
+            phone: teamData.userInfo?.phone || "",
+            photo: teamData.userInfo?.profilePhoto || `https://ui-avatars.com/api/?name=${encodeURIComponent(teamData.userInfo?.fullName || teamData.userInfo?.displayName || "تیم")}&background=${getRandomColor()}`,
+            score: totalScore,
+            teamData: teamData
+          });
+        });
+
+        allTeams.sort((a, b) => b.score - a.score);
+        lastUpdateTime = new Date();
+        document.getElementById('lastUpdateTime').textContent = lastUpdateTime.toLocaleString('fa-IR');
         renderRankingTable(allTeams);
+      } catch (error) {
+        console.error("Error loading data:", error);
+        showError(error.message || "خطا در دریافت اطلاعات از سرور");
+      }
+    }
+
+    // Generate random color for avatar background
+    function getRandomColor() {
+      const colors = ['6c5ce7', '00b894', '0984e3', 'fd79a8', 'e17055', '00cec9'];
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    // Image Modal functionality
+    function setupImageModal() {
+      const modal = document.getElementById("imageModal");
+      const modalImg = document.getElementById("modalImage");
+      const closeBtn = document.getElementById("modalClose");
+      closeBtn.onclick = () => modal.classList.remove('show');
+      modal.onclick = (event) => { if (event.target === modal) modal.classList.remove('show'); };
+      window.openImageModal = function(imgSrc, userName) {
+        if (!imgSrc || imgSrc.includes('ui-avatars.com')) return;
+        modal.classList.add('show');
+        modalImg.src = imgSrc;
+        modalImg.alt = `عکس پروفایل ${userName}`;
+      };
+    }
+
+    // Team Details Modal functionality
+    function setupTeamDetailsModal() {
+      const modal = document.getElementById("teamDetailsModal");
+      const closeBtn = document.getElementById("teamDetailsClose");
+      closeBtn.onclick = () => modal.classList.remove('show');
+      modal.onclick = (event) => { if (event.target === modal) modal.classList.remove('show'); };
+    }
+
+    // Show team details for a specific user
+    function showTeamDetails(userId) {
+      const team = allTeams.find(t => t.key === userId);
+      if (!team || !team.teamData) return;
+      
+      const modal = document.getElementById("teamDetailsModal");
+      const avatar = document.getElementById("teamDetailsAvatar");
+      const userName = document.getElementById("teamDetailsUserName");
+      const userEmail = document.getElementById("teamDetailsUserEmail");
+      const playersList = document.getElementById("teamDetailsPlayersList");
+      const totalScore = document.getElementById("teamTotalScore");
+      
+      avatar.src = team.photo;
+      avatar.onerror = () => { avatar.src = 'https://via.placeholder.com/80'; };
+      userName.textContent = team.name;
+      userEmail.textContent = team.teamData.userInfo?.email || "ایمیل نامشخص";
+      
+      playersList.innerHTML = '';
+      let calculatedTotalScore = 0;
+      
+      if (team.teamData.players && Array.isArray(team.teamData.players)) {
+        team.teamData.players.forEach(playerName => {
+          // Find player data in playersInfo
+          const playerKey = Object.keys(playersInfo).find(k => safeDecodeURIComponent(k) === playerName);
+          let playerImage = `https://ui-avatars.com/api/?name=${encodeURIComponent(playerName)}&background=6c5ce7`;
+          let playerScore = 0;
+          let playerTeam = "تیم نامشخص";
+          
+          if (playerKey && playersInfo[playerKey]) {
+            playerImage = playersInfo[playerKey].image || playerImage;
+            playerScore = playersInfo[playerKey].score || 0;
+            playerTeam = playersInfo[playerKey].team || playerTeam;
+          }
+          
+          calculatedTotalScore += playerScore;
+
+          let roleClass = '';
+          let roleText = '';
+          if (playerName === team.teamData.captain) {
+            roleClass = 'captain';
+            roleText = 'کاپیتان';
+            calculatedTotalScore += playerScore; // Double points for captain
+          } else if (playerName === team.teamData.viceCaptain) {
+            roleClass = 'vice-captain';
+            roleText = 'معاون';
+            calculatedTotalScore += playerScore * 0.5; // Half points for vice-captain
+          }
+
+          const playerItem = document.createElement('li');
+          playerItem.className = 'team-player-item';
+          playerItem.innerHTML = `
+            <img src="${playerImage}" alt="${playerName}" class="team-player-avatar" onerror="this.src='https://via.placeholder.com/48?text=لوگو'">
+            <div class="team-player-info">
+              <div class="team-player-name">
+                ${playerName}
+                ${roleText ? `<span class="team-player-role ${roleClass}">${roleText}</span>` : ''}
+              </div>
+              <div class="team-player-details">
+                <div class="team-player-score">امتیاز: ${formatScore(playerScore)}</div>
+                <div class="team-player-team">تیم: ${playerTeam}</div>
+              </div>
+            </div>
+          `;
+          playersList.appendChild(playerItem);
+        });
+      }
+      
+      totalScore.textContent = `امتیاز کل: ${formatScore(calculatedTotalScore)}`;
+      modal.classList.add('show');
+    }
+
+    // Render ranking table
+    function renderRankingTable(teams) {
+      const tbody = document.querySelector("#rankingTable tbody");
+      const podiumContainer = document.getElementById("podiumContainer");
+      
+      if (teams.length >= 3) {
+        podiumContainer.style.display = "block";
+        document.getElementById("firstPlaceName").textContent = teams[0].name;
+        document.getElementById("firstPlaceScore").textContent = formatScore(teams[0].score);
+        document.getElementById("secondPlaceName").textContent = teams[1].name;
+        document.getElementById("secondPlaceScore").textContent = formatScore(teams[1].score);
+        document.getElementById("thirdPlaceName").textContent = teams[2].name;
+        document.getElementById("thirdPlaceScore").textContent = formatScore(teams[2].score);
+      } else {
+        podiumContainer.style.display = "none";
+      }
+      
+      tbody.innerHTML = '';
+      if (teams.length === 0) {
+        showEmptyState();
         return;
       }
       
-      const filteredTeams = allTeams.filter(team => 
-        team.name.toLowerCase().includes(searchTerm) || 
-        (team.phone && team.phone.includes(searchTerm))
-      );
-      
-      if (filteredTeams.length > 0) {
-        renderRankingTable(filteredTeams);
-      } else {
-        showEmptyState();
-      }
-    });
-  }
-
-  // Setup game search functionality
-  function setupGameSearch() {
-    const gameSearchInput = document.getElementById("gameSearchInput");
-    
-    gameSearchInput.addEventListener("input", () => {
-      filterGamesByCategoryAndSearch();
-    });
-  }
-
-  // Setup category filter functionality
-  function setupCategoryFilter() {
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        // Remove active class from all buttons
-        document.querySelectorAll('.filter-btn').forEach(b => {
-          b.classList.remove('active');
-        });
+      teams.forEach((team, index) => {
+        const row = document.createElement("tr");
+        row.className = "fade-in";
+        row.onclick = () => showTeamDetails(team.key);
+        let rankClass = "";
+        if (index === 0) rankClass = "gold-rank";
+        else if (index === 1) rankClass = "silver-rank";
+        else if (index === 2) rankClass = "bronze-rank";
+        const isRealImage = team.photo && !team.photo.includes('ui-avatars.com');
         
-        // Add active class to clicked button
-        btn.classList.add('active');
-        
-        currentCategory = btn.dataset.category;
-        currentLeague = 'all'; // Reset league filter when category changes
-        
-        // Show/hide league filters based on category
-        if (currentCategory === 'all') {
-          document.getElementById('leagueFilter').style.display = 'none';
-        } else {
-          renderLeagueFilters();
-        }
-        
-        filterGamesByCategoryAndSearch();
+        row.innerHTML = `
+          <td class="rank-cell ${rankClass}" data-label="رتبه">
+            ${index + 1}
+            ${index < 3 ? '<i class="fas fa-trophy"></i>' : ''}
+          </td>
+          <td data-label="نام اشتراک کننده">
+            <div class="user-cell">
+              <img src="${team.photo}" class="profile-pic" alt="${team.name}" 
+                   onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(team.name)}&background=${getRandomColor()}'"
+                   ${isRealImage ? `onclick="openImageModal('${team.photo}', '${team.name.replace(/'/g, "\\'")}')"` : 'style="cursor: default;"'}>
+              <div class="user-info">
+                <span class="user-name">${team.name}</span>
+                ${team.phone ? `<span class="user-phone">${team.phone}</span>` : ''}
+              </div>
+            </div>
+          </td>
+          <td class="score-cell" data-label="امتیاز">${formatScore(team.score)}</td>
+        `;
+        tbody.appendChild(row);
       });
-    });
-  }
+    }
 
-  // Back to matches list
-  function backToMatches() {
-    document.getElementById('rankingSection').style.display = 'none';
-    document.getElementById('matchesContainer').style.display = 'grid';
-    document.getElementById('searchInput').value = '';
-  }
+    // Setup search functionality for participants
+    function setupSearch() {
+      const searchInput = document.getElementById("searchInput");
+      searchInput.addEventListener("input", (e) => {
+        const searchTerm = e.target.value.trim().toLowerCase();
+        if (searchTerm === "") {
+          renderRankingTable(allTeams);
+          return;
+        }
+        const filteredTeams = allTeams.filter(team => 
+          team.name.toLowerCase().includes(searchTerm) || 
+          (team.phone && team.phone.includes(searchTerm))
+        );
+        if (filteredTeams.length > 0) renderRankingTable(filteredTeams);
+        else showEmptyState();
+      });
+    }
 
-  // Initialize the application
-  function initApp() {
-    // Set up auth state listener
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        // User is signed in
-        document.getElementById('authMessage').style.display = 'none';
-        document.getElementById('matchesContainer').style.display = 'grid';
-        loadAvailableGames();
-        loadSubscribers();
-      } else {
-        // User is signed out
-        document.getElementById('authMessage').style.display = 'flex';
-        document.getElementById('matchesContainer').style.display = 'none';
-        document.getElementById('rankingSection').style.display = 'none';
-      }
-    });
+    // Setup game search functionality
+    function setupGameSearch() {
+      const gameSearchInput = document.getElementById("gameSearchInput");
+      gameSearchInput.addEventListener("input", () => filterGamesByCategoryAndSearch());
+    }
 
-    // Set up login button - redirect to Google sign-in
-    document.getElementById('loginBtn').addEventListener('click', () => {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      auth.signInWithRedirect(provider);
-    });
+    // Setup category filter functionality
+    function setupCategoryFilter() {
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentCategory = btn.dataset.category;
+          currentLeague = 'all';
+          if (currentCategory === 'all') document.getElementById('leagueFilter').style.display = 'none';
+          else renderLeagueFilters();
+          filterGamesByCategoryAndSearch();
+        });
+      });
+    }
 
-    // Set up back button
-    document.getElementById('backButton').addEventListener('click', backToMatches);
-    
-    setupSearch();
-    setupGameSearch();
-    setupCategoryFilter();
-    setupImageModal();
-  }
+    // Back to matches list
+    function backToMatches() {
+      document.getElementById('rankingSection').style.display = 'none';
+      document.getElementById('matchesContainer').style.display = 'grid';
+      document.getElementById('searchInput').value = '';
+    }
 
-  // Initialize when page loads
-  window.addEventListener('DOMContentLoaded', initApp);
-</script>
+    // Initialize the application
+    function initApp() {
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          document.getElementById('authMessage').style.display = 'none';
+          document.getElementById('matchesContainer').style.display = 'grid';
+          loadAvailableGames();
+          loadSubscribers();
+        } else {
+          document.getElementById('authMessage').style.display = 'flex';
+          document.getElementById('matchesContainer').style.display = 'none';
+          document.getElementById('rankingSection').style.display = 'none';
+        }
+      });
+
+      document.getElementById('loginBtn').addEventListener('click', () => {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        auth.signInWithRedirect(provider);
+      });
+
+      document.getElementById('backButton').addEventListener('click', backToMatches);
+      setupSearch();
+      setupGameSearch();
+      setupCategoryFilter();
+      setupImageModal();
+      setupTeamDetailsModal();
+    }
+
+    window.addEventListener('DOMContentLoaded', initApp);
+  </script>
 </body>
 </html>
