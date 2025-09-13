@@ -1,3 +1,4 @@
+<xaiArtifact artifact_id="5b2d6028-147b-43c4-84a3-973301a95f28" artifact_version_id="d46b635b-7731-4cee-a5e5-a4a6eb1d195e" title="index-1.html" contentType="text/html">
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -8,10 +9,6 @@
   <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" />
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
     :root {
       --primary-color: #1e3a8a; /* آبی عمیق */
@@ -628,7 +625,7 @@
         <img src="https://i.ibb.co/Nd5FVP8y/gettyimages-2158819705.jpg" alt="نتایج شرکت کنندگان" class="feature-image" loading="lazy" />
         <div class="feature-content">
           <h3 class="feature-title"><i class="fas fa-chart-line"></i> نتایج شرکت کنندگان</h3>
-          <p class="feature-desc">نتایج و آمار کلی شرکت کنندگان در بازی های مختلف را مشاهده کنید و با دیگران مقایسه کنید.</p>
+          <p class="feature-desc">نتایج و آمار کلی شرکت کنندگان در بازی های مختلف را مشاهده کنید و با دیگران مقایسه کنید。</p>
           <button class="feature-btn" aria-label="مشاهده نتایج شرکت کنندگان">
             مشاهده <i class="fas fa-arrow-left"></i>
           </button>
@@ -639,7 +636,7 @@
         <img src="https://i.ibb.co/YFzM2c5B/images-4.jpg" alt="نتایج بازیکنان" class="feature-image" loading="lazy" />
         <div class="feature-content">
           <h3 class="feature-title"><i class="fas fa-ranking-star"></i> نتایج بازیکنان</h3>
-          <p class="feature-desc">رده بندی و عملکرد بازیکنان برتر را مشاهده کنید و ببینید چه کسانی در صدر جدول قرار دارند.</p>
+          <p class="feature-desc">رده بندی و عملکرد بازیکنان برتر را مشاهده کنید و ببینید چه کسانی در صدر جدول قرار دارند。</p>
           <button class="feature-btn" aria-label="مشاهده نتایج بازیکنان">
             مشاهده <i class="fas fa-arrow-left"></i>
           </button>
@@ -659,409 +656,125 @@
   </footer>
 
   <script>
-    // Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyDLfUbSG30O474XPAPY8QpMzo19EMfLWFc",
-      authDomain: "josh-7b6a0.firebaseapp.com",
-      databaseURL: "https://josh-7b6a0-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "josh-7b6a0",
-      storageBucket: "josh-7b6a0.appspot.com",
-      messagingSenderId: "639816255525",
-      appId: "1:639816255525:web:71a3e87374c3e7c68e17cc",
-      measurementId: "G-P2ZSBTN8FP"
-    };
+    // DOM elements
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+    const themeToggle = document.getElementById("themeToggle");
+    const scrollToTop = document.getElementById("scrollToTop");
+    const body = document.body;
+    const logoContainer = document.getElementById("logoContainer");
+    const menuIcon = document.getElementById("menuIcon");
+    const profileBox = document.getElementById("profileBox");
+    const featureCards = document.querySelectorAll(".feature-card");
+    const sidebarLinks = document.querySelectorAll(".sidebar a");
 
-    // Initialize Firebase
-    try {
-      const app = firebase.initializeApp(firebaseConfig);
-      const db = firebase.database();
-      const auth = firebase.auth();
-
-      // DOM elements
-      const sidebar = document.getElementById("sidebar");
-      const overlay = document.getElementById("overlay");
-      const themeToggle = document.getElementById("themeToggle");
-      const scrollToTop = document.getElementById("scrollToTop");
-      const body = document.body;
-      const logoContainer = document.getElementById("logoContainer");
-      const menuIcon = document.getElementById("menuIcon");
-      const profileBox = document.getElementById("profileBox");
-      const featureCards = document.querySelectorAll(".feature-card");
-      const sidebarLinks = document.querySelectorAll(".sidebar a");
-
-      // Theme management
-      function initTheme() {
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        body.classList.toggle('dark-mode', savedTheme === 'dark');
-        updateThemeIcon(savedTheme);
-      }
-
-      function toggleTheme() {
-        body.classList.toggle('dark-mode');
-        const newTheme = body.classList.contains('dark-mode') ? 'dark' : 'light';
-        localStorage.setItem('theme', newTheme);
-        updateThemeIcon(newTheme);
-        showNotification('تم تغییر کرد');
-      }
-
-      function updateThemeIcon(theme) {
-        const icon = themeToggle.querySelector('i');
-        icon.className = theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
-      }
-
-      // Sidebar functions
-      function openSidebar() {
-        sidebar.classList.add('open');
-        overlay.classList.add('active');
-        document.body.style.overflow = 'hidden';
-      }
-
-      function closeSidebar() {
-        sidebar.classList.remove('open');
-        overlay.classList.remove('active');
-        document.body.style.overflow = '';
-      }
-
-      // Scroll to top
-      function toggleScrollToTop() {
-        scrollToTop.classList.toggle('visible', window.scrollY > 300);
-      }
-
-      // Navigation function
-      function navigateTo(page) {
-        try {
-          const user = auth.currentUser;
-          if (user || page === 'index.html') {
-            window.location.href = page;
-          } else {
-            showLoginAlert();
-          }
-        } catch (error) {
-          console.error('Navigation error:', error);
-          showNotification('خطا در هدایت به صفحه');
-        }
-      }
-
-      // Notification
-      function showNotification(message) {
-        const notification = document.createElement('div');
-        notification.className = 'notification';
-        notification.textContent = message;
-        document.body.appendChild(notification);
-
-        setTimeout(() => {
-          notification.classList.add('visible');
-        }, 10);
-
-        setTimeout(() => {
-          notification.classList.remove('visible');
-          setTimeout(() => {
-            document.body.removeChild(notification);
-          }, 300);
-        }, 3000);
-      }
-
-      // Google Sign-In
-      function signInWithGoogle() {
-        try {
-          const provider = new firebase.auth.GoogleAuthProvider();
-
-          Swal.fire({
-            title: 'در حال انتقال به گوگل...',
-            text: 'لطفاً منتظر بمانید',
-            icon: 'info',
-            showConfirmButton: false,
-            allowOutsideClick: false,
-            didOpen: () => {
-              Swal.showLoading();
-            }
-          });
-
-          auth.signInWithPopup(provider)
-            .then((result) => {
-              const user = result.user;
-              const userData = {
-                uid: user.uid,
-                fullname: user.displayName || 'کاربر ناشناس',
-                email: user.email || '',
-                profilePhoto: user.photoURL || 'https://via.placeholder.com/80',
-                createdAt: firebase.database.ServerValue.TIMESTAMP,
-                lastLogin: firebase.database.ServerValue.TIMESTAMP
-              };
-
-              db.ref('users/' + user.uid).set(userData)
-                .then(() => {
-                  localStorage.setItem('user', JSON.stringify(userData));
-                  document.getElementById('profileName').textContent = userData.fullname;
-                  document.getElementById('profileImage').src = userData.profilePhoto;
-
-                  Swal.fire({
-                    title: 'خوش آمدید!',
-                    text: `${userData.fullname} عزیز، به Josh خوش آمدید`,
-                    icon: 'success',
-                    confirmButtonText: 'متشکرم',
-                    confirmButtonColor: '#1e3a8a',
-                    background: 'var(--card-bg)',
-                    color: 'var(--text-color)'
-                  });
-                  showNotification('با موفقیت وارد شدید!');
-                })
-                .catch((error) => {
-                  console.error('Error saving user data:', error);
-                  Swal.fire({
-                    title: 'خطا',
-                    text: 'خطا در ذخیره اطلاعات: ' + error.message,
-                    icon: 'error',
-                    confirmButtonText: 'متوجه شدم',
-                    confirmButtonColor: '#1e3a8a',
-                    background: 'var(--card-bg)',
-                    color: 'var(--text-color)'
-                  });
-                });
-            })
-            .catch((error) => {
-              console.error('Error during Google sign-in:', error);
-              Swal.fire({
-                title: 'خطا در ورود',
-                text: error.message,
-                icon: 'error',
-                confirmButtonText: 'متوجه شدم',
-                confirmButtonColor: '#1e3a8a',
-                background: 'var(--card-bg)',
-                color: 'var(--text-color)'
-              });
-            });
-        } catch (error) {
-          console.error('Google Sign-In error:', error);
-          showNotification('خطا در فرآیند ورود');
-        }
-      }
-
-      function goToProfile() {
-        try {
-          const user = auth.currentUser;
-          if (user) {
-            navigateTo('profile.html');
-          } else {
-            signInWithGoogle();
-          }
-        } catch (error) {
-          console.error('Profile navigation error:', error);
-          showNotification('خطا در هدایت به نمایه');
-        }
-      }
-
-      function showLoginAlert() {
-        Swal.fire({
-          title: 'ورود لازم است',
-          html: 'برای دسترسی به این بخش باید وارد حساب کاربری شوید',
-          icon: 'info',
-          showCancelButton: true,
-          confirmButtonText: 'ورود با گوگل',
-          cancelButtonText: 'بعداً',
-          confirmButtonColor: '#1e3a8a',
-          background: 'var(--card-bg)',
-          color: 'var(--text-color)'
-        }).then((result) => {
-          if (result.isConfirmed) {
-            signInWithGoogle();
-          }
-        });
-      }
-
-      // Initialize app
-      document.addEventListener('DOMContentLoaded', () => {
-        try {
-          initTheme();
-          window.addEventListener('scroll', toggleScrollToTop);
-          scrollToTop.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          });
-
-          // Add event listeners
-          logoContainer.addEventListener('click', () => navigateTo('index.html'));
-          menuIcon.addEventListener('click', openSidebar);
-          overlay.addEventListener('click', closeSidebar);
-          themeToggle.addEventListener('click', toggleTheme);
-          profileBox.addEventListener('click', goToProfile);
-          
-          // Add click listeners to feature cards
-          featureCards.forEach(card => {
-            const page = card.getAttribute('data-page');
-            card.addEventListener('click', () => navigateTo(page));
-            
-            // Prevent button click from triggering card click twice
-            const button = card.querySelector('.feature-btn');
-            button.addEventListener('click', (e) => {
-              e.stopPropagation();
-              navigateTo(page);
-            });
-          });
-          
-          // Add click listeners to sidebar links
-          sidebarLinks.forEach(link => {
-            const href = link.getAttribute('href');
-            link.addEventListener('click', (e) => {
-              e.preventDefault();
-              navigateTo(href);
-            });
-          });
-
-          if (!localStorage.getItem('welcomeShown')) {
-            setTimeout(() => {
-              Swal.fire({
-                title: 'به Josh خوش آمدید!',
-                text: 'جامعه بازی های هیجان انگیز ما را کشف کنید',
-                icon: 'success',
-                confirmButtonText: 'متشکرم',
-                confirmButtonColor: '#1e3a8a',
-                background: 'var(--card-bg)',
-                color: 'var(--text-color)'
-              });
-              localStorage.setItem('welcomeShown', 'true');
-            }, 1000);
-          }
-
-          auth.onAuthStateChanged(user => {
-            try {
-              if (user) {
-                const userRef = db.ref('users/' + user.uid);
-                userRef.once('value').then(snapshot => {
-                  if (snapshot.exists()) {
-                    const userData = snapshot.val();
-                    document.getElementById('profileName').textContent = userData.fullname;
-                    document.getElementById('profileImage').src = userData.profilePhoto;
-                    localStorage.setItem('user', JSON.stringify(userData));
-                  }
-                }).catch(error => {
-                  console.error('Error loading user data:', error);
-                  showNotification('خطا در بارگذاری اطلاعات کاربر');
-                });
-
-                db.ref('users/' + user.uid + '/lastLogin').set(firebase.database.ServerValue.TIMESTAMP);
-              } else {
-                document.getElementById('profileName').textContent = 'کاربر مهمان';
-                document.getElementById('profileImage').src = 'https://via.placeholder.com/80';
-
-                const cachedUser = localStorage.getItem('user');
-                if (cachedUser) {
-                  const userData = JSON.parse(cachedUser);
-                  document.getElementById('profileName').textContent = userData.fullname;
-                  document.getElementById('profileImage').src = userData.profilePhoto;
-                }
-              }
-            } catch (error) {
-              console.error('Auth state error:', error);
-              showNotification('خطا در بررسی وضعیت ورود');
-            }
-          });
-
-          // Service Worker management
-          if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistrations().then(registrations => {
-              for (let registration of registrations) {
-                registration.unregister();
-              }
-            }).catch(error => {
-              console.error('Service Worker error:', error);
-              showNotification('خطا در مدیریت Service Worker');
-            });
-          }
-        } catch (error) {
-          console.error('Initialization error:', error);
-          showNotification('خطا در راه اندازی برنامه');
-        }
-      });
-    } catch (error) {
-      console.error('Firebase initialization error:', error);
-      showNotification('خطا در اتصال به Firebase');
-      
-      // Fallback functionality if Firebase fails
-      document.addEventListener('DOMContentLoaded', () => {
-        const themeToggle = document.getElementById("themeToggle");
-        const scrollToTop = document.getElementById("scrollToTop");
-        const sidebar = document.getElementById("sidebar");
-        const overlay = document.getElementById("overlay");
-        const menuIcon = document.getElementById("menuIcon");
-        const logoContainer = document.getElementById("logoContainer");
-        const featureCards = document.querySelectorAll(".feature-card");
-        const sidebarLinks = document.querySelectorAll(".sidebar a");
-        
-        // Basic theme functionality
-        const initTheme = () => {
-          const savedTheme = localStorage.getItem('theme') || 'light';
-          document.body.classList.toggle('dark-mode', savedTheme === 'dark');
-          const icon = themeToggle.querySelector('i');
-          icon.className = savedTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
-        };
-        
-        const toggleTheme = () => {
-          document.body.classList.toggle('dark-mode');
-          const newTheme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
-          localStorage.setItem('theme', newTheme);
-          const icon = themeToggle.querySelector('i');
-          icon.className = newTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
-          showNotification('تم تغییر کرد');
-        };
-        
-        // Basic navigation
-        const navigateTo = (page) => {
-          window.location.href = page;
-        };
-        
-        // Sidebar functions
-        const openSidebar = () => {
-          sidebar.classList.add('open');
-          overlay.classList.add('active');
-          document.body.style.overflow = 'hidden';
-        };
-
-        const closeSidebar = () => {
-          sidebar.classList.remove('open');
-          overlay.classList.remove('active');
-          document.body.style.overflow = '';
-        };
-        
-        // Scroll to top
-        const toggleScrollToTop = () => {
-          scrollToTop.classList.toggle('visible', window.scrollY > 300);
-        };
-        
-        // Initialize
-        initTheme();
-        window.addEventListener('scroll', toggleScrollToTop);
-        scrollToTop.addEventListener('click', () => {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-        
-        // Add event listeners
-        themeToggle.addEventListener('click', toggleTheme);
-        menuIcon.addEventListener('click', openSidebar);
-        overlay.addEventListener('click', closeSidebar);
-        logoContainer.addEventListener('click', () => navigateTo('index.html'));
-        
-        // Add click listeners to feature cards
-        featureCards.forEach(card => {
-          const page = card.getAttribute('data-page');
-          card.addEventListener('click', () => navigateTo(page));
-          
-          const button = card.querySelector('.feature-btn');
-          button.addEventListener('click', (e) => {
-            e.stopPropagation();
-            navigateTo(page);
-          });
-        });
-        
-        // Add click listeners to sidebar links
-        sidebarLinks.forEach(link => {
-          const href = link.getAttribute('href');
-          link.addEventListener('click', (e) => {
-            e.preventDefault();
-            navigateTo(href);
-          });
-        });
-      });
+    // Theme management
+    function initTheme() {
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      body.classList.toggle('dark-mode', savedTheme === 'dark');
+      updateThemeIcon(savedTheme);
     }
+
+    function toggleTheme() {
+      body.classList.toggle('dark-mode');
+      const newTheme = body.classList.contains('dark-mode') ? 'dark' : 'light';
+      localStorage.setItem('theme', newTheme);
+      updateThemeIcon(newTheme);
+      showNotification('تم تغییر کرد');
+    }
+
+    function updateThemeIcon(theme) {
+      const icon = themeToggle.querySelector('i');
+      icon.className = theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+    }
+
+    // Sidebar functions
+    function openSidebar() {
+      sidebar.classList.add('open');
+      overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeSidebar() {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // Scroll to top
+    function toggleScrollToTop() {
+      scrollToTop.classList.toggle('visible', window.scrollY > 300);
+    }
+
+    // Navigation function
+    function navigateTo(page) {
+      window.location.href = page;
+    }
+
+    // Notification
+    function showNotification(message) {
+      const notification = document.createElement('div');
+      notification.className = 'notification';
+      notification.textContent = message;
+      document.body.appendChild(notification);
+
+      setTimeout(() => {
+        notification.classList.add('visible');
+      }, 10);
+
+      setTimeout(() => {
+        notification.classList.remove('visible');
+        setTimeout(() => {
+          document.body.removeChild(notification);
+        }, 300);
+      }, 3000);
+    }
+
+    // Initialize app
+    document.addEventListener('DOMContentLoaded', () => {
+      initTheme();
+      window.addEventListener('scroll', toggleScrollToTop);
+      scrollToTop.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+      // Add event listeners
+      logoContainer.addEventListener('click', () => navigateTo('index.html'));
+      menuIcon.addEventListener('click', openSidebar);
+      overlay.addEventListener('click', closeSidebar);
+      themeToggle.addEventListener('click', toggleTheme);
+      profileBox.addEventListener('click', () => navigateTo('profile.html'));
+      
+      // Add click listeners to feature cards
+      featureCards.forEach(card => {
+        const page = card.getAttribute('data-page');
+        card.addEventListener('click', () => navigateTo(page));
+        
+        // Prevent button click from triggering card click twice
+        const button = card.querySelector('.feature-btn');
+        button.addEventListener('click', (e) => {
+          e.stopPropagation();
+          navigateTo(page);
+        });
+      });
+      
+      // Add click listeners to sidebar links
+      sidebarLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          navigateTo(href);
+        });
+      });
+
+      if (!localStorage.getItem('welcomeShown')) {
+        setTimeout(() => {
+          showNotification('به Josh خوش آمدید! جامعه بازی های هیجان انگیز ما را کشف کنید');
+          localStorage.setItem('welcomeShown', 'true');
+        }, 1000);
+      }
+    });
   </script>
 </body>
 </html>
+</xaiArtifact>
